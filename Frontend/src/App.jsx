@@ -1,19 +1,37 @@
-import { useState } from "react";
+import React, { Fragment, useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { routes } from "./routes";
+import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
+import FooterComponent from "./components/FooterComponent/FooterComponent";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div style={{display: "flex",flexDirection: "column",alignItems: "center",justifyContent: "center",fontSize: "30px",width: "100%",maxWidth: "1400px",margin: "auto",backgroundColor: "#f0f0f0",borderRadius: "10px",boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",}}>
-        <div style={{ marginBottom: "10px", fontWeight: "bold" }}>
-          Sung xấu vãi lòng
-        </div>
-        <div style={{ color: "#555", fontWeight: "bold" }}>
-          con mịa lâm sung, mịa lâm sung
-        </div>
-      </div>
-    </>
+    <div className="bg-gray-100 min-h-screen">
+      <Router>
+        <Routes>
+          {routes.map((route) => {
+            const Page = route.page;
+            const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+            const ShowFooter = route.isShowFooter ? FooterComponent : Fragment;
+            if (route.path && typeof route.path === "string") {
+              return (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={
+                    <Layout>
+                      <Page />
+                      <ShowFooter />
+                    </Layout>
+                  }
+                />
+              );
+            }
+            return null;
+          })}
+        </Routes>
+      </Router>
+    </div>
   );
 }
 
