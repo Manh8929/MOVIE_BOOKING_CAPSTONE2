@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import NavbarComponent from '../NavbarComponent/NavbarComponent';
 import { Link } from "react-router-dom";
+import { FiMenu, FiX } from "react-icons/fi"; 
 import logo from '../../assets/img/logo_movie.png';
 
 const HeaderComponent = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <header className="fixed top-0 left-0 w-full flex items-center justify-between px-8 py-4 bg-gradient-to-r from-black via-black to-green-900 shadow-lg z-50">
       {/* Logo */}
@@ -14,11 +17,13 @@ const HeaderComponent = () => {
         </span>
       </Link>
 
-      {/* Navbar */}
-      <NavbarComponent />
+      {/* Navbar  */}
+      <div className="hidden md:flex">
+        <NavbarComponent />
+      </div>
 
       {/* Buttons */}
-      <div className="flex space-x-4">
+      <div className="hidden md:flex space-x-4">
         <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-transform transform hover:-translate-y-1">
           Đăng nhập
         </button>
@@ -26,6 +31,31 @@ const HeaderComponent = () => {
           Đăng kí
         </button>
       </div>
+
+      <button className="md:hidden text-white text-2xl" onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? <FiX /> : <FiMenu />}
+      </button>
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex flex-col items-center space-y-6 p-8 transition-all duration-300 z-50">
+          {/* Close Button */}
+          <button className="absolute top-4 right-6 text-white text-3xl" onClick={() => setIsOpen(false)}>
+            <FiX />
+          </button>
+
+          {/* Navbar */}
+          <NavbarComponent />
+
+          {/* Buttons */}
+          <button className="bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600 w-48 text-center">
+            Đăng nhập
+          </button>
+          <button className="border border-green-500 text-green-500 px-6 py-3 rounded hover:bg-green-500 hover:text-white w-48 text-center">
+            Đăng kí
+          </button>
+        </div>
+      )}
     </header>
   );
 };
