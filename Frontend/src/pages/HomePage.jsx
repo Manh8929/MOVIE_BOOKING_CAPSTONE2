@@ -5,7 +5,7 @@ import PromotionSectionComponent from "../components/PromotionSectionComponent/P
 
 const HomePage = () => {
   return (
-    <div className="mt-[80px] w-full flex items-center flex-col">
+    <div className="mt-[80px] w-full flex items-center flex-col ">
       <SliderComponent />
       <MoviesSection />
       <PromotionSectionComponent/>

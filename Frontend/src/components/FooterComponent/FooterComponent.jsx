@@ -9,7 +9,7 @@ const FooterComponent = () => {
         <div className="flex flex-col space-y-3">
           <img src={logo} alt="Cinemas Logo" className="w-32" />
           <p className="text-sm">
-            Trải nghiệm rạp chiếu phim online tốt nhất với hàng ngàn bộ phim hấp dẫn.
+            Trải nghiệm rạp chiếu phim MVB tốt nhất với hàng ngàn bộ phim hấp dẫn.
           </p>
         </div>
 
