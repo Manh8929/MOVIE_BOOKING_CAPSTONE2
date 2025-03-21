@@ -1,4 +1,5 @@
 import HomePage from "../pages/HomePage";
+import ViewAllFilm from "../pages/ViewAllFilm";
 import MyTicketPage from "../pages/MyTicketPage";
 import AdminLogin from "../components/Admin/AdmLogin"; // Đảm bảo rằng đường dẫn đúng
 import AddMovieAdm from "../pages/AddMovieAdm";
@@ -9,6 +10,13 @@ export const routes = [
   {
     path: "/",
     page: HomePage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+
+    path: "/movies",
+    page: ViewAllFilm,
     isShowHeader: true,
     isShowFooter: true,
   },
