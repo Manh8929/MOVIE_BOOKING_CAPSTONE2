@@ -74,7 +74,7 @@ const MoviesSection = () => {
 const MovieListComponent = ({ title, movies }) => {
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
-            <h2 className="text-3xl font-bold text-gray-800 text-center mb-6 uppercase tracking-wide">
+            <h2 className="text-3xl font-bold text-white text-center mb-6 uppercase tracking-wide">
                 {title}
             </h2>
             <Swiper

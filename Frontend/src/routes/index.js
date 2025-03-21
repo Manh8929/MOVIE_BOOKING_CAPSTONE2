@@ -3,6 +3,7 @@ import ViewAllFilm from "../pages/ViewAllFilm";
 import MyTicketPage from "../pages/MyTicketPage";
 import AdminLogin from "../components/Admin/AdmLogin"; // Đảm bảo rằng đường dẫn đúng
 import AddMovieAdm from "../pages/AddMovieAdm";
+import TicketUpHisPage from "../pages/TicketUpHisPage";
 
 
 
@@ -39,5 +40,11 @@ export const routes = [
     page: AddMovieAdm,
     isShowHeader: false,
     isShowFooter: false, 
+  },
+  {
+    path: "/ticket-up-his",
+    page: TicketUpHisPage,
+    isShowHeader: true,
+    isShowFooter: true, 
   },
 ];
