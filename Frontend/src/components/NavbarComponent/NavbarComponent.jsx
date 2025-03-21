@@ -1,14 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const NavbarComponent = () => {
+    const location = useLocation(); 
+
     return (
         <nav className="flex space-x-6 text-white text-lg">
-            <Link to="/schedule" className="hover:text-green-400 transition-transform transform hover:-translate-y-1">Lịch chiếu</Link>
-            <Link to="/movies" className="hover:text-green-400 transition-transform transform hover:-translate-y-1">Phim</Link>
-            <Link to="/deals" className="hover:text-green-400 transition-transform transform hover:-translate-y-1">Ưu đãi</Link>
-            <Link to="/news" className="hover:text-green-400 transition-transform transform hover:-translate-y-1">Tin tức phim</Link>
-            <Link to="/members" className="hover:text-green-400 transition-transform transform hover:-translate-y-1">Thành viên</Link>
+            {[
+                { path: "/schedule", label: "Lịch chiếu" },
+                { path: "/movies", label: "Phim" },
+                { path: "/deals", label: "Ưu đãi" },
+                { path: "/news", label: "Tin tức phim" },
+                { path: "/members", label: "Thành viên" }
+            ].map((item) => (
+                <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`transition-transform transform hover:-translate-y-1 
+                        ${location.pathname === item.path ? "text-green-400 font-bold" : "hover:text-green-400"}`}
+                >
+                    {item.label}
+                </Link>
+            ))}
         </nav>
     );
 };

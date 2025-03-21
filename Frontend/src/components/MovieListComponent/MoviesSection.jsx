@@ -110,7 +110,7 @@ const MovieListComponent = ({ title, movies }) => {
                             </div>
 
                             <div className="mt-4 text-center">
-                                <h3 className="text-xl text-white font-bold">{movie.title}</h3>
+                                <h3 className="text-xl text-white font-bold truncate">{movie.title}</h3>
                                 <p className="mt-2 text-gray-400">{movie.duration} phút</p>
                                 <p className="mt-2 text-gray-400">Khởi chiếu: {movie.releaseDate}</p>
                             </div>
