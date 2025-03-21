@@ -4,6 +4,7 @@ import { routes } from "./routes";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import FooterComponent from "./components/FooterComponent/FooterComponent";
 
+
 function App() {
   return (
     <div className="bg-gray-100 min-h-screen">
