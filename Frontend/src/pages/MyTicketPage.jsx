@@ -3,7 +3,7 @@ import React from "react";
 const MyTicketPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-black to-green-900 text-white flex flex-col ">
-      <h1 className="font-bold m-10 pl-8 text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl">
+      <h1 className="font-bold m-10 mt-36 ml-60 pl-8 text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl">
         Ticket Detail
       </h1>
 
