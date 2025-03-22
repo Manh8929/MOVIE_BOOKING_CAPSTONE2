@@ -18,7 +18,7 @@ import film11 from "../../assets/img/film/phim11.jpg";
 import film12 from "../../assets/img/film/phim12.jpg";
 import film13 from "../../assets/img/film/phim13.jpg";
 import film14 from "../../assets/img/film/phim14.jpg";
-
+    
 const moviesNowShowing = [
     { title: "Sát thủ vô cùng cực", poster: film1, duration: 120, releaseDate: "20/03/2025" },
     { title: "Nhà gia tiên", poster: film2, duration: 98, releaseDate: "05/03/2025" },
@@ -48,14 +48,14 @@ const MoviesSection = () => {
             <div className="flex justify-center gap-4 mb-6">
                 <button
                     onClick={() => setShowNowShowing(true)}
-                    className={`px-6 py-2 font-semibold rounded-lg transition-transform transform hover:-translate-y-1 ${showNowShowing ? "bg-green-500 text-white" : "bg-green-900 text-gray-300"
+                    className={`px-6 py-2 font-semibold rounded-lg transition-transform transform hover:-translate-y-1 ${showNowShowing ? "bg-[#E63946] text-white" : "bg-[#7A1C1C] text-gray-300"
                         }`}
                 >
                     Phim Đang Chiếu
                 </button>
                 <button
                     onClick={() => setShowNowShowing(false)}
-                    className={`px-6 py-2 font-semibold rounded-lg transition-transform transform hover:-translate-y-1 ${!showNowShowing ? "bg-green-500 text-white" : "bg-green-900 text-gray-300"
+                    className={`px-6 py-2 font-semibold rounded-lg transition-transform transform hover:-translate-y-1 ${!showNowShowing ? "bg-[#E63946] text-white" : "bg-[#7A1C1C] text-gray-300"
                         }`}
                 >
                     Phim Sắp Chiếu
@@ -74,7 +74,7 @@ const MoviesSection = () => {
 const MovieListComponent = ({ title, movies }) => {
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
-            <h2 className="text-3xl font-bold text-gray-800 text-center mb-6 uppercase tracking-wide">
+            <h2 className="text-3xl font-bold text-white text-center mb-6 uppercase tracking-wide">
                 {title}
             </h2>
             <Swiper

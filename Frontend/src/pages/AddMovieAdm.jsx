@@ -1,7 +1,12 @@
 import { useState } from "react";
-import SidebarAdm from "../components/Admin/SidebarAdm"; // Đảm bảo import đúng SidebarAdm
+import SidebarAdm from "../components/Admin/SidebarAdm";
+import EditMovie from "../components/Admin/EditMovie"; // Import EditMovie
 
 const AddMovieAdm = () => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); 
+
+  const openModal = () => setIsEditModalOpen(true);
+  const closeModal = () => setIsEditModalOpen(false);
   return (
     <div className="flex h-screen">
       <SidebarAdm />
@@ -12,18 +17,23 @@ const AddMovieAdm = () => {
             <div className="w-10 h-10 bg-[#131c28] text-white flex justify-center items-center rounded-full font-semibold">
               ảnh
             </div>
-            <span className="ml-3 text-xl font-semibold">Tên adm</span>
+            <span className="ml-3 text-xl font-semibold">Tên admin</span>
           </div>
         </header>
 
         <div className="border-t border-gray-300 mb-6"></div>
 
+        {/* Nút Edit */}
         <div className="flex justify-end mb-6">
-          <button className="bg-[#131c28] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#1a2636]">
+          <button 
+            className="bg-[#131c28] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#1a2636]"
+            onClick={openModal}
+          >
             + Thêm mới
           </button>
         </div>
 
+        {/* Bảng thông tin phim */}
         <table className="w-full table-auto border-separate border-spacing-0 border border-gray-300">
           <thead>
             <tr>
@@ -44,13 +54,17 @@ const AddMovieAdm = () => {
               <td className="border-b border-r border-gray-300 p-4">###</td>
               <td className="border-b border-gray-300 p-4">
                 <button className="text-blue-500 mr-2">👁️</button>
-                <button className="text-yellow-500 mr-2">✏️</button>
+                <button className="text-yellow-500 mr-2" onClick={openModal}>✏️</button>
                 <button className="text-red-500">🗑️</button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+
+      {isEditModalOpen && (
+        <EditMovie onClose={closeModal} />
+      )}
     </div>
   );
 };
