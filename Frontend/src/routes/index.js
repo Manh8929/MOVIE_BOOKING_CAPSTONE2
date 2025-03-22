@@ -3,6 +3,8 @@ import ViewAllFilm from "../pages/ViewAllFilm";
 import MyTicketPage from "../pages/MyTicketPage";
 import BookingDetail from "../pages/BookingDetail";
 import PaymentPage from "../pages/PaymentPage";
+import PaymentOtp from "../pages/PaymentOtp";
+import PaymentSuccess from "../pages/PaymentSuccess";
 import AdminLogin from "../components/Admin/AdmLogin";
 import AddMovieAdm from "../pages/AddMovieAdm";
 import TicketUpHisPage from "../pages/TicketUpHisPage";
@@ -56,6 +58,22 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true, 
   },
+
+  {
+    path: "/payment-otp",
+    page: PaymentOtp,
+    isShowHeader: true,
+    isShowFooter: true, 
+  },
+
+  {
+    path: "/payment-success",
+    page: PaymentSuccess,
+    isShowHeader: true,
+    isShowFooter: true, 
+  },
+
+
 
 //////////////////// ADMIN /////////////////
   // Trang đăng nhập Admin
