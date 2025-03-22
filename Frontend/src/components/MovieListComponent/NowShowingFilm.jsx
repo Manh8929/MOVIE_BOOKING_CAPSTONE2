@@ -80,7 +80,7 @@ const NowShowingFilms = () => {
             className={`px-5 py-2 rounded transition-transform transform hover:-translate-y-1 font-bold ${
               currentPage === 1
                 ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                : "bg-yellow-500 text-black hover:bg-yellow-400"
+                : "bg-[#E63946] text-white"
             }`}
             disabled={currentPage === 1}
             onClick={() => setCurrentPage(currentPage - 1)}
@@ -96,7 +96,7 @@ const NowShowingFilms = () => {
             className={`px-5 py-2 rounded transition-transform transform hover:-translate-y-1 font-bold ${
               currentPage === totalPages
                 ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                : "bg-yellow-500 text-black hover:bg-yellow-400"
+                : "bg-[#E63946] text-white"
             }`}
             disabled={currentPage === totalPages}
             onClick={() => setCurrentPage(currentPage + 1)}

@@ -23,7 +23,7 @@ const MyTicketHisComponent = () => {
             </div>
           </div>
         </div>
-        <button className="w-full bg-green-300 text-black py-2 rounded-lg hover:bg-green-400">
+        <button className="w-full text-white py-2 rounded-lg bg-[#7A1C1C] hover:bg-[#E63946]">
           Download Ticket
         </button>
       </div>
@@ -48,7 +48,7 @@ const MyTicketHisComponent = () => {
             </div>
           </div>
         </div>
-        <button className="w-full bg-green-300 text-black py-2 rounded-lg hover:bg-green-400">
+        <button className="w-full text-white py-2 rounded-lg bg-[#7A1C1C] hover:bg-[#E63946]">
           Download Ticket
         </button>
       </div>
