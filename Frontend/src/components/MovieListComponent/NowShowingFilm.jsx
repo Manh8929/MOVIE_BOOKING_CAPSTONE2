@@ -1,4 +1,5 @@
-    import React, { useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import film1 from "../../assets/img/film/phim1.jpg";
 import film2 from "../../assets/img/film/phim2.jpg";
 import film3 from "../../assets/img/film/phim3.jpg";
@@ -25,6 +26,7 @@ const nowShowingMovies = [
 const itemsPerPage = 8;
 
 const NowShowingFilms = () => {
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = Math.ceil(nowShowingMovies.length / itemsPerPage);
 
@@ -67,7 +69,9 @@ const NowShowingFilms = () => {
                 <p className="mt-1 text-sm text-gray-300">
                   Khởi chiếu: {movie.releaseDate}
                 </p>
-                <button className="mt-3 bg-red-500  hover:bg-red-600 text-white text-sm py-2 px-5 rounded-lg transition-transform transform hover:scale-110 font-semibold">
+                <button
+                onClick={()=>navigate('/booking-movie')} 
+                className="mt-3 bg-red-500  hover:bg-red-600 text-white text-sm py-2 px-5 rounded-lg transition-transform transform hover:scale-110 font-semibold">
                   ĐẶT VÉ
                 </button>
               </div>

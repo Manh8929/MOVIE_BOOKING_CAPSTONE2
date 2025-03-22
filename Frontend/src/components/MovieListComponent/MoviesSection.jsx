@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -18,7 +19,7 @@ import film11 from "../../assets/img/film/phim11.jpg";
 import film12 from "../../assets/img/film/phim12.jpg";
 import film13 from "../../assets/img/film/phim13.jpg";
 import film14 from "../../assets/img/film/phim14.jpg";
-    
+
 const moviesNowShowing = [
     { title: "Sát thủ vô cùng cực", poster: film1, duration: 120, releaseDate: "20/03/2025" },
     { title: "Nhà gia tiên", poster: film2, duration: 98, releaseDate: "05/03/2025" },
@@ -72,6 +73,7 @@ const MoviesSection = () => {
 };
 
 const MovieListComponent = ({ title, movies }) => {
+    const navigate = useNavigate();
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
             <h2 className="text-3xl font-bold text-white text-center mb-6 uppercase tracking-wide">
@@ -104,7 +106,9 @@ const MovieListComponent = ({ title, movies }) => {
                                 <button className="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition-transform transform hover:-translate-y-3">
                                     Trailer
                                 </button>
-                                <button className="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition-transform transform hover:translate-y-3">
+                                <button
+                                    onClick={() => navigate('/booking-movie')}
+                                    className="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition-transform transform hover:translate-y-3">
                                     Đặt vé
                                 </button>
                             </div>

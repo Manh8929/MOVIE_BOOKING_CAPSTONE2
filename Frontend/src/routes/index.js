@@ -5,6 +5,8 @@ import BookingDetail from "../pages/BookingDetail";
 import PaymentPage from "../pages/PaymentPage";
 import PaymentOtp from "../pages/PaymentOtp";
 import PaymentSuccess from "../pages/PaymentSuccess";
+import BookingFilmPage from "../pages/BookingFilmPage";
+import SeatSelectPage from "../pages/SeatSelectPage";
 import AdminLogin from "../components/Admin/AdmLogin";
 import AddMovieAdm from "../pages/AddMovieAdm";
 import TicketUpHisPage from "../pages/TicketUpHisPage";
@@ -73,6 +75,19 @@ export const routes = [
     isShowFooter: true, 
   },
 
+  {
+    path: "/booking-movie",
+    page: BookingFilmPage,
+    isShowHeader: true,
+    isShowFooter: true, 
+  },
+
+  {
+    path: "/seat-select",
+    page: SeatSelectPage,
+    isShowHeader: true,
+    isShowFooter: true, 
+  },
 
 
 //////////////////// ADMIN /////////////////
