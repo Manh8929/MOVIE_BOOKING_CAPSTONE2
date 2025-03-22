@@ -2,8 +2,8 @@ import React from "react";
 
 const MyTicketPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-black to-green-900 text-white flex flex-col ">
-      <h1 className="font-bold m-10 pl-8 text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl">
+    <div className="min-h-screen bg-gradient-to-br from-black via-black to-[#4f111e] text-white flex flex-col ">
+      <h1 className="font-bold m-10 mt-36 ml-60 pl-8 text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl">
         Ticket Detail
       </h1>
 
@@ -31,11 +31,11 @@ const MyTicketPage = () => {
           </div>
         </div>
 
-        <button className="w-full bg-blue-800 hover:bg-blue-700 text-white py-3 rounded-lg transition">
+        <button className="w-full bg-[#7A1C1C] hover:bg-[#E63946] text-white py-3 rounded-lg transition">
           Download Ticket
         </button>
       </div>
-      <button className="mt-10 border border-gray-500 rounded-lg px-10 py-4 hover:bg-white hover:text-black transition mx-auto">
+      <button className="mt-10 border border-gray-500 rounded-lg px-10 py-4 hover:bg-[#db767e] hover:text-black transition mx-auto">
         Back to Homepage
       </button>
     </div>
