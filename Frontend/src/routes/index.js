@@ -6,7 +6,7 @@ import AddMovieAdm from "../pages/AddMovieAdm";
 import OderFlimAdm from "../pages/OderFlimAdm";
 import ManagementUserAdm from "../pages/ManagementUserAdm";
 import ReportsAdm from "../pages/ReportsAdm";
-
+import TheatersAdm from "../pages/TheatersAdm";
 
 
 export const routes = [
@@ -65,5 +65,13 @@ export const routes = [
     isShowHeader: false,
     isShowFooter: false, 
   },
+  // Theaters adm
+  {
+    path: "/theatersadm",
+    page: TheatersAdm,
+    isShowHeader: false,
+    isShowFooter: false, 
+  },
+  
 ];
 /////////////////////////////////////////////
