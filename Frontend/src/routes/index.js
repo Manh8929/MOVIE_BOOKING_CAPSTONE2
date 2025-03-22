@@ -2,6 +2,7 @@ import HomePage from "../pages/HomePage";
 import ViewAllFilm from "../pages/ViewAllFilm";
 import MyTicketPage from "../pages/MyTicketPage";
 import BookingDetail from "../pages/BookingDetail";
+import PaymentPage from "../pages/PaymentPage";
 import AdminLogin from "../components/Admin/AdmLogin";
 import AddMovieAdm from "../pages/AddMovieAdm";
 import TicketUpHisPage from "../pages/TicketUpHisPage";
@@ -45,6 +46,13 @@ export const routes = [
   {
     path: "/booking-detail",
     page: BookingDetail,
+    isShowHeader: true,
+    isShowFooter: true, 
+  },
+
+  {
+    path: "/payment",
+    page: PaymentPage,
     isShowHeader: true,
     isShowFooter: true, 
   },
