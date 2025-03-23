@@ -1,7 +1,4 @@
 import HomePage from "../pages/HomePage";
-<<<<<<< Updated upstream
-
-=======
 import ViewAllFilm from "../pages/ViewAllFilm";
 import MyTicketPage from "../pages/MyTicketPage";
 import BookingDetail from "../pages/BookingDetail";
@@ -25,7 +22,6 @@ import MyProfilePage from "../pages/MyProfilePage";
 import LoginPage from "../pages/LoginPage";
 import RegistrationForm from "../pages/RegistrationForm";
 import ForgotPassword from "../pages/ForgotPassword";
->>>>>>> Stashed changes
 
 export const routes = [
   {
@@ -34,9 +30,7 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
-<<<<<<< Updated upstream
- 
-=======
+
   {
     path: "/under-construction",
     page: UnderConstruction,
@@ -151,6 +145,7 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
+
   //////////////////// ADMIN /////////////////
   // Trang đăng nhập Admin
   {
@@ -188,5 +183,4 @@ export const routes = [
     isShowHeader: false,
     isShowFooter: false,
   },
->>>>>>> Stashed changes
 ];
