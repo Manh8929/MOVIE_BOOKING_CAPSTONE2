@@ -7,7 +7,7 @@ const NavbarComponent = () => {
     return (
       <nav className="flex space-x-6 text-white text-lg">
         {[
-          { path: "/schedule", label: "Lịch chiếu" },
+          { path: "/schedule-movie", label: "Lịch chiếu" },
           { path: "/movies", label: "Phim" },
           { path: "/promotions", label: "Ưu đãi" },
           { path: "/news", label: "Tin tức phim" },

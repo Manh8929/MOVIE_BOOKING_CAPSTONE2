@@ -15,6 +15,7 @@ import OderFlimAdm from "../pages/OderFlimAdm";
 import ManagementUserAdm from "../pages/ManagementUserAdm";
 import ReportsAdm from "../pages/ReportsAdm";
 import TheatersAdm from "../pages/TheatersAdm";
+import MovieSchedule from "../pages/MovieSchedule";
 
 export const routes = [
   {
@@ -93,6 +94,12 @@ export const routes = [
   {
     path: "/promotions",
     page: PromotionsPage,
+    isShowHeader: true,
+    isShowFooter: true, 
+  },
+  {
+    path: "/schedule-movie",
+    page: MovieSchedule,
     isShowHeader: true,
     isShowFooter: true, 
   },
