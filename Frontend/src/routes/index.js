@@ -7,6 +7,7 @@ import PaymentOtp from "../pages/PaymentOtp";
 import PaymentSuccess from "../pages/PaymentSuccess";
 import BookingFilmPage from "../pages/BookingFilmPage";
 import SeatSelectPage from "../pages/SeatSelectPage";
+import PromotionsPage from "../pages/PromotionsPage";
 import AdminLogin from "../components/Admin/AdmLogin";
 import AddMovieAdm from "../pages/AddMovieAdm";
 import TicketUpHisPage from "../pages/TicketUpHisPage";
@@ -89,6 +90,12 @@ export const routes = [
     isShowFooter: true, 
   },
 
+  {
+    path: "/promotions",
+    page: PromotionsPage,
+    isShowHeader: true,
+    isShowFooter: true, 
+  },
 
 //////////////////// ADMIN /////////////////
   // Trang đăng nhập Admin

@@ -54,10 +54,10 @@ const HeaderComponent = () => {
           <NavbarComponent />
 
           {/* Buttons */}
-          <button className="bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600 w-48 text-center">
+          <button className="bg-[#E63946] text-white px-6 py-3 rounded hover:opacity-70 w-48 text-center transition-transform transform hover:-translate-y-1">
             Đăng nhập
           </button>
-          <button className="border border-green-500 text-green-500 px-6 py-3 rounded hover:bg-green-500 hover:text-white w-48 text-center">
+          <button className="border border-[#E63946] text-white px-6 py-3 rounded hover:bg-[#E63946] hover:text-white w-48 text-center transition-transform transform hover:translate-y-1">
             Đăng kí
           </button>
         </div>

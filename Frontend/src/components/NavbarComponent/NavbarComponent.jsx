@@ -9,7 +9,7 @@ const NavbarComponent = () => {
         {[
           { path: "/schedule", label: "Lịch chiếu" },
           { path: "/movies", label: "Phim" },
-          { path: "/deals", label: "Ưu đãi" },
+          { path: "/promotions", label: "Ưu đãi" },
           { path: "/news", label: "Tin tức phim" },
           { path: "/members", label: "Thành viên" },
         ].map((item) => (
