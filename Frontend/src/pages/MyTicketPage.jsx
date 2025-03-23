@@ -59,7 +59,7 @@ const MyTicketPage = () => {
 
       {/* Back Button */}
       <button className="mt-10 border border-gray-600 rounded-xl px-10 py-4 hover:bg-[#db767e] hover:text-black transition mx-auto text-lg font-medium">
-        Quy lại Trang chủ
+        Về trang chủ
       </button>
     </div>
   );

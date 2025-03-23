@@ -17,6 +17,8 @@ import ReportsAdm from "../pages/ReportsAdm";
 import TheatersAdm from "../pages/TheatersAdm";
 import MovieSchedule from "../pages/MovieSchedule";
 import NotFoundPage from "../pages/NotFoundPage";
+import UnderConstruction from "../pages/UnderConstructionPage";
+import MyProfilePage from "../pages/MyProfilePage";
 
 export const routes = [
   {
@@ -24,6 +26,10 @@ export const routes = [
     page: HomePage,
     isShowHeader: true,
     isShowFooter: true,
+  },
+  {
+    path: "/under-construction",
+    page: UnderConstruction,
   },
   {
     path: "*",
@@ -105,6 +111,12 @@ export const routes = [
   {
     path: "/schedule-movie",
     page: MovieSchedule,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "profile",
+    page: MyProfilePage,
     isShowHeader: true,
     isShowFooter: true,
   },
