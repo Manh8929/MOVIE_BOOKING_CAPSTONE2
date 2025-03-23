@@ -16,6 +16,7 @@ import ManagementUserAdm from "../pages/ManagementUserAdm";
 import ReportsAdm from "../pages/ReportsAdm";
 import TheatersAdm from "../pages/TheatersAdm";
 import MovieSchedule from "../pages/MovieSchedule";
+import NotFoundPage from "../pages/NotFoundPage";
 
 export const routes = [
   {
@@ -23,6 +24,10 @@ export const routes = [
     page: HomePage,
     isShowHeader: true,
     isShowFooter: true,
+  },
+  {
+    path: "*",
+    page: NotFoundPage,
   },
   {
     path: "/movies",
@@ -40,108 +45,105 @@ export const routes = [
     path: "/ticket-up-his",
     page: TicketUpHisPage,
     isShowHeader: true,
-    isShowFooter: true, 
+    isShowFooter: true,
   },
   {
     path: "/oderflimadm",
     page: OderFlimAdm,
     isShowHeader: false,
-    isShowFooter: false, 
+    isShowFooter: false,
   },
 
   {
     path: "/booking-detail",
     page: BookingDetail,
     isShowHeader: true,
-    isShowFooter: true, 
+    isShowFooter: true,
   },
 
   {
     path: "/payment",
     page: PaymentPage,
     isShowHeader: true,
-    isShowFooter: true, 
+    isShowFooter: true,
   },
 
   {
     path: "/payment-otp",
     page: PaymentOtp,
     isShowHeader: true,
-    isShowFooter: true, 
+    isShowFooter: true,
   },
 
   {
     path: "/payment-success",
     page: PaymentSuccess,
     isShowHeader: true,
-    isShowFooter: true, 
+    isShowFooter: true,
   },
 
   {
     path: "/booking-movie",
     page: BookingFilmPage,
     isShowHeader: true,
-    isShowFooter: true, 
+    isShowFooter: true,
   },
 
   {
     path: "/seat-select",
     page: SeatSelectPage,
     isShowHeader: true,
-    isShowFooter: true, 
+    isShowFooter: true,
   },
 
   {
     path: "/promotions",
     page: PromotionsPage,
     isShowHeader: true,
-    isShowFooter: true, 
+    isShowFooter: true,
   },
   {
     path: "/schedule-movie",
     page: MovieSchedule,
     isShowHeader: true,
-    isShowFooter: true, 
+    isShowFooter: true,
   },
 
-//////////////////// ADMIN /////////////////
+  //////////////////// ADMIN /////////////////
   // Trang đăng nhập Admin
   {
     path: "/adminlogin",
     page: AdminLogin,
     isShowHeader: false,
-    isShowFooter: false, 
+    isShowFooter: false,
   },
   // Add Movie Adm Admin
   {
     path: "/addmovieadm",
     page: AddMovieAdm,
     isShowHeader: false,
-    isShowFooter: false, 
+    isShowFooter: false,
   },
-
 
   // Adm User Management
   {
     path: "/managementuseradm",
     page: ManagementUserAdm,
     isShowHeader: false,
-    isShowFooter: false, 
+    isShowFooter: false,
   },
   // report adm
   {
     path: "/reportsadm",
     page: ReportsAdm,
     isShowHeader: false,
-    isShowFooter: false, 
+    isShowFooter: false,
   },
   // Theaters adm
   {
     path: "/theatersadm",
     page: TheatersAdm,
     isShowHeader: false,
-    isShowFooter: false, 
+    isShowFooter: false,
   },
-  
 ];
-
