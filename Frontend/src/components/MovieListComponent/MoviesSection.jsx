@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import TrailerModal from "../TrailerModalComponent/TrailerModalComponent";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
@@ -21,28 +22,28 @@ import film13 from "../../assets/img/film/phim13.jpg";
 import film14 from "../../assets/img/film/phim14.jpg";
 
 const moviesNowShowing = [
-    { title: "Sát thủ vô cùng cực", poster: film1, duration: 120, releaseDate: "20/03/2025" },
-    { title: "Nhà gia tiên", poster: film2, duration: 98, releaseDate: "05/03/2025" },
-    { title: "Sát thủ vô cùng cực", poster: film9, duration: 120, releaseDate: "20/03/2025" },
-    { title: "Nhà gia tiên", poster: film5, duration: 98, releaseDate: "05/03/2025" },
-    { title: "Sát thủ vô cùng cực", poster: film6, duration: 120, releaseDate: "20/03/2025" },
-    { title: "Nhà gia tiên", poster: film7, duration: 98, releaseDate: "05/03/2025" },
-    { title: "Sát thủ vô cùng cực", poster: film8, duration: 120, releaseDate: "20/03/2025" },
-];
+    { title: "Sát thủ vô cùng cực", poster: film1, duration: 120, releaseDate: "20/03/2025",  trailerUrl: "https://www.youtube.com/embed/v81sGxKvBfk" },
+    { title: "Nhà gia tiên", poster: film2, duration: 98, releaseDate: "05/03/2025", trailerUrl: "https://www.youtube.com/embed/wfPTz0A23ns" },
+    { title: "Emma vương quốc tí hon", poster: film9, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/kraUpgr_IE4" },
+    { title: "Lạc trôi - Flow ", poster: film5, duration: 98, releaseDate: "05/03/2025", trailerUrl: "https://www.youtube.com/embed/bFRr7bv--70" },
+    { title: "Anh không đau", poster: film6, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/FNBbFHgPzyY" },
+    { title: "Quỷ nhập tràng", poster: film7, duration: 98, releaseDate: "05/03/2025", trailerUrl: "https://www.youtube.com/embed/fQKxDM-hxoU" },
+    { title: "Sát thủ vô cùng cực", poster: film8, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/v81sGxKvBfk" },
+];  
 
 const moviesComingSoon = [
-    { title: "Cô gái năm ấy ", poster: film3, duration: 113, releaseDate: "15/05/2025" },
-    { title: "Bí kíp luyện rồng", poster: film4, duration: 102, releaseDate: "30/04/2025" },
-    { title: "Sát thủ vô cùng cực", poster: film10, duration: 120, releaseDate: "20/03/2025" },
-    { title: "Nhà gia tiên", poster: film11, duration: 98, releaseDate: "05/03/2025" },
-    { title: "Sát thủ vô cùng cực", poster: film12, duration: 120, releaseDate: "20/03/2025" },
-    { title: "Nhà gia tiên", poster: film13, duration: 98, releaseDate: "05/03/2025" },
-    { title: "Sát thủ vô cùng cực", poster: film14, duration: 120, releaseDate: "20/03/2025" },
+    { title: "Cô gái năm ấy chúng ta cùng theo đuổi", poster: film3, duration: 113, releaseDate: "15/05/2025", trailerUrl: "https://www.youtube.com/embed/2-3gpCp_Mus" },
+    { title: "Bí kíp luyện rồng", poster: film4, duration: 102, releaseDate: "30/04/2025", trailerUrl: "https://www.youtube.com/embed/22w7z_lT6YM"},
+    { title: "Nàng Bạch Tuyết từ Disney", poster: film10, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/_lSVVn1Os0o"},
+    { title: "Ninja Rantaro", poster: film11, duration: 98, releaseDate: "05/03/2025", trailerUrl: "https://www.youtube.com/embed/ulOb1dBMS6U"},
+    { title: "Lật mật 8", poster: film12, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/W_0AMP9yO1w" },
+    { title: "Chốt đơn", poster: film13, duration: 98, releaseDate: "05/03/2025", trailerUrl: "https://www.youtube.com/embed/KHfhsOeFR4w" },
+    { title: "Thám tử kiên", poster: film14, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/tG_Ito2MUWg"},
 ];
+
 
 const MoviesSection = () => {
     const [showNowShowing, setShowNowShowing] = useState(true);
-
     return (
         <div className="container mx-auto px-8 py-10">
             {/* Phim Sections */}
@@ -74,6 +75,8 @@ const MoviesSection = () => {
 
 const MovieListComponent = ({ title, movies }) => {
     const navigate = useNavigate();
+    const [trailerUrl, setTrailerUrl] = useState("");
+
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
             <h2 className="text-3xl font-bold text-white text-center mb-6 uppercase tracking-wide">
@@ -87,6 +90,7 @@ const MovieListComponent = ({ title, movies }) => {
                 autoplay={{ delay: 3000, disableOnInteraction: false }}
                 loop={true}
                 breakpoints={{
+                    0: { slidesPerView: 1 },   
                     640: { slidesPerView: 2 },
                     768: { slidesPerView: 3 },
                     1024: { slidesPerView: 4 },
@@ -103,7 +107,9 @@ const MovieListComponent = ({ title, movies }) => {
                             />
 
                             <div className="absolute inset-0 bg-black bg-opacity-70 opacity-0 group-hover:opacity-100 flex flex-col justify-center items-center gap-3 transition-opacity duration-300">
-                                <button className="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition-transform transform hover:-translate-y-3">
+                                <button
+                                  onClick={() => setTrailerUrl(movie.trailerUrl)}
+                                className="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition-transform transform hover:-translate-y-3">
                                     Trailer
                                 </button>
                                 <button
@@ -122,6 +128,8 @@ const MovieListComponent = ({ title, movies }) => {
                     </SwiperSlide>
                 ))}
             </Swiper>
+
+            {trailerUrl && <TrailerModal videoUrl={trailerUrl} onClose={() => setTrailerUrl("")} />}
         </div>
     );
 };

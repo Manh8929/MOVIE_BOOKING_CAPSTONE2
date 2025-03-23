@@ -4,5 +4,9 @@
 
 .swiper-button-next,
 .swiper-button-prev {
-    color: #22c55e !important; 
+    color: #fff !important; 
+}
+.swiper-button-next:hover,
+.swiper-button-prev:hover{
+    color: #E63946 !important; 
 }
