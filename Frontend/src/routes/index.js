@@ -8,6 +8,8 @@ import PaymentSuccess from "../pages/PaymentSuccess";
 import BookingFilmPage from "../pages/BookingFilmPage";
 import SeatSelectPage from "../pages/SeatSelectPage";
 import PromotionsPage from "../pages/PromotionsPage";
+import MemberPage from "../pages/MemberPage";
+import NewsPage from "../pages/NewsPage";
 import AdminLogin from "../components/Admin/AdmLogin";
 import AddMovieAdm from "../pages/AddMovieAdm";
 import TicketUpHisPage from "../pages/TicketUpHisPage";
@@ -117,6 +119,18 @@ export const routes = [
   {
     path: "profile",
     page: MyProfilePage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "members",
+    page: MemberPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "news",
+    page: NewsPage,
     isShowHeader: true,
     isShowFooter: true,
   },
