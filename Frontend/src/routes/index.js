@@ -19,6 +19,7 @@ import MovieSchedule from "../pages/MovieSchedule";
 import NotFoundPage from "../pages/NotFoundPage";
 import UnderConstruction from "../pages/UnderConstructionPage";
 import MyProfilePage from "../pages/MyProfilePage";
+import DetalFilm from "../components/MovieListComponent/DetalFilm";
 
 export const routes = [
   {
@@ -120,6 +121,12 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
+  {
+    path: "/detal-film",
+    page: DetalFilm,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
 
   //////////////////// ADMIN /////////////////
   // Trang đăng nhập Admin
@@ -158,4 +165,5 @@ export const routes = [
     isShowHeader: false,
     isShowFooter: false,
   },
+
 ];
