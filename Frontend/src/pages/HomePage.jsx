@@ -1,11 +1,14 @@
 import React from "react";
+import SliderComponent from "../components/SliderComponent/SliderComponent";
+import MoviesSection from "../components/MovieListComponent/MoviesSection";
+import PromotionSectionComponent from "../components/PromotionSectionComponent/PromotionSection";
 
 const HomePage = () => {
   return (
-    <div className="w-full h-screen  flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-red-500 drop-shadow-lg">
-        Vã lâm sung đi anh em
-      </h1>
+    <div className="mt-[80px] w-full flex items-center flex-col bg-gradient-to-br from-black via-black to-[#4f111e]">
+      <SliderComponent />
+      <MoviesSection />
+      <PromotionSectionComponent/>
     </div>
   );
 };
