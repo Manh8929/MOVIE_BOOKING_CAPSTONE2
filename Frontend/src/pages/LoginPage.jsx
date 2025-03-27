@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { FaGoogle, FaFacebook } from "react-icons/fa";
+import avartar1 from "../assets/img/avatar/sontungmtp.png"
+import avartar2 from "../assets/img/avatar/jack.png"
+import avartar3 from "../assets/img/avatar/bickphuong.png"
 
 const InputField = ({ id, label, type, placeholder, value, onChange, icon }) => (
   <div className="mb-4">
@@ -30,8 +36,16 @@ const LoginBanner = () => (
 );
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState(null);
   const [formData, setFormData] = useState({ email: '', password: '', rememberMe: false });
   const [showPassword, setShowPassword] = useState(false);
+
+  const users = [
+    { id: 1, email: "sontung123@gmail.com", password: "123456", avatar: avartar1 },
+    { id: 2, email: "jack@gmail.com", password: "3trieu", avatar: avartar2 },
+    { id: 3, email: "phuong@gmail.com", password: "123456", avatar: avartar3 }
+  ];
 
   const handleInputChange = (e) => {
     const { id, value, type, checked } = e.target;
@@ -43,13 +57,26 @@ const LoginPage = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log('Login with:', formData);
+    const user = users.find(u => u.email === formData.email && u.password === formData.password);
+
+    if (user) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      setCurrentUser(user);
+      toast.success('Đăng nhập thành công!');
+      setTimeout(() => {
+        navigate('/');
+        window.location.reload();
+      }, 2000)
+    } else {
+      toast.error('Email hoặc mật khẩu không đúng!');
+    }
   };
+
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const PasswordIcon = () => (
-    <button 
+    <button
       type="button"
       className="absolute inset-y-0 right-0 flex items-center pr-3"
       onClick={togglePasswordVisibility}
@@ -70,6 +97,17 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex bg-gray-50">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <LoginBanner />
       <div className="w-full md:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
@@ -82,7 +120,9 @@ const LoginPage = () => {
                 <input type="checkbox" id="rememberMe" checked={formData.rememberMe} onChange={handleInputChange} className="mr-2" />
                 Ghi nhớ đăng nhập
               </label>
-              <a href="#" className="text-sm text-gray-600 hover:text-red-600 transition-colors">Quên Mật Khẩu?</a>
+              <a 
+              onClick={()=>navigate('/forgotpassword')}
+              href="#" className="text-sm text-gray-600 hover:text-red-600 transition-colors">Quên Mật Khẩu?</a>
             </div>
             <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md transition duration-300">Login now</button>
           </form>

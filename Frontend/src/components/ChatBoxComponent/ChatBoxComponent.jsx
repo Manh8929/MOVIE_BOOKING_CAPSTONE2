@@ -18,7 +18,7 @@ const ChatBoxComponent = () => {
         document.addEventListener("keydown", handleKeyDown);
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
-        };
+        };  
     }, []);
 
     const generateBotReply = (userMessage) => {
