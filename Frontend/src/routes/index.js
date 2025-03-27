@@ -1,6 +1,6 @@
 import HomePage from "../pages/HomePage";
-import ViewAllFilm from "../pages/ViewAllFilm";
 import MyTicketPage from "../pages/MyTicketPage";
+import ViewAllFilm from "../pages/ViewAllFilm";
 import BookingDetail from "../pages/BookingDetail";
 import PaymentPage from "../pages/PaymentPage";
 import PaymentOtp from "../pages/PaymentOtp";
@@ -21,6 +21,10 @@ import MovieSchedule from "../pages/MovieSchedule";
 import NotFoundPage from "../pages/NotFoundPage";
 import UnderConstruction from "../pages/UnderConstructionPage";
 import MyProfilePage from "../pages/MyProfilePage";
+import LoginPage from "../pages/LoginPage";
+import RegistrationForm from "../pages/RegistrationForm";
+import ForgotPassword from "../pages/ForgotPassword";
+
 
 export const routes = [
   {
@@ -131,6 +135,27 @@ export const routes = [
   {
     path: "news",
     page: NewsPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/login",
+    page: LoginPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/registration",
+    page: RegistrationForm,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/forgotpassword",
+    page: ForgotPassword,
     isShowHeader: true,
     isShowFooter: true,
   },
