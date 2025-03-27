@@ -31,7 +31,7 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-900 to-red-600 p-4">
+    <div className="mt-[80px] min-h-screen flex items-center justify-center bg-gradient-to-br from-red-900 to-red-600 p-4">
       <div className="bg-white rounded-md shadow-md p-8 w-full max-w-4xl">
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

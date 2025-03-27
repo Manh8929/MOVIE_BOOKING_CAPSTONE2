@@ -22,6 +22,7 @@ import MyProfilePage from "../pages/MyProfilePage";
 import LoginPage from "../pages/LoginPage";
 import RegistrationForm from "../pages/RegistrationForm";
 import ForgotPassword from "../pages/ForgotPassword";
+import FAQPage from "../pages/FAQPage";
 
 
 export const routes = [
@@ -142,6 +143,13 @@ export const routes = [
   {
     path: "/forgotpassword",
     page: ForgotPassword,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/faq",
+    page: FAQPage,
     isShowHeader: true,
     isShowFooter: true,
   },
