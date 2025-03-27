@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { routes } from "./routes";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import FooterComponent from "./components/FooterComponent/FooterComponent";
-
+import ChatBoxComponent from "./components/ChatBoxComponent/ChatBoxComponent";
 
 function App() {
   return (
@@ -32,6 +32,7 @@ function App() {
           })}
         </Routes>
       </Router>
+      <ChatBoxComponent />  
     </div>
   );
 }

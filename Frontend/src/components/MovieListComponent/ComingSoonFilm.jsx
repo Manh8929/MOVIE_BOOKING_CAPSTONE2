@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 import film1 from "../../assets/img/film/phim8.jpg";
 import film2 from "../../assets/img/film/phim9.jpg";
 import film3 from "../../assets/img/film/phim10.jpg";
@@ -15,7 +17,7 @@ const commingSoonMovies = [
   { id: 1, title: "Quỷ Nhập Tràng (T18)", genre: "Kinh Dị", duration: "120 phút", rating: "C18", releaseDate: "05-03-2025", image: film1, rank: rank1 },
   { id: 2, title: "Nhà Gia Tiến (T18)", genre: "Hài, Gia Đình", duration: "117 phút", rating: "C18", releaseDate: "21-02-2025", image: film2, rank: rank2 },
   { id: 3, title: "(Lồng Tiếng) Sát Thủ Vô Cùng Cực", genre: "Hài", duration: "107 phút", rating: "C16", releaseDate: "12-03-2025", image: film3, rank: rank3 },
-  { id: 4, title: "Lạc Trôi (P)", genre: "Hoạt Hình", duration: "85 phút", rating: "P", releaseDate: "07-03-2025", image: film4 },
+  { id: 4, title: "Lạc Trôi", genre: "Hoạt Hình", duration: "85 phút", rating: "P", releaseDate: "07-03-2025", image: film4 },
   { id: 5, title: "Anh Không Đau (T18)", genre: "Hành Động", duration: "N/A", rating: "T18", releaseDate: "19-03-2025", image: film5 },
   { id: 6, title: "Mickey 17 (T18)", genre: "Phiêu Lưu", duration: "N/A", rating: "T18", releaseDate: "N/A", image: film6 },
   { id: 7, title: "Tiếng Vọng Kinh Hoàng", genre: "Kinh Dị", duration: "N/A", rating: "N/A", releaseDate: "14-03-2025", image: film7 },
@@ -23,13 +25,25 @@ const commingSoonMovies = [
 const itemsPerPage = 8;
 
 const CommingSoonFilms = () => {
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(commingSoonMovies.length / itemsPerPage);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentMovies = commingSoonMovies.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleBooking = (movie) => {
+    toast.info(`Phim "${movie.title}" sắp được công chiếu vào ngày ${movie.releaseDate}. Vui lòng chờ đến ngày khởi chiếu để đặt vé!`, {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  };
 
   return (
     <div className="max-w-[90%] mx-auto px-24 mt-10 bg-[#121212] text-white py-16 rounded-lg mb-[80px]">
@@ -67,7 +81,7 @@ const CommingSoonFilms = () => {
                 Khởi chiếu: {movie.releaseDate}
               </p>
               <button
-                onClick={() => navigate('/booking-movie')}
+                onClick={() => handleBooking(movie)}
                 className="mt-3 bg-red-500  hover:bg-red-600 text-white text-sm py-2 px-5 rounded-lg transition-transform transform hover:scale-110 font-semibold">
                 ĐẶT VÉ
               </button>
@@ -103,6 +117,7 @@ const CommingSoonFilms = () => {
           Sau
         </button>
       </div>
+      <ToastContainer />
     </div>
   );
 };

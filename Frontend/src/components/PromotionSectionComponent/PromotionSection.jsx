@@ -10,7 +10,7 @@ import promotion7 from "../../assets/img/promotions/promotion7.jpg";
 import promotion8 from "../../assets/img/promotions/promotion8.jpg";
 
 const promotions = [
-    { id: 1, title: "KHUYẾN MÃI HẤP DẪN", description: "Khám phá ngay hàng trăm lợi ích dành cho bạn trong chuyên mục Khuyến mãi & Ưu đãi hấp dẫn của Metiz Cinema.", isMain: true },
+    { id: 1, title: "KHUYẾN MÃI HẤP DẪN", description: "Khám phá ngay hàng trăm lợi ích dành cho bạn trong chuyên mục Khuyến mãi & Ưu đãi hấp dẫn của MVB Cinema.", isMain: true },
     { id: 2, img: promotion1, title: "Mua vé Deadpool & Wolverine - Ưu đãi 5%" },
     { id: 3, img: promotion2, title: "Mua 1 vé xem phim tặng voucher 20K" },
     { id: 4, img: promotion3, title: "Giảm đến 15K khi thanh toán VNPay" },
@@ -31,7 +31,7 @@ const Promotions = () => {
 
     return (
         <div className="bg-[#f0efe8] p-6 flex flex-col items-center justify-center">
-            <h2 className="text-2xl font-bold text-center mb-6">KHUYẾN MÃI & ƯU ĐÃI</h2>
+            <h2 className="text-2xl text-red-600 font-bold text-center mb-6">KHUYẾN MÃI & ƯU ĐÃI</h2>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-[90%] lg:max-w-[60%]">
                 {displayedPromotions.map((promo) => (
