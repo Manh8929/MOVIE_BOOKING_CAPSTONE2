@@ -1,268 +1,238 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaGoogle, FaFacebook } from "react-icons/fa";
 
-const RegistrationForm = () => {
+const InputField = ({
+  id,
+  label,
+  type,
+  placeholder,
+  value,
+  onChange,
+  icon,
+}) => (
+  <div className="mb-4">
+    <label htmlFor={id} className="block text-sm mb-2">
+      {label}
+    </label>
+    <div className="relative">
+      <input
+        id={id}
+        type={type}
+        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        required
+      />
+      {icon}
+    </div>
+  </div>
+);
+
+const RegisterBanner = () => (
+  <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-black to-red-900 text-white p-12 flex-col justify-center">
+    <div className="max-w-md">
+      <h1 className="text-3xl font-light italic mb-6">
+        Tham gia ngay bây giờ và khám phá thế giới điện ảnh với chúng tôi!
+      </h1>
+    </div>
+  </div>
+);
+
+const RegisterPage = () => {
+  const [showTerms, setShowTerms] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    fullName: '',
-    birthDate: '',
-    phoneNumber: '',
-    password: '',
-    confirmPassword: '',
-    city: '',
-    district: '',
-    address: '',
-    email: '',
-    idNumber: '',
-    gender: 'male', // Default value
-    agreeToTerms: false
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    gender: "",
+    birthdate: "",
+    address: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: type === 'checkbox' ? checked : value
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
-    console.log('Form data submitted:', formData);
-    // Xử lý gửi dữ liệu đến server ở đây
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+    localStorage.setItem("newUser", JSON.stringify(formData));
+    toast.success("Đăng ký thành công!");
+    setTimeout(() => navigate("/login"), 2000);
   };
 
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-900 to-red-600 p-4">
-      <div className="bg-white rounded-md shadow-md p-8 w-full max-w-4xl">
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Họ Tên */}
-            <div>
-              <label htmlFor="fullName" className="block text-red-800 font-medium mb-1">Họ Tên</label>
-              <input
+    <div className="min-h-screen flex bg-gray-50">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+      />
+      <RegisterBanner />
+      <div className="w-full md:w-1/2 flex items-center justify-center p-8">
+        <div className="w-full max-w-2xl">
+          <h2 className="text-2xl font-bold mb-6 text-center">
+            Tạo tài khoản mới
+          </h2>
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField
+                id="name"
+                label="Họ và tên"
                 type="text"
-                id="fullName"
-                name="fullName"
-                placeholder="Nhập Họ Tên Ở Đây"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
-                value={formData.fullName}
-                onChange={handleChange}
+                placeholder="Nguyễn Văn A"
+                value={formData.name}
+                onChange={handleInputChange}
               />
-            </div>
-
-            {/* Giới Tính */}
-            <div>
-              <label className="block text-red-800 font-medium mb-1">Giới Tính</label>
-              <div className="flex gap-4 mt-2">
-                <div className="flex items-center">
-                  <input
-                    type="radio"
-                    id="male"
-                    name="gender"
-                    value="male"
-                    checked={formData.gender === 'male'}
-                    onChange={handleChange}
-                    className="mr-1"
-                  />
-                  <label htmlFor="male">Nam</label>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="radio"
-                    id="female"
-                    name="gender"
-                    value="female"
-                    checked={formData.gender === 'female'}
-                    onChange={handleChange}
-                    className="mr-1"
-                  />
-                  <label htmlFor="female">Nữ</label>
-                </div>
-              </div>
-            </div>
-
-            {/* Ngày Sinh */}
-            <div>
-              <label htmlFor="birthDate" className="block text-red-800 font-medium mb-1">Ngày Sinh</label>
-              <input
-                type="text"
-                id="birthDate"
-                name="birthDate"
-                placeholder="Chọn Ngày Sinh Của Bạn"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
-                value={formData.birthDate}
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Số CMND */}
-            <div>
-              <label htmlFor="idNumber" className="block text-red-800 font-medium mb-1">Số CMND</label>
-              <input
-                type="text"
-                id="idNumber"
-                name="idNumber"
-                placeholder="Nhập Số CMND Ở Đây"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
-                value={formData.idNumber}
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* Số Điện Thoại */}
-            <div>
-              <label htmlFor="phoneNumber" className="block text-red-800 font-medium mb-1">Số Điện Thoại</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
-                  +84
-                </div>
-                <input
-                  type="text"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  placeholder="Nhập Số Điện Thoại Ở Đây"
-                  className="w-full pl-12 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            {/* Email */}
-            <div>
-              <label htmlFor="email" className="block text-red-800 font-medium mb-1">Email</label>
-              <input
-                type="email"
+              <InputField
                 id="email"
-                name="email"
-                placeholder="Nhập Email Ở Đây"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
+                label="Email"
+                type="email"
+                placeholder="balamia@gmail.com"
                 value={formData.email}
-                onChange={handleChange}
+                onChange={handleInputChange}
               />
             </div>
-
-            {/* Mật Khẩu */}
-            <div>
-              <label htmlFor="password" className="block text-red-800 font-medium mb-1">Mật Khẩu</label>
-              <input
-                type="password"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField
                 id="password"
-                name="password"
-                placeholder="Nhập Mật Khẩu Ở Đây"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
+                label="Mật khẩu"
+                type={showPassword ? "text" : "password"}
+                placeholder="Nhập mật khẩu"
                 value={formData.password}
-                onChange={handleChange}
+                onChange={handleInputChange}
               />
-            </div>
-
-            {/* Xác Nhận Mật Khẩu */}
-            <div>
-              <label htmlFor="confirmPassword" className="block text-red-800 font-medium mb-1">Xác Nhận Mật Khẩu</label>
-              <input
-                type="password"
+              <InputField
                 id="confirmPassword"
-                name="confirmPassword"
-                placeholder="Nhập Lại Mật Khẩu"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
+                label="Xác nhận mật khẩu"
+                type={showPassword ? "text" : "password"}
+                placeholder="Nhập lại mật khẩu"
                 value={formData.confirmPassword}
-                onChange={handleChange}
+                onChange={handleInputChange}
               />
             </div>
-
-            {/* Thành Phố */}
-            <div>
-              <label htmlFor="city" className="block text-red-800 font-medium mb-1">Thành Phố</label>
-              <select
-                id="city"
-                name="city"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
-                value={formData.city}
-                onChange={handleChange}
-              >
-                <option value="">Chọn Thành Phố</option>
-                <option value="hanoi">Hà Nội</option>
-                <option value="hcm">Hồ Chí Minh</option>
-                <option value="danang">Đà Nẵng</option>
-                {/* Thêm các thành phố khác ở đây */}
-              </select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField
+                id="gender"
+                label="Giới tính"
+                type="text"
+                placeholder="Nam/Nữ/Khác"
+                value={formData.gender}
+                onChange={handleInputChange}
+              />
+              <InputField
+                id="birthdate"
+                label="Ngày sinh"
+                type="date"
+                value={formData.birthdate}
+                onChange={handleInputChange}
+              />
             </div>
-
-            {/* Quận/Huyện */}
-            <div>
-              <label htmlFor="district" className="block text-red-800 font-medium mb-1">Quận/Huyện</label>
-              <select
-                id="district"
-                name="district"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
-                value={formData.district}
-                onChange={handleChange}
-              >
-                <option value="">Chọn Quận/Huyện</option>
-                {/* Các option quận/huyện sẽ được cập nhật dựa theo thành phố đã chọn */}
-              </select>
-            </div>
-
-            {/* Địa Chỉ */}
-            <div className="md:col-span-2">
-              <label htmlFor="address" className="block text-red-800 font-medium mb-1">Địa Chỉ</label>
-              <textarea
-                id="address"
-                name="address"
-                placeholder="Nhập Địa Chỉ Ở Đây"
-                rows="3"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
-                value={formData.address}
-                onChange={handleChange}
-              ></textarea>
-            </div>
-          </div>
-
-          {/* Điều khoản */}
-          <div className="mt-6 flex items-start">
-            <input
-              type="checkbox"
-              id="agreeToTerms"
-              name="agreeToTerms"
-              className="mt-1"
-              checked={formData.agreeToTerms}
-              onChange={handleChange}
+            <InputField
+              id="address"
+              label="Địa chỉ"
+              type="text"
+              placeholder="Số nhà, đường, thành phố"
+              value={formData.address}
+              onChange={handleInputChange}
             />
-            <label htmlFor="agreeToTerms" className="ml-2 text-sm">
-              Tôi đã đọc, hiểu và đồng ý với <span className="text-red-500">các điều khoản</span>.
-            </label>
-          </div>
-
-          {/* Captcha */}
-          <div className="mt-4">
-            <label className="block text-red-800 font-medium mb-1">Captcha</label>
-            <div className="border border-gray-200 p-2 rounded-md">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input 
-                    type="checkbox" 
-                    id="captcha"
-                    className="mr-2"
-                  />
-                  <label htmlFor="captcha" className="text-sm">Tôi không phải là người máy</label>
-                </div>
-                <div className="text-xs text-gray-400">reCAPTCHA</div>
-              </div>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="terms"
+                checked={acceptedTerms}
+                onChange={() => setAcceptedTerms(!acceptedTerms)}
+                className="mr-2"
+              />
+              <label
+                htmlFor="terms"
+                className="text-sm text-gray-700 cursor-pointer"
+                onClick={() => setShowTerms(true)}
+              >
+                Tôi đồng ý với{" "}
+                <span className="text-red-500 underline">
+                  Điều khoản và điều kiện
+                </span>
+              </label>
             </div>
-          </div>
-
-          {/* Nút Đăng Ký */}
-          <div className="mt-6">
             <button
               type="submit"
-              className="bg-red-500 hover:bg-red-600 text-white py-2 px-8 rounded-md transition duration-300"
+              className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition duration-300"
             >
-              ĐĂNG KÝ
+              Đăng ký
+            </button>
+          </form>
+          <div className="mt-6 flex flex-col space-y-3">
+            <button className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition">
+              <FaGoogle className="h-5 w-5 mr-2 text-red-500" /> Đăng ký với
+              Google
+            </button>
+            <button className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition">
+              <FaFacebook className="h-5 w-5 mr-2 text-blue-500" /> Đăng ký với
+              Facebook
             </button>
           </div>
-        </form>
+        </div>
       </div>
+      {showTerms && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg">
+            <h3 className="text-lg font-bold mb-4">Điều khoản và điều kiện</h3>
+            <p className="text-sm text-gray-700">
+              Khi đăng ký tài khoản, bạn đồng ý tuân thủ các quy định sau:
+              <ul className="list-disc list-inside mt-2">
+                <li>Không sử dụng tài khoản vào mục đích phi pháp.</li>
+                <li>Bảo mật thông tin đăng nhập của bạn.</li>
+                <li>
+                  Chúng tôi có quyền khóa tài khoản nếu phát hiện hành vi gian
+                  lận.
+                </li>
+                <li>
+                  Chính sách có thể thay đổi và bạn cần cập nhật thường xuyên.
+                </li>
+              </ul>
+            </p>
+            <div className="mt-4 flex justify-end space-x-4">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded"
+                onClick={() => setShowTerms(false)}
+              >
+                Hủy
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded"
+                onClick={() => {
+                  setAcceptedTerms(true);
+                  setShowTerms(false);
+                }}
+              >
+                Đồng ý
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default RegistrationForm;
+export default RegisterPage;
