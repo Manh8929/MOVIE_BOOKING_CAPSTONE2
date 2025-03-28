@@ -21,6 +21,7 @@ import MovieSchedule from "../pages/MovieSchedule";
 import NotFoundPage from "../pages/NotFoundPage";
 import UnderConstruction from "../pages/UnderConstructionPage";
 import MyProfilePage from "../pages/MyProfilePage";
+import DetalFilmPage from "../pages/DetalFilmPage";
 import LoginPage from "../pages/LoginPage";
 import RegistrationForm from "../pages/RegistrationForm";
 import ForgotPassword from "../pages/ForgotPassword";
@@ -115,6 +116,12 @@ export const routes = [
   {
     path: "profile",
     page: MyProfilePage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/detal-film",
+    page: DetalFilmPage,
     isShowHeader: true,
     isShowFooter: true,
   },
