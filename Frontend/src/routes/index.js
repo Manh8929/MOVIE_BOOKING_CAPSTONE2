@@ -120,7 +120,7 @@ export const routes = [
     isShowFooter: true,
   },
   {
-    path: "/detal-film",
+    path: "/detail-film",
     page: DetalFilmPage,
     isShowHeader: true,
     isShowFooter: true,

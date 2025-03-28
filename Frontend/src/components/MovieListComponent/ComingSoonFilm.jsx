@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import film1 from "../../assets/img/film/phim8.jpg";
 import film2 from "../../assets/img/film/phim9.jpg";
 import film3 from "../../assets/img/film/phim10.jpg";
@@ -12,37 +12,104 @@ import film7 from "../../assets/img/film/phim14.jpg";
 import rank1 from "../../assets/img/topMovie/top1.png";
 import rank2 from "../../assets/img/topMovie/top2.png";
 import rank3 from "../../assets/img/topMovie/top3.png";
+import { useNavigate } from "react-router-dom";
 
 const commingSoonMovies = [
-  { id: 1, title: "Quỷ Nhập Tràng (T18)", genre: "Kinh Dị", duration: "120 phút", rating: "C18", releaseDate: "05-03-2025", image: film1, rank: rank1 },
-  { id: 2, title: "Nhà Gia Tiến (T18)", genre: "Hài, Gia Đình", duration: "117 phút", rating: "C18", releaseDate: "21-02-2025", image: film2, rank: rank2 },
-  { id: 3, title: "(Lồng Tiếng) Sát Thủ Vô Cùng Cực", genre: "Hài", duration: "107 phút", rating: "C16", releaseDate: "12-03-2025", image: film3, rank: rank3 },
-  { id: 4, title: "Lạc Trôi", genre: "Hoạt Hình", duration: "85 phút", rating: "P", releaseDate: "07-03-2025", image: film4 },
-  { id: 5, title: "Anh Không Đau (T18)", genre: "Hành Động", duration: "N/A", rating: "T18", releaseDate: "19-03-2025", image: film5 },
-  { id: 6, title: "Mickey 17 (T18)", genre: "Phiêu Lưu", duration: "N/A", rating: "T18", releaseDate: "N/A", image: film6 },
-  { id: 7, title: "Tiếng Vọng Kinh Hoàng", genre: "Kinh Dị", duration: "N/A", rating: "N/A", releaseDate: "14-03-2025", image: film7 },
+  {
+    id: 1,
+    title: "Quỷ Nhập Tràng (T18)",
+    genre: "Kinh Dị",
+    duration: "120 phút",
+    rating: "C18",
+    releaseDate: "05-03-2025",
+    image: film1,
+    rank: rank1,
+  },
+  {
+    id: 2,
+    title: "Nhà Gia Tiến (T18)",
+    genre: "Hài, Gia Đình",
+    duration: "117 phút",
+    rating: "C18",
+    releaseDate: "21-02-2025",
+    image: film2,
+    rank: rank2,
+  },
+  {
+    id: 3,
+    title: "(Lồng Tiếng) Sát Thủ Vô Cùng Cực",
+    genre: "Hài",
+    duration: "107 phút",
+    rating: "C16",
+    releaseDate: "12-03-2025",
+    image: film3,
+    rank: rank3,
+  },
+  {
+    id: 4,
+    title: "Lạc Trôi",
+    genre: "Hoạt Hình",
+    duration: "85 phút",
+    rating: "P",
+    releaseDate: "07-03-2025",
+    image: film4,
+  },
+  {
+    id: 5,
+    title: "Anh Không Đau (T18)",
+    genre: "Hành Động",
+    duration: "N/A",
+    rating: "T18",
+    releaseDate: "19-03-2025",
+    image: film5,
+  },
+  {
+    id: 6,
+    title: "Mickey 17 (T18)",
+    genre: "Phiêu Lưu",
+    duration: "N/A",
+    rating: "T18",
+    releaseDate: "N/A",
+    image: film6,
+  },
+  {
+    id: 7,
+    title: "Tiếng Vọng Kinh Hoàng",
+    genre: "Kinh Dị",
+    duration: "N/A",
+    rating: "N/A",
+    releaseDate: "14-03-2025",
+    image: film7,
+  },
 ];
 const itemsPerPage = 8;
 
 const CommingSoonFilms = () => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(commingSoonMovies.length / itemsPerPage);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentMovies = commingSoonMovies.slice(indexOfFirstItem, indexOfLastItem);
+  const currentMovies = commingSoonMovies.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   const handleBooking = (movie) => {
-    toast.info(`Phim "${movie.title}" sắp được công chiếu vào ngày ${movie.releaseDate}. Vui lòng chờ đến ngày khởi chiếu để đặt vé!`, {
-      position: "top-center",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
+    toast.info(
+      `Phim "${movie.title}" sắp được công chiếu vào ngày ${movie.releaseDate}. Vui lòng chờ đến ngày khởi chiếu để đặt vé!`,
+      {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      }
+    );
   };
 
   return (
@@ -54,6 +121,7 @@ const CommingSoonFilms = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {currentMovies.map((movie) => (
           <div
+            onClick={() => navigate("/detail-film")}
             key={movie.id}
             className="relative bg-[#1F2937] rounded-lg shadow-lg p-4 transition-transform transform hover:-translate-y-2 cursor-pointer"
           >
@@ -82,7 +150,8 @@ const CommingSoonFilms = () => {
               </p>
               <button
                 onClick={() => handleBooking(movie)}
-                className="mt-3 bg-red-500  hover:bg-red-600 text-white text-sm py-2 px-5 rounded-lg transition-transform transform hover:scale-110 font-semibold">
+                className="mt-3 bg-red-500  hover:bg-red-600 text-white text-sm py-2 px-5 rounded-lg transition-transform transform hover:scale-110 font-semibold"
+              >
                 ĐẶT VÉ
               </button>
             </div>
@@ -92,10 +161,11 @@ const CommingSoonFilms = () => {
 
       <div className="flex justify-center mt-8 space-x-4">
         <button
-          className={`px-5 py-2 rounded transition-transform transform hover:-translate-y-1 font-bold ${currentPage === 1
+          className={`px-5 py-2 rounded transition-transform transform hover:-translate-y-1 font-bold ${
+            currentPage === 1
               ? "bg-gray-700 text-gray-500 cursor-not-allowed"
               : "bg-[#E63946] text-white"
-            }`}
+          }`}
           disabled={currentPage === 1}
           onClick={() => setCurrentPage(currentPage - 1)}
         >
@@ -107,10 +177,11 @@ const CommingSoonFilms = () => {
         </span>
 
         <button
-          className={`px-5 py-2 rounded transition-transform transform hover:-translate-y-1 font-bold ${currentPage === totalPages
+          className={`px-5 py-2 rounded transition-transform transform hover:-translate-y-1 font-bold ${
+            currentPage === totalPages
               ? "bg-gray-700 text-gray-500 cursor-not-allowed"
               : "bg-[#E63946] text-white"
-            }`}
+          }`}
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage(currentPage + 1)}
         >

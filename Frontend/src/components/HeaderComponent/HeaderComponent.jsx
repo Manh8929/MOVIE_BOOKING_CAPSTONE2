@@ -15,6 +15,7 @@ const HeaderComponent = () => {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("currentUser"));
+    console.log("mm", user);
     if (user) {
       setCurrentUser(user);
     }
@@ -50,11 +51,17 @@ const HeaderComponent = () => {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            <img
-              src={currentUser.avatar}
-              alt="User Avatar"
-              className="w-10 h-10 rounded-[50%] cursor-pointer"
-            />
+            <div className="flex items-center space-x-3">
+              <strong className="text-l font-bold text-[#e5b2b7] uppercase tracking-wide drop-shadow-md">
+                {currentUser.email.slice(0, 8)}
+              </strong>
+              <img
+                src={currentUser.avatar}
+                alt="User Avatar"
+                className="w-10 h-10 rounded-full cursor-pointer border-2 border-[#E63946] shadow-lg"
+              />
+            </div>
+
             {isMenuOpen && (
               <div className="absolute right-0 w-48 bg-white rounded-md shadow-lg py-2 z-50">
                 <Link
