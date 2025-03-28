@@ -19,7 +19,7 @@ import MovieSchedule from "../pages/MovieSchedule";
 import NotFoundPage from "../pages/NotFoundPage";
 import UnderConstruction from "../pages/UnderConstructionPage";
 import MyProfilePage from "../pages/MyProfilePage";
-import DetalFilm from "../components/MovieListComponent/DetalFilm";
+import DetalFilmPage from "../pages/DetalFilmPage";
 
 export const routes = [
   {
@@ -123,7 +123,7 @@ export const routes = [
   },
   {
     path: "/detal-film",
-    page: DetalFilm,
+    page: DetalFilmPage,
     isShowHeader: true,
     isShowFooter: true,
   },
@@ -165,5 +165,4 @@ export const routes = [
     isShowHeader: false,
     isShowFooter: false,
   },
-
 ];
