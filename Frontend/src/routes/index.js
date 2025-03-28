@@ -23,7 +23,6 @@ import LoginPage from "../pages/LoginPage";
 import RegistrationForm from "../pages/RegistrationForm";
 import ForgotPassword from "../pages/ForgotPassword";
 
-
 export const routes = [
   {
     path: "/",
@@ -57,13 +56,6 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
-  {
-    path: "/oderflimadm",
-    page: OderFlimAdm,
-    isShowHeader: false,
-    isShowFooter: false,
-  },
-
   {
     path: "/booking-detail",
     page: BookingDetail,
@@ -180,6 +172,13 @@ export const routes = [
   {
     path: "/theatersadm",
     page: TheatersAdm,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  // order
+  {
+    path: "/oderflimadm",
+    page: OderFlimAdm,
     isShowHeader: false,
     isShowFooter: false,
   },
