@@ -149,7 +149,10 @@ const CommingSoonFilms = () => {
                 Khởi chiếu: {movie.releaseDate}
               </p>
               <button
-                onClick={() => handleBooking(movie)}
+                onClick={(e)=>{
+                  e.stopPropagation();
+                  handleBooking(movie)
+                }}
                 className="mt-3 bg-red-500  hover:bg-red-600 text-white text-sm py-2 px-5 rounded-lg transition-transform transform hover:scale-110 font-semibold"
               >
                 ĐẶT VÉ

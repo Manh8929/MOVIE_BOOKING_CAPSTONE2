@@ -1,5 +1,6 @@
 import React from "react";
-import { FaCheckCircle, FaTicketAlt } from "react-icons/fa"; 
+import { useNavigate } from "react-router-dom";
+import { FaCheckCircle, FaTicketAlt } from "react-icons/fa";
 
 const benefits = [
     "Ưu tiên đặt vé trước cho phim hot",
@@ -9,6 +10,7 @@ const benefits = [
 ];
 
 const MemberPage = () => {
+    const navigator = useNavigate();
     return (
         <div className="mt-[80px] bg-gradient-to-br from-black via-black to-[#4f111e] min-h-screen p-8">
             <h1 className="text-3xl font-bold text-center text-white mb-6 flex justify-center items-center gap-2">
@@ -33,7 +35,9 @@ const MemberPage = () => {
             </div>
 
             <div className="mt-8 text-center">
-                <button className="bg-gradient-to-r from-red-600 to-red-800 text-white px-6 py-3 rounded-lg font-bold text-lg hover:from-red-700 hover:to-red-900 transition-transform transform hover:-translate-y-3">
+                <button
+                    onClick={() => navigator("/registration")}
+                    className="bg-gradient-to-r from-red-600 to-red-800 text-white px-6 py-3 rounded-lg font-bold text-lg hover:from-red-700 hover:to-red-900 transition-transform transform hover:-translate-y-3">
                     ĐĂNG KÝ NGAY
                 </button>
             </div>

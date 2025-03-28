@@ -22,23 +22,23 @@ import film13 from "../../assets/img/film/phim13.jpg";
 import film14 from "../../assets/img/film/phim14.jpg";
 
 const moviesNowShowing = [
-    { title: "Sát thủ vô cùng cực", poster: film1, duration: 120, releaseDate: "20/03/2025",  trailerUrl: "https://www.youtube.com/embed/v81sGxKvBfk" },
+    { title: "Sát thủ vô cùng cực", poster: film1, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/v81sGxKvBfk" },
     { title: "Nhà gia tiên", poster: film2, duration: 98, releaseDate: "05/03/2025", trailerUrl: "https://www.youtube.com/embed/wfPTz0A23ns" },
     { title: "Emma vương quốc tí hon", poster: film9, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/kraUpgr_IE4" },
     { title: "Lạc trôi - Flow ", poster: film5, duration: 98, releaseDate: "05/03/2025", trailerUrl: "https://www.youtube.com/embed/bFRr7bv--70" },
     { title: "Anh không đau", poster: film6, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/FNBbFHgPzyY" },
     { title: "Quỷ nhập tràng", poster: film7, duration: 98, releaseDate: "05/03/2025", trailerUrl: "https://www.youtube.com/embed/fQKxDM-hxoU" },
     { title: "Sát thủ vô cùng cực", poster: film8, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/v81sGxKvBfk" },
-];  
+];
 
 const moviesComingSoon = [
     { title: "Cô gái năm ấy chúng ta cùng theo đuổi", poster: film3, duration: 113, releaseDate: "15/05/2025", trailerUrl: "https://www.youtube.com/embed/2-3gpCp_Mus" },
-    { title: "Bí kíp luyện rồng", poster: film4, duration: 102, releaseDate: "30/04/2025", trailerUrl: "https://www.youtube.com/embed/22w7z_lT6YM"},
-    { title: "Nàng Bạch Tuyết từ Disney", poster: film10, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/_lSVVn1Os0o"},
-    { title: "Ninja Rantaro", poster: film11, duration: 98, releaseDate: "05/03/2025", trailerUrl: "https://www.youtube.com/embed/ulOb1dBMS6U"},
+    { title: "Bí kíp luyện rồng", poster: film4, duration: 102, releaseDate: "30/04/2025", trailerUrl: "https://www.youtube.com/embed/22w7z_lT6YM" },
+    { title: "Nàng Bạch Tuyết từ Disney", poster: film10, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/_lSVVn1Os0o" },
+    { title: "Ninja Rantaro", poster: film11, duration: 98, releaseDate: "05/03/2025", trailerUrl: "https://www.youtube.com/embed/ulOb1dBMS6U" },
     { title: "Lật mật 8", poster: film12, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/W_0AMP9yO1w" },
     { title: "Chốt đơn", poster: film13, duration: 98, releaseDate: "05/03/2025", trailerUrl: "https://www.youtube.com/embed/KHfhsOeFR4w" },
-    { title: "Thám tử kiên", poster: film14, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/tG_Ito2MUWg"},
+    { title: "Thám tử kiên", poster: film14, duration: 120, releaseDate: "20/03/2025", trailerUrl: "https://www.youtube.com/embed/tG_Ito2MUWg" },
 ];
 
 
@@ -90,7 +90,7 @@ const MovieListComponent = ({ title, movies }) => {
                 autoplay={{ delay: 3000, disableOnInteraction: false }}
                 loop={true}
                 breakpoints={{
-                    0: { slidesPerView: 1 },   
+                    0: { slidesPerView: 1 },
                     640: { slidesPerView: 2 },
                     768: { slidesPerView: 3 },
                     1024: { slidesPerView: 4 },
@@ -98,22 +98,31 @@ const MovieListComponent = ({ title, movies }) => {
                 }}
             >
                 {movies.map((movie) => (
-                    <SwiperSlide key={movie.id}>
-                        <div className="relative bg-gray-900 p-4 rounded-2xl shadow-lg overflow-hidden group transition-transform transform hover:scale-105">
+                    <SwiperSlide key={movie.title}>
+                        <div
+                            className="relative bg-gray-900 p-4 rounded-2xl shadow-lg overflow-hidden group transition-transform transform hover:scale-105 cursor-pointer"
+                            onClick={() => navigate("/detail-film")}
+                        >
                             <img
                                 src={movie.poster}
                                 alt={movie.title}
-                                className="w-full h-96 object-cover rounded-md"
+                                className="w-full h-96 object-cover rounded-md cursor-pointer"
                             />
 
                             <div className="absolute inset-0 bg-black bg-opacity-70 opacity-0 group-hover:opacity-100 flex flex-col justify-center items-center gap-3 transition-opacity duration-300">
                                 <button
-                                  onClick={() => setTrailerUrl(movie.trailerUrl)}
-                                className="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition-transform transform hover:-translate-y-3">
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setTrailerUrl(movie.trailerUrl)
+                                    }}
+                                    className="bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition-transform transform hover:-translate-y-3">
                                     Trailer
                                 </button>
                                 <button
-                                    onClick={() => navigate('/booking-movie')}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate('/booking-movie')
+                                    }}
                                     className="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition-transform transform hover:translate-y-3">
                                     Đặt vé
                                 </button>
