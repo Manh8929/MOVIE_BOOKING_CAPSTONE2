@@ -1,6 +1,6 @@
 import HomePage from "../pages/HomePage";
-import ViewAllFilm from "../pages/ViewAllFilm";
 import MyTicketPage from "../pages/MyTicketPage";
+import ViewAllFilm from "../pages/ViewAllFilm";
 import BookingDetail from "../pages/BookingDetail";
 import PaymentPage from "../pages/PaymentPage";
 import PaymentOtp from "../pages/PaymentOtp";
@@ -8,6 +8,8 @@ import PaymentSuccess from "../pages/PaymentSuccess";
 import BookingFilmPage from "../pages/BookingFilmPage";
 import SeatSelectPage from "../pages/SeatSelectPage";
 import PromotionsPage from "../pages/PromotionsPage";
+import MemberPage from "../pages/MemberPage";
+import NewsPage from "../pages/NewsPage";
 import AdminLogin from "../components/Admin/AdmLogin";
 import AddMovieAdm from "../pages/AddMovieAdm";
 import TicketUpHisPage from "../pages/TicketUpHisPage";
@@ -20,6 +22,9 @@ import NotFoundPage from "../pages/NotFoundPage";
 import UnderConstruction from "../pages/UnderConstructionPage";
 import MyProfilePage from "../pages/MyProfilePage";
 import DetalFilmPage from "../pages/DetalFilmPage";
+import LoginPage from "../pages/LoginPage";
+import RegistrationForm from "../pages/RegistrationForm";
+import ForgotPassword from "../pages/ForgotPassword";
 
 export const routes = [
   {
@@ -54,13 +59,6 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
-  {
-    path: "/oderflimadm",
-    page: OderFlimAdm,
-    isShowHeader: false,
-    isShowFooter: false,
-  },
-
   {
     path: "/booking-detail",
     page: BookingDetail,
@@ -127,6 +125,39 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
+  {
+    path: "members",
+    page: MemberPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "news",
+    page: NewsPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/login",
+    page: LoginPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/registration",
+    page: RegistrationForm,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+
+  {
+    path: "/forgotpassword",
+    page: ForgotPassword,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
 
   //////////////////// ADMIN /////////////////
   // Trang đăng nhập Admin
@@ -162,6 +193,13 @@ export const routes = [
   {
     path: "/theatersadm",
     page: TheatersAdm,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  // order
+  {
+    path: "/oderflimadm",
+    page: OderFlimAdm,
     isShowHeader: false,
     isShowFooter: false,
   },
