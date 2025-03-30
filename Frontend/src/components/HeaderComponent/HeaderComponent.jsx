@@ -76,6 +76,12 @@ const HeaderComponent = () => {
                 >
                   Vé của bạn
                 </Link>
+                <Link
+                  to="/movie-recommendation"
+                  className="block px-4 py-2 text-gray-800 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
+                >
+                  Đề xuất phim 
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left px-4 py-2 text-gray-800 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
@@ -163,6 +169,14 @@ const HeaderComponent = () => {
                       className="block px-4 py-2 text-center text-gray-800 hover:bg-gray-200 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
                     >
                       Vé của bạn
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/movie-recommendation"
+                      className="block px-4 py-2 text-center text-gray-800 hover:bg-gray-200 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
+                    >
+                      Đề xuất phim
                     </Link>
                   </li>
                   <li>

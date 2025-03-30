@@ -8,6 +8,7 @@ import PaymentSuccess from "../pages/PaymentSuccess";
 import BookingFilmPage from "../pages/BookingFilmPage";
 import SeatSelectPage from "../pages/SeatSelectPage";
 import PromotionsPage from "../pages/PromotionsPage";
+import AIRecommendedFilms from "../pages/AIRecommendedFilms";
 import MemberPage from "../pages/MemberPage";
 import NewsPage from "../pages/NewsPage";
 import AdminLogin from "../components/Admin/AdmLogin";
@@ -137,7 +138,12 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
-
+  {
+    path: "movie-recommendation",
+    page: AIRecommendedFilms,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
   {
     path: "/login",
     page: LoginPage,
