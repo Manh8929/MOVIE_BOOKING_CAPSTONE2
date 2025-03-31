@@ -10,6 +10,7 @@ import SeatSelectPage from "../pages/SeatSelectPage";
 import PromotionsPage from "../pages/PromotionsPage";
 import AIRecommendedFilms from "../pages/AIRecommendedFilms";
 import PromotionDetail from "../pages/PromotionDetailPage";
+import NewsDetail from "../pages/NewsDetail";
 import MemberPage from "../pages/MemberPage";
 import NewsPage from "../pages/NewsPage";
 import AdminLogin from "../components/Admin/AdmLogin";
@@ -148,6 +149,12 @@ export const routes = [
   {
     path: "/promotions/:id",
     page: PromotionDetail,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/news/:id",
+    page: NewsDetail,
     isShowHeader: true,
     isShowFooter: true,
   },

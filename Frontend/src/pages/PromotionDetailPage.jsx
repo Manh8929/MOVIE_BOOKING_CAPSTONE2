@@ -20,7 +20,7 @@ const PromotionDetail = () => {
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
             <button
                 onClick={() => navigate(-1)}
-                className="flex items-center text-red-600 hover:text-red-300 mb-4"
+                className="flex items-center text-red-600 hover:text-red-300 mb-4 self-start ml-8"
             >
                 <FaArrowLeft className="mr-2" />
                 Quay lại
