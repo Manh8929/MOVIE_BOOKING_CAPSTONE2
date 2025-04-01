@@ -3,9 +3,11 @@ import bach_tuyet_img from "../../src/assets/img/poster_schedule/bach_tuyet.jpg"
 import sathu_img from "../../src/assets/img/poster_schedule/sat_thu_vo_cung_cuc.jpg";
 import anh_khong_dau from "../../src/assets/img/poster_schedule/anh_khong_dau.jpg";
 import quy_nhap_trang from "../../src/assets/img/poster_schedule/quy_nhap_trang.jpg";
+import { useNavigate } from "react-router-dom";
 
 const MovieSchedule = () => {
   const [selectedDate, setSelectedDate] = useState(0);
+  const navigate = useNavigate();
 
   const dates = [
     { day: "Chủ nhật", date: "23" },
@@ -75,10 +77,10 @@ const MovieSchedule = () => {
         </h2>
 
         <div className="bg-[#FCF8F1] p-6 rounded-lg shadow-md mb-10">
-            <p className="text-xl font-semibold text-[#333]">
-              Chọn ngày chiếu
-            </p>
-            <p className="text-2xl font-semibold text-[#333] mb-4 text-centert text-center">Tháng 3</p>
+          <p className="text-xl font-semibold text-[#333]">Chọn ngày chiếu</p>
+          <p className="text-2xl font-semibold text-[#333] mb-4 text-centert text-center">
+            Tháng 3
+          </p>
           <div className="flex flex-wrap gap-6 justify-center">
             {dates.map((date, index) => (
               <div
@@ -113,6 +115,7 @@ const MovieSchedule = () => {
                 <div className="flex flex-wrap gap-4 items-center">
                   {movie.showtimes.map((show, idx) => (
                     <div
+                      onClick={() => navigate("/seat-select")}
                       key={idx}
                       className="border p-3 rounded hover:bg-orange-500 hover:text-white cursor-pointer transition min-w-[140px] text-center"
                     >
