@@ -19,8 +19,23 @@ const MovieDetail = () => {
   const reviews = [
     { name: "Lịch", comment: "Phim tuyệt vời! Phải xem.", rating: 5 },
     { name: "Mạnh", comment: "Hoạt hình và cốt truyện tuyệt vời.", rating: 4 },
-    { name: "Sung", comment: "Có thể hay hơn, nhưng vẫn hay!", rating: 3 },
+    { name: "Sung", comment: "Phim chán, xem buồn ngủ", rating: 4 },
   ];
+
+  const positiveKeywords = ["tuyệt vời", "hay", "phải xem", "xuất sắc"];
+  const negativeKeywords = ["chán", "buồn ngủ", "tệ"];
+
+  const positiveReviews = reviews.filter((r) =>
+    positiveKeywords.some((word) => r.comment.toLowerCase().includes(word))
+  ).length;
+
+  const negativeReviews = reviews.filter((r) =>
+    negativeKeywords.some((word) => r.comment.toLowerCase().includes(word))
+  ).length;
+
+  const totalReviews = reviews.length;
+  const positivePercentage = ((positiveReviews / totalReviews) * 100).toFixed(1);
+  const negativePercentage = ((negativeReviews / totalReviews) * 100).toFixed(1);
 
   return (
     <div className="mt-[80px] min-h-screen bg-gradient-to-r from-red-900 to-black text-white p-6">
@@ -48,15 +63,19 @@ const MovieDetail = () => {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
                     key={star}
-                    className={`text-3xl cursor-pointer ${
-                      star <= rating ? "text-yellow-400" : "text-gray-500"
-                    }`}
+                    className={`text-3xl cursor-pointer ${star <= rating ? "text-yellow-400" : "text-gray-500"
+                      }`}
                   >
                     ★
                   </span>
                 ))}
                 <p className="text-sm m-2">3 lượt</p>
               </div>
+            </div>
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold">Tổng hợp đánh giá</h3>
+              <p className="text-green-400">Tích cực: {positivePercentage}% ({positiveReviews} lượt)</p>
+              <p className="text-red-400">Tiêu cực: {negativePercentage}% ({negativeReviews} lượt)</p>
             </div>
           </div>
         </div>
@@ -68,11 +87,10 @@ const MovieDetail = () => {
             {dates.map((date) => (
               <button
                 key={date}
-                className={`px-4 py-2 border rounded-lg ${
-                  selectedDate === date
+                className={`px-4 py-2 border rounded-lg ${selectedDate === date
                     ? "bg-[#E63946] text-white"
                     : "border-gray-400"
-                }`}
+                  }`}
                 onClick={() => setSelectedDate(date)}
               >
                 {date}
@@ -88,11 +106,10 @@ const MovieDetail = () => {
             {times.map((time) => (
               <button
                 key={time}
-                className={`px-4 py-2 border rounded-lg ${
-                  selectedTime === time
+                className={`px-4 py-2 border rounded-lg ${selectedTime === time
                     ? "bg-[#E63946] text-white"
                     : "border-gray-400"
-                }`}
+                  }`}
                 onClick={() => setSelectedTime(time)}
               >
                 {time}
@@ -123,11 +140,10 @@ const MovieDetail = () => {
                   {[1, 2, 3, 4, 5].map((star) => (
                     <span
                       key={star}
-                      className={`text-xl ${
-                        star <= review.rating
+                      className={`text-xl ${star <= review.rating
                           ? "text-yellow-400"
                           : "text-gray-500"
-                      }`}
+                        }`}
                     >
                       ★
                     </span>
