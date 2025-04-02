@@ -28,6 +28,8 @@ import DetalFilmPage from "../pages/DetalFilmPage";
 import LoginPage from "../pages/LoginPage";
 import RegistrationForm from "../pages/RegistrationForm";
 import ForgotPassword from "../pages/ForgotPassword";
+import NewsManagement from "../pages/NewsManagement";
+import PromotionManagement from "../pages/PromotionManagement";
 
 export const routes = [
   {
@@ -220,6 +222,20 @@ export const routes = [
   {
     path: "/oderflimadm",
     page: OderFlimAdm,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  // new
+  {
+    path: "/newsmanageadm",
+    page: NewsManagement,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  // discount
+  {
+    path: "/promotionmanagement",
+    page: PromotionManagement,
     isShowHeader: false,
     isShowFooter: false,
   },
