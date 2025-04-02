@@ -8,6 +8,9 @@ import PaymentSuccess from "../pages/PaymentSuccess";
 import BookingFilmPage from "../pages/BookingFilmPage";
 import SeatSelectPage from "../pages/SeatSelectPage";
 import PromotionsPage from "../pages/PromotionsPage";
+import AIRecommendedFilms from "../pages/AIRecommendedFilms";
+import PromotionDetail from "../pages/PromotionDetailPage";
+import NewsDetail from "../pages/NewsDetail";
 import MemberPage from "../pages/MemberPage";
 import NewsPage from "../pages/NewsPage";
 import AdminLogin from "../components/Admin/AdmLogin";
@@ -21,11 +24,11 @@ import MovieSchedule from "../pages/MovieSchedule";
 import NotFoundPage from "../pages/NotFoundPage";
 import UnderConstruction from "../pages/UnderConstructionPage";
 import MyProfilePage from "../pages/MyProfilePage";
+import DetalFilmPage from "../pages/DetalFilmPage";
 import LoginPage from "../pages/LoginPage";
 import RegistrationForm from "../pages/RegistrationForm";
 import ForgotPassword from "../pages/ForgotPassword";
 import FAQPage from "../pages/FAQPage";
-
 
 export const routes = [
   {
@@ -60,13 +63,6 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
-  {
-    path: "/oderflimadm",
-    page: OderFlimAdm,
-    isShowHeader: false,
-    isShowFooter: false,
-  },
-
   {
     path: "/booking-detail",
     page: BookingDetail,
@@ -128,6 +124,12 @@ export const routes = [
     isShowFooter: true,
   },
   {
+    path: "/detail-film",
+    page: DetalFilmPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
     path: "members",
     page: MemberPage,
     isShowHeader: true,
@@ -139,7 +141,24 @@ export const routes = [
     isShowHeader: true,
     isShowFooter: true,
   },
-
+  {
+    path: "movie-recommendation",
+    page: AIRecommendedFilms,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/promotions/:id",
+    page: PromotionDetail,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/news/:id",
+    page: NewsDetail,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
   {
     path: "/login",
     page: LoginPage,
@@ -202,6 +221,13 @@ export const routes = [
   {
     path: "/theatersadm",
     page: TheatersAdm,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  // order
+  {
+    path: "/oderflimadm",
+    page: OderFlimAdm,
     isShowHeader: false,
     isShowFooter: false,
   },
