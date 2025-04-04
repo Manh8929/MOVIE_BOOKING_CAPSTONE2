@@ -25,7 +25,7 @@ module.exports = {
       },
       phone_number: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       role_id: {
         type: Sequelize.INTEGER,
@@ -39,7 +39,7 @@ module.exports = {
       },
       avatar: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       dob: {
         type: Sequelize.DATE,
@@ -55,13 +55,13 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM("active", "inactive"),
-        allowNull: false,
+        allowNull: true,
       },
-      created_at: {
+      createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
       },
-      updated_at: {
+      updatedAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
       },
