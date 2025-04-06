@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
@@ -65,15 +66,42 @@ const RegisterPage = () => {
     }));
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
       toast.error("Mật khẩu xác nhận không khớp!");
       return;
     }
-    localStorage.setItem("newUser", JSON.stringify(formData));
-    toast.success("Đăng ký thành công!");
-    setTimeout(() => navigate("/login"), 2000);
+
+    if (!acceptedTerms) {
+      toast.error("Bạn phải đồng ý với điều khoản.");
+      return;
+    }
+
+    const payload = {
+      full_name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      dob: formData.birthdate,
+      gender: formData.gender,
+      address: formData.address,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/auth/register",
+        payload
+      );
+      toast.success("Đăng ký thành công!");
+      setTimeout(() => navigate("/login"), 2000);
+    } catch (error) {
+      if (error.response && error.response.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Đã có lỗi xảy ra. Vui lòng thử lại!");
+      }
+    }
   };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -131,14 +159,24 @@ const RegisterPage = () => {
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InputField
-                id="gender"
-                label="Giới tính"
-                type="text"
-                placeholder="Nam/Nữ/Khác"
-                value={formData.gender}
-                onChange={handleInputChange}
-              />
+              <div className="mb-4">
+                <label htmlFor="gender" className="block text-sm mb-2">
+                  Giới tính
+                </label>
+                <select
+                  id="gender"
+                  value={formData.gender}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
+                >
+                  <option value="">-- Chọn giới tính --</option>
+                  <option value="male">Nam</option>
+                  <option value="female">Nữ</option>
+                  <option value="other">Khác</option>
+                </select>
+              </div>
+
               <InputField
                 id="birthdate"
                 label="Ngày sinh"
