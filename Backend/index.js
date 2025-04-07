@@ -5,6 +5,7 @@ import userRoute from "./src/routes/userRoute";
 import authRoute from "./src/routes/authRouter";
 import { authenticate } from "./src/middlewares/authMiddleware";
 
+
 require("dotenv").config();
 require("./connection_DB");
 
@@ -16,7 +17,9 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
-
+//Public
+// API Showtime
+app.use("/api", userRoute);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -31,6 +34,9 @@ app.use("/user", userRoute);
 app.use("/", (req, res) => {
   return res.send("Server on");
 });
+
+
+
 const PORT = process.env.PORT;
 const listenner = app.listen(PORT, () => {
   console.log(`Server is running on the port ${PORT}`);
