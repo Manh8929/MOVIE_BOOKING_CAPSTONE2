@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       phone_number: {
         type: DataTypes.STRING,
@@ -39,15 +39,20 @@ module.exports = (sequelize, DataTypes) => {
       },
       dob: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
       },
       gender: {
         type: DataTypes.ENUM("male", "female", "other"),
-        allowNull: false,
+        allowNull: true,
       },
       address: {
         type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      provider: {
+        type: DataTypes.ENUM("local", "google", "facebook"),
         allowNull: false,
+        defaultValue: "local",
       },
       status: {
         type: DataTypes.ENUM("active", "inactive"),

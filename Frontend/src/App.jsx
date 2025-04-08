@@ -32,7 +32,7 @@ function App() {
           })}
         </Routes>
       </Router>
-      <ChatBoxComponent />  
+      <ChatBoxComponent />
     </div>
   );
 }
