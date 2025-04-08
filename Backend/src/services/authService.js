@@ -3,12 +3,13 @@ import { User } from "../models";
 import { generateToken } from "../middlewares/authMiddleware";
 
 export const registerUserService = async (userData) => {
-  console.log("user data", userData);
   const existingUser = await User.findOne({ where: { email: userData.email } });
   if (existingUser) {
-    throw { message: "Email is already registered", statusCode: 400 };
+    throw { message: "Email đã được sử dụng", statusCode: 400 };
   }
-
+  if (userData.password !== userData.confirmPassword) {
+    throw { message: "Mật khẩu xác nhận không khớp", statusCode: 400 };
+  }
   const hashedPassword = await bcrypt.hash(userData.password, 10);
   const newUser = await User.create({
     full_name: userData.full_name,
@@ -17,7 +18,7 @@ export const registerUserService = async (userData) => {
     dob: userData.dob,
     gender: userData.gender,
     address: userData.address,
-    role_id: 2,
+    role_id: 1,
   });
 
   return {
@@ -27,7 +28,22 @@ export const registerUserService = async (userData) => {
 };
 
 export const loginUserService = async ({ email, password }) => {
-  const user = await User.findOne({ where: { email } });
+  const user = await User.findOne({
+    where: { email },
+    attributes: [
+      "user_id",
+      "full_name",
+      "email",
+      "gender",
+      "dob",
+      "address",
+      "role_id",
+      "password",
+      "phone_number",
+      "avatar",
+      "provider",
+    ],
+  });
   if (!user) {
     throw { message: "Invalid email or password", statusCode: 401 };
   }
@@ -37,10 +53,10 @@ export const loginUserService = async ({ email, password }) => {
   }
 
   const token = generateToken(user);
-
+  const { password: _, ...safeUser } = user.toJSON();
   return {
     message: "Login successful",
-    user,
+    user: safeUser,
     token,
   };
 };

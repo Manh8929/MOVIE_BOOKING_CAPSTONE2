@@ -17,6 +17,10 @@ export const userRegisterSchema = Joi.object({
     "string.min": "Password must have at least 6 characters",
     "any.required": "Password is required",
   }),
+  confirmPassword: Joi.string().valid(Joi.ref("password")).required().messages({
+    "any.only": "Confirm password must match password",
+    "any.required": "Confirm password is required",
+  }),
   //   phone_number: Joi.string()
   //     .regex(/^\d{10}$/)
   //     .required()
