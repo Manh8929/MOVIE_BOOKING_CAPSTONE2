@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/users");
-const Role = require("../models/roles");
+const db = require("../models");
 
 exports.authenticate = async (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
@@ -13,16 +12,19 @@ exports.authenticate = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findByPk(decoded.id);
 
-    if (!req.user) {
+    const user = await db.User.findByPk(decoded.user_id);
+    if (!user) {
       return res.status(401).json({ message: "Invalid token." });
     }
 
-    req.user.role = await Role.findByPk(req.user.role_id);
-    if (!req.user.role) {
+    const role = await db.Role.findByPk(user.role_id);
+    if (!role) {
       return res.status(401).json({ message: "User has no role." });
     }
+
+    req.user = user;
+    req.user.role = role;
 
     next();
   } catch (err) {
@@ -34,6 +36,7 @@ exports.authenticate = async (req, res, next) => {
 exports.generateToken = (user) => {
   return jwt.sign(
     { id: user.user_id, role_id: user.role_id }, // Lưu role_id trong token để sử dụng sau này
+    { user_id: user.user_id, role_id: user.role_id },
     process.env.JWT_SECRET,
     { expiresIn: "30d" }
   );
@@ -46,14 +49,12 @@ exports.authorize = (roles) => {
       return res.status(401).json({ message: "Access denied." });
     }
 
-    // Kiểm tra quyền truy cập của người dùng dựa trên role_name
     if (!roles.includes(req.user.role.role_name)) {
-      // So sánh với role_name từ bảng Role
       return res
         .status(403)
         .json({ message: "Access denied. You do not have permission." });
     }
 
-    next(); // Tiếp tục nếu người dùng có quyền truy cập
+    next();
   };
 };

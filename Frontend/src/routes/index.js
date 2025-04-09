@@ -30,6 +30,7 @@ import RegistrationForm from "../pages/RegistrationForm";
 import ForgotPassword from "../pages/ForgotPassword";
 import NewsManagement from "../pages/NewsManagement";
 import PromotionManagement from "../pages/PromotionManagement";
+import OAuthSuccess from "../components/CallBackComponent/OAuthSuccess";
 
 export const routes = [
   {
@@ -37,6 +38,12 @@ export const routes = [
     page: HomePage,
     isShowHeader: true,
     isShowFooter: true,
+  },
+  {
+    path: "/oauth-success", // ➕ Thêm route này
+    page: OAuthSuccess,
+    isShowHeader: false,
+    isShowFooter: false,
   },
   {
     path: "/under-construction",

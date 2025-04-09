@@ -8,4 +8,6 @@ const route = express.Router();
 route.get("/profile", authenticate, authorize("customer"), getUserProfile);
 route.get("/showtimes", getAllShowtime);
 route.get("/showtimes-by-date", getShowtimeByDate);
+route.get("/profile", authenticate, getUserProfile);
+
 export default route;
