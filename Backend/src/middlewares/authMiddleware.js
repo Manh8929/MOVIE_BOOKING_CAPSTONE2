@@ -33,9 +33,9 @@ exports.authenticate = async (req, res, next) => {
   }
 };
 
+// Hàm tạo JWT token khi người dùng đăng nhập thành công
 exports.generateToken = (user) => {
   return jwt.sign(
-    { id: user.user_id, role_id: user.role_id }, // Lưu role_id trong token để sử dụng sau này
     { user_id: user.user_id, role_id: user.role_id },
     process.env.JWT_SECRET,
     { expiresIn: "30d" }

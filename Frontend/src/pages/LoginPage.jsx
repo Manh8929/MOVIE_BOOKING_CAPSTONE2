@@ -98,12 +98,17 @@ const LoginPage = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/auth/google";
+    window.location.href = `${
+      import.meta.env.VITE_REACT_APP_API_URL
+    }/auth/google`;
   };
 
   const handleFacebookLogin = () => {
-    window.location.href = "http://localhost:5000/auth/facebook";
+    window.location.href = `${
+      import.meta.env.VITE_REACT_APP_API_URL
+    }/auth/facebook`;
   };
+
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const PasswordIcon = () => (

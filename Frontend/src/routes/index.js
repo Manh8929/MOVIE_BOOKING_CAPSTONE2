@@ -31,13 +31,6 @@ import ForgotPassword from "../pages/ForgotPassword";
 import NewsManagement from "../pages/NewsManagement";
 import PromotionManagement from "../pages/PromotionManagement";
 import OAuthSuccess from "../components/CallBackComponent/OAuthSuccess";
-import AdminLogin from "../components/Admin/AdmLogin"; // Đảm bảo rằng đường dẫn đúng
-import AddMovieAdm from "../pages/AddMovieAdm";
-import OderFlimAdm from "../pages/OderFlimAdm";
-import ManagementUserAdm from "../pages/ManagementUserAdm";
-import ReportsAdm from "../pages/ReportsAdm";
-
-
 
 export const routes = [
   {
@@ -47,7 +40,7 @@ export const routes = [
     isShowFooter: true,
   },
   {
-    path: "/oauth-success", // ➕ Thêm route này
+    path: "/oauth-success",
     page: OAuthSuccess,
     isShowHeader: false,
     isShowFooter: false,
@@ -258,21 +251,21 @@ export const routes = [
     path: "/oderflimadm",
     page: OderFlimAdm,
     isShowHeader: false,
-    isShowFooter: false, 
+    isShowFooter: false,
   },
   // Adm User Management
   {
     path: "/managementuseradm",
     page: ManagementUserAdm,
     isShowHeader: false,
-    isShowFooter: false, 
+    isShowFooter: false,
   },
   // report adm
   {
     path: "/reportsadm",
     page: ReportsAdm,
     isShowHeader: false,
-    isShowFooter: false, 
+    isShowFooter: false,
   },
 ];
 /////////////////////////////////////////////
