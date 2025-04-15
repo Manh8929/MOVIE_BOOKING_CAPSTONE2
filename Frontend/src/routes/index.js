@@ -40,7 +40,7 @@ export const routes = [
     isShowFooter: true,
   },
   {
-    path: "/oauth-success", // ➕ Thêm route này
+    path: "/oauth-success",
     page: OAuthSuccess,
     isShowHeader: false,
     isShowFooter: false,
@@ -246,4 +246,26 @@ export const routes = [
     isShowHeader: false,
     isShowFooter: false,
   },
+  // Oders Flim Admin
+  {
+    path: "/oderflimadm",
+    page: OderFlimAdm,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  // Adm User Management
+  {
+    path: "/managementuseradm",
+    page: ManagementUserAdm,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  // report adm
+  {
+    path: "/reportsadm",
+    page: ReportsAdm,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
 ];
+/////////////////////////////////////////////
