@@ -108,11 +108,15 @@ const RegisterPage = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${process.env.VITE_REACT_APP_API_URL}/auth/google`;
+    window.location.href = `${
+      import.meta.env.VITE_REACT_APP_API_URL
+    }/auth/google`;
   };
 
   const handleFacebookLogin = () => {
-    window.location.href = `${process.env.VITE_REACT_APP_API_URL}/auth/facebook`;
+    window.location.href = `${
+      import.meta.env.VITE_REACT_APP_API_URL
+    }/auth/facebook`;
   };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);

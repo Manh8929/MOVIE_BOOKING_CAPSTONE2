@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaEdit,
   FaEnvelope,
@@ -11,13 +11,23 @@ import EditProfileForm from "../components/ProfileComponent/EditProfileForm";
 const MyProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
-    name: "Nguyễn Văn A",
-    email: "nguyenvana@example.com",
-    phone: "+84 123 456 789",
-    address: "Hà Nội, Việt Nam",
+    full_name: "",
+    email: "",
+    phone_number: "",
+    address: "",
+    avatar: "",
   });
 
   const [formData, setFormData] = useState(profile);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    console.log("user",user);
+    if (user) {
+      setProfile(user);
+      setFormData(user);
+    }
+  }, []);
 
   const handleEditClick = () => {
     setFormData(profile);
