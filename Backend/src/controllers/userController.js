@@ -1,19 +1,17 @@
 import userService from "../services/userService.js";
 import { getAllShowtimes, getShowtimesByDate } from "../services/showtimeService.js";
+import { updateUserProfileSchema } from "../helpers/joi_schema.js";
 
 // GET user profile
 export const getUserProfile = async (req, res) => {
   try {
     const userId = req.user.user_id;
-
-    // Gọi service để lấy thông tin người dùng
     const userProfile = await userService.getUserProfile(userId);
 
     if (!userProfile) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Trả về thông tin người dùng
     return res.json({
       user: userProfile,
     });
@@ -22,6 +20,28 @@ export const getUserProfile = async (req, res) => {
     return res
       .status(500)
       .json({ message: "Server error while fetching user profile" });
+  }
+};
+
+// PUT update user profile
+export const updateUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.user_id;
+    const { error, value } = updateUserProfileSchema.validate(req.body, { abortEarly: false });
+    if (error) {
+      const messages = error.details.map((detail) => detail.message);
+      return res.status(400).json({ errors: messages });
+    }
+
+    const updatedUser = await userService.updateUserProfile(userId, value);
+
+    return res.json({
+      message: "User profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error while updating profile" });
   }
 };
 

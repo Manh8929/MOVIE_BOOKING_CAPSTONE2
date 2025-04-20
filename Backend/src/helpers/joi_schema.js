@@ -21,14 +21,14 @@ export const userRegisterSchema = Joi.object({
     "any.only": "Confirm password must match password",
     "any.required": "Confirm password is required",
   }),
-  //   phone_number: Joi.string()
-  //     .regex(/^\d{10}$/)
-  //     .required()
-  //     .messages({
-  //       //       "string.base": "Phone number must be a string",
-  //       "string.pattern.base": "Phone number must be 10 digits",
-  //       "any.required": "Phone number is required",
-  //     }),
+    phone_number: Joi.string()
+      .regex(/^\d{10}$/)
+      .required()
+      .messages({
+        //       "string.base": "Phone number must be a string",
+        "string.pattern.base": "Phone number must be 10 digits",
+        "any.required": "Phone number is required",
+      }),
   dob: Joi.date().required().messages({
     "date.base": "Date of birth must be a valid date",
     "any.required": "Date of birth is required",
@@ -54,5 +54,33 @@ export const userLoginSchema = Joi.object({
     "string.base": "Password must be a string",
     "string.min": "Password must have at least 6 characters",
     "any.required": "Password is required",
+  }),
+});
+
+
+export const updateUserProfileSchema = Joi.object({
+  full_name: Joi.string().min(3).max(255).messages({
+    "string.base": "Full name must be a string",
+    "string.min": "Full name must have at least 3 characters",
+    "string.max": "Full name can not exceed 255 characters",
+  }),
+  phone_number: Joi.string()
+    .pattern(/^\d{10}$/)
+    .messages({
+      "string.pattern.base": "Phone number must be 10 digits",
+    }),
+  dob: Joi.date().iso().less('now').messages({
+    "date.base": "Date of birth must be a valid date",
+    "date.less": "Date of birth must be in the past",
+  }),
+  gender: Joi.string().valid("male", "female", "other").messages({
+    "any.only": 'Gender must be one of "male", "female", or "other"',
+  }),
+  address: Joi.string().max(255).messages({
+    "string.base": "Address must be a string",
+    "string.max": "Address must not exceed 255 characters",
+  }),
+  avatar: Joi.string().uri().messages({
+    "string.uri": "Avatar must be a valid URL",
   }),
 });
