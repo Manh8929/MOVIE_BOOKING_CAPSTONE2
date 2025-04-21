@@ -21,11 +21,11 @@ module.exports = {
       },
       password: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       phone_number: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       role_id: {
         type: Sequelize.INTEGER,
@@ -39,29 +39,34 @@ module.exports = {
       },
       avatar: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       dob: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: true,
       },
       gender: {
         type: Sequelize.ENUM("male", "female", "other"),
-        allowNull: false,
+        allowNull: true,
       },
       address: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       status: {
         type: Sequelize.ENUM("active", "inactive"),
-        allowNull: false,
+        allowNull: true,
       },
-      created_at: {
+      provider: {
+        type: Sequelize.ENUM("local", "google", "facebook"),
+        allowNull: false,
+        defaultValue: "local", // ✅ new field
+      },
+      createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
       },
-      updated_at: {
+      updatedAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
       },

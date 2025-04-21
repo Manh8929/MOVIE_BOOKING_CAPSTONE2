@@ -10,21 +10,34 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-session": "^1.18.1",
     "http-errors": "^2.0.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.13.0",
+<<<<<<< HEAD
+=======
+    "nodemon": "^3.1.9",
+    "passport": "^0.7.0",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth20": "^2.0.0",
+>>>>>>> 42b69ea8753644dfec455f3d8486f5ab117bbae9
     "sequelize": "^6.37.6"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
     "@babel/node": "^7.26.0",
     "@babel/preset-env": "^7.26.9",
+<<<<<<< HEAD
     "nodemon": "^3.1.9",
+=======
+    "cross-env": "^7.0.3",
+>>>>>>> 42b69ea8753644dfec455f3d8486f5ab117bbae9
     "sequelize-cli": "^6.6.2"
   }
 }

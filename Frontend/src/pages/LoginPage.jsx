@@ -3,10 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
-import avartar1 from "../assets/img/avatar/sontungmtp.png";
-import avartar2 from "../assets/img/avatar/jack.png";
-import avartar3 from "../assets/img/avatar/bickphuong.png";
-
+import * as authService from "../services/authService";
+import * as userService from "../services/userService";
 const InputField = ({
   id,
   label,
@@ -49,35 +47,13 @@ const LoginBanner = () => (
 const LoginPage = () => {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
+  console.log("currentUser", currentUser);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     rememberMe: false,
   });
   const [showPassword, setShowPassword] = useState(false);
-
-  const users = [
-    {
-      id: 1,
-      email: "sontung123@gmail.com",
-      password: "123456",
-      avatar: avartar1,
-    },
-    { id: 2, email: "jack@gmail.com", password: "3trieu", avatar: avartar2 },
-    { id: 3, email: "phuong@gmail.com", password: "123456", avatar: avartar3 },
-    {
-      id: 4,
-      email: "manhn6458@gmail.com",
-      password: "123456",
-      avatar: avartar2,
-    },
-    {
-      id: 5,
-      email: "admin@gmail.com",
-      password: "123456",
-      avatar: avartar2,
-    },
-  ];
 
   const handleInputChange = (e) => {
     const { id, value, type, checked } = e.target;
@@ -87,27 +63,50 @@ const LoginPage = () => {
     }));
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const user = users.find(
-      (u) => u.email === formData.email && u.password === formData.password
-    );
 
-    if (user) {
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      setCurrentUser(user);
-      toast.success("Đăng nhập thành công!");
-      setTimeout(() => {
-        if (user.email === "admin@gmail.com") {
-          navigate("/AddMovieAdm"); // Chuyển hướng đến trang admin
-        } else {
-          navigate("/");
-        }
-        window.location.reload();
-      }, 2000);
-    } else {
+    const { email, password } = formData;
+
+    try {
+      const res = await authService.loginUser({ email, password });
+      const token = res.token;
+
+      if (token) {
+        localStorage.setItem("token", token);
+        const user = await userService.getUserProfile(token);
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        setCurrentUser(user);
+
+        toast.success("Đăng nhập thành công!");
+
+        setTimeout(() => {
+          if (user.role_id === 1) {
+            navigate("/AddMovieAdm");
+          } else {
+            navigate("/");
+          }
+          window.location.reload();
+        }, 2000);
+      } else {
+        toast.error("Không nhận được token!");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
       toast.error("Email hoặc mật khẩu không đúng!");
     }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${
+      import.meta.env.VITE_REACT_APP_API_URL
+    }/auth/google`;
+  };
+
+  const handleFacebookLogin = () => {
+    window.location.href = `${
+      import.meta.env.VITE_REACT_APP_API_URL
+    }/auth/facebook`;
   };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -223,11 +222,17 @@ const LoginPage = () => {
             </button>
           </form>
           <div className="mt-6 flex flex-col space-y-3">
-            <button className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-md hover:bg-gray-100 transition">
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-md hover:bg-gray-100 transition"
+            >
               <FaGoogle className="h-5 w-5 mr-2 text-red-500" /> Đăng nhập với
               Google
             </button>
-            <button className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-md hover:bg-gray-100 transition">
+            <button
+              onClick={handleFacebookLogin}
+              className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-md hover:bg-gray-100 transition"
+            >
               <FaFacebook className="h-5 w-5 mr-2 text-blue-500" /> Đăng nhập
               với Facebook
             </button>

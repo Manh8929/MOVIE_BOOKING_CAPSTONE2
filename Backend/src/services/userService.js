@@ -1,0 +1,73 @@
+import db from "../models";
+exports.getUserProfile = async (userId) => {
+  try {
+    const user = await db.User.findByPk(userId);
+
+    if (!user) {
+      return null;
+    }
+
+    // Lấy thông tin role của người dùng
+    const role = await db.Role.findByPk(user.role_id);
+
+    return {
+      user_id: user.user_id,
+      full_name: user.full_name,
+      email: user.email,
+      role_id: user.role_id,
+      role_name: role ? role.role_name : "No role",
+      provider: user.provider,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      avatar: user.avatar,
+      phone_number: user.phone_number,
+      address: user.address,
+      dob: user.dob,
+      gender: user.gender,
+    };
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error fetching user profile");
+  }
+};
+
+
+exports.updateUserProfile = async (userId, updateData) => {
+  try {
+    const user = await db.User.findByPk(userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Không cho phép update các field nhạy cảm
+    delete updateData.email;
+    delete updateData.password;
+    delete updateData.role_id;
+
+    // Update thông tin
+    await user.update(updateData);
+
+    // Lấy lại thông tin đầy đủ sau khi update
+    const role = await db.Role.findByPk(user.role_id);
+
+    return {
+      user_id: user.user_id,
+      full_name: user.full_name,
+      email: user.email,
+      role_id: user.role_id,
+      role_name: role ? role.role_name : "No role",
+      provider: user.provider,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      avatar: user.avatar,
+      phone_number: user.phone_number,
+      address: user.address,
+      dob: user.dob,
+      gender: user.gender,
+    };
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error updating user profile");
+  }
+};

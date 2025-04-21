@@ -3,6 +3,7 @@ import NavbarComponent from "../NavbarComponent/NavbarComponent";
 import { Link, useNavigate } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
 import logo from "../../assets/img/logo_movie.png";
+import * as userService from "../../services/userService";
 
 const HeaderComponent = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -14,15 +15,25 @@ const HeaderComponent = () => {
   const [active, setActive] = useState(null);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("currentUser"));
-    console.log("mm", user);
-    if (user) {
-      setCurrentUser(user);
-    }
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const user = await userService.getUserProfile(token);
+        setCurrentUser(user);
+        localStorage.setItem("currentUser", JSON.stringify(user));
+      } catch (err) {
+        console.error("Lỗi lấy thông tin người dùng:", err);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
+    localStorage.removeItem("token");
     setCurrentUser(null);
     navigate("/login");
   };
@@ -80,7 +91,7 @@ const HeaderComponent = () => {
                   to="/movie-recommendation"
                   className="block px-4 py-2 text-gray-800 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
                 >
-                  Đề xuất phim 
+                  Đề xuất phim
                 </Link>
                 <button
                   onClick={handleLogout}

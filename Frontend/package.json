@@ -7,11 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "vite" 
   },
   "dependencies": {
     "@tanstack/react-query": "^5.69.0",
     "axios": "^1.8.3",
+    "dotenv": "^16.4.7",
     "html-to-image": "^1.11.13",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -28,7 +28,13 @@ import DetalFilmPage from "../pages/DetalFilmPage";
 import LoginPage from "../pages/LoginPage";
 import RegistrationForm from "../pages/RegistrationForm";
 import ForgotPassword from "../pages/ForgotPassword";
+<<<<<<< HEAD
 import FAQPage from "../pages/FAQPage";
+=======
+import NewsManagement from "../pages/NewsManagement";
+import PromotionManagement from "../pages/PromotionManagement";
+import OAuthSuccess from "../components/CallBackComponent/OAuthSuccess";
+>>>>>>> 42b69ea8753644dfec455f3d8486f5ab117bbae9
 
 export const routes = [
   {
@@ -36,6 +42,12 @@ export const routes = [
     page: HomePage,
     isShowHeader: true,
     isShowFooter: true,
+  },
+  {
+    path: "/oauth-success",
+    page: OAuthSuccess,
+    isShowHeader: false,
+    isShowFooter: false,
   },
   {
     path: "/under-construction",
@@ -231,4 +243,40 @@ export const routes = [
     isShowHeader: false,
     isShowFooter: false,
   },
+  // new
+  {
+    path: "/newsmanageadm",
+    page: NewsManagement,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  // discount
+  {
+    path: "/promotionmanagement",
+    page: PromotionManagement,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  // Oders Flim Admin
+  {
+    path: "/oderflimadm",
+    page: OderFlimAdm,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  // Adm User Management
+  {
+    path: "/managementuseradm",
+    page: ManagementUserAdm,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  // report adm
+  {
+    path: "/reportsadm",
+    page: ReportsAdm,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
 ];
+/////////////////////////////////////////////

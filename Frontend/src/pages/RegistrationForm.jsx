@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
+import * as authService from "../services/authService";
 
 const InputField = ({
   id,
@@ -41,18 +42,35 @@ const RegisterBanner = () => (
     </div>
   </div>
 );
-
+const GenderDropdown = ({ id, value, onChange }) => (
+  <div className="mb-4">
+    <label htmlFor={id} className="block text-sm mb-2">
+      Giới tính
+    </label>
+    <select
+      id={id}
+      value={value}
+      onChange={onChange}
+      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
+    >
+      <option value="">Chọn giới tính</option>
+      <option value="male">Nam</option>
+      <option value="female">Nữ</option>
+      <option value="other">Khác</option>
+    </select>
+  </div>
+);
 const RegisterPage = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: "",
+    full_name: "",
     email: "",
     password: "",
     confirmPassword: "",
     gender: "",
-    birthdate: "",
+    dob: "",
     address: "",
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -65,15 +83,40 @@ const RegisterPage = () => {
     }));
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       toast.error("Mật khẩu xác nhận không khớp!");
       return;
     }
-    localStorage.setItem("newUser", JSON.stringify(formData));
-    toast.success("Đăng ký thành công!");
-    setTimeout(() => navigate("/login"), 2000);
+    try {
+      const newUser = await authService.registerUser(formData);
+      toast.success(newUser.message);
+      setTimeout(() => navigate("/login"), 2000);
+    } catch (error) {
+      console.error("Error during registration:", error); // In chi tiết lỗi ra console
+      if (error.response) {
+        // Nếu lỗi trả về từ server
+        toast.error(
+          `Đăng ký thất bại: ${error.response.data.message || error.message}`
+        );
+      } else {
+        // Nếu không có response từ server
+        toast.error("Đăng ký thất bại, vui lòng thử lại!");
+      }
+    }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${
+      import.meta.env.VITE_REACT_APP_API_URL
+    }/auth/google`;
+  };
+
+  const handleFacebookLogin = () => {
+    window.location.href = `${
+      import.meta.env.VITE_REACT_APP_API_URL
+    }/auth/facebook`;
   };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -96,11 +139,11 @@ const RegisterPage = () => {
           <form onSubmit={handleRegister} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
-                id="name"
+                id="full_name"
                 label="Họ và tên"
                 type="text"
                 placeholder="Nguyễn Văn A"
-                value={formData.name}
+                value={formData.full_name}
                 onChange={handleInputChange}
               />
               <InputField
@@ -131,19 +174,16 @@ const RegisterPage = () => {
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InputField
+              <GenderDropdown
                 id="gender"
-                label="Giới tính"
-                type="text"
-                placeholder="Nam/Nữ/Khác"
                 value={formData.gender}
                 onChange={handleInputChange}
               />
               <InputField
-                id="birthdate"
+                id="dob"
                 label="Ngày sinh"
                 type="date"
-                value={formData.birthdate}
+                value={formData.dob}
                 onChange={handleInputChange}
               />
             </div>
@@ -182,13 +222,19 @@ const RegisterPage = () => {
             </button>
           </form>
           <div className="mt-6 flex flex-col space-y-3">
-            <button className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition">
-              <FaGoogle className="h-5 w-5 mr-2 text-red-500" /> Đăng ký với
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition"
+            >
+              <FaGoogle className="h-5 w-5 mr-2 text-red-500" /> Đăng nhập với
               Google
             </button>
-            <button className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition">
-              <FaFacebook className="h-5 w-5 mr-2 text-blue-500" /> Đăng ký với
-              Facebook
+            <button
+              onClick={handleFacebookLogin}
+              className="w-full flex items-center justify-center border border-gray-300 py-2 rounded-lg hover:bg-gray-100 transition"
+            >
+              <FaFacebook className="h-5 w-5 mr-2 text-blue-500" /> Đăng nhập
+              với Facebook
             </button>
           </div>
         </div>
