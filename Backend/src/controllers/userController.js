@@ -1,4 +1,5 @@
 import userService from "../services/userService.js";
+import db from "../models";
 
 exports.getUserProfile = async (req, res) => {
   try {

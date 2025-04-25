@@ -6,6 +6,7 @@ import session from "express-session";
 import adminRoute from "./src/routes/adminRoute";
 import userRoute from "./src/routes/userRoute";
 import authRoute from "./src/routes/authRouter";
+import movieRouter from "./src/routes/movieRouter.js";
 import { authenticate } from "./src/middlewares/authMiddleware";
 const passport = require("./src/middlewares/passport_setup");
 require("./connection_DB");
@@ -42,14 +43,14 @@ app.use("/auth", authRoute);
 // app.use("/", (req, res) => {
 //   return res.send("Server on");
 // });
-app.use(authenticate);
 
-app.use("/api/admin", adminRoute);
-app.use("/api/user", userRoute);
+// Các route không yêu cầu đăng nhập
+app.use("/", movieRouter);
 
-app.use("/", (req, res) => {
-  return res.send("Server on");
-});
+// Các route yêu cầu đăng nhập
+app.use("/auth", authRoute);
+app.use("/api/admin", authenticate, adminRoute);
+app.use("/api/user", authenticate, userRoute);
 
 const PORT = process.env.PORT;
 const listenner = app.listen(PORT, () => {

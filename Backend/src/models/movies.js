@@ -78,6 +78,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
+  },{
+    tableName: "Movies",
+    timestamps: false,
   });
 
   return Movie;
