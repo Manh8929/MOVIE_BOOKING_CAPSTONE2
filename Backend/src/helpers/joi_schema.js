@@ -23,11 +23,11 @@ export const userRegisterSchema = Joi.object({
   }),
     phone_number: Joi.string()
       .regex(/^\d{10}$/)
-      .required()
+      // .required()
       .messages({
-        //       "string.base": "Phone number must be a string",
+              "string.base": "Phone number must be a string",
         "string.pattern.base": "Phone number must be 10 digits",
-        "any.required": "Phone number is required",
+        // "any.required": "Phone number is required",
       }),
   dob: Joi.date().required().messages({
     "date.base": "Date of birth must be a valid date",
@@ -80,7 +80,7 @@ export const updateUserProfileSchema = Joi.object({
     "string.base": "Address must be a string",
     "string.max": "Address must not exceed 255 characters",
   }),
-  avatar: Joi.string().uri().messages({
-    "string.uri": "Avatar must be a valid URL",
-  }),
+  // avatar: Joi.string().uri().messages({
+  //   "string.uri": "Avatar must be a valid URL",
+  // }),
 });

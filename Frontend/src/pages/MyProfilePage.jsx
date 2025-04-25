@@ -19,7 +19,7 @@ const MyProfilePage = () => {
   });
 
   const [formData, setFormData] = useState(profile);
-
+console.log("formData",formData)
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("currentUser"));
     console.log("user",user);
@@ -28,6 +28,12 @@ const MyProfilePage = () => {
       setFormData(user);
     }
   }, []);
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    if (user) {
+      setProfile(user);
+    }
+  }, [formData]); 
 
   const handleEditClick = () => {
     setFormData(profile);
@@ -40,6 +46,7 @@ const MyProfilePage = () => {
 
   const handleSave = () => {
     setProfile(formData);
+    localStorage.setItem("currentUser", JSON.stringify(formData));  // Save the updated data into localStorage
     setIsEditing(false);
   };
 
@@ -54,12 +61,12 @@ const MyProfilePage = () => {
         <div className="flex flex-col items-center text-center md:col-span-1">
           <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-[#dc143c] shadow-lg">
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg"
+              src={profile.avatar || "https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg"}
               alt="Avatar"
               className="w-full h-full object-cover"
             />
           </div>
-          <h2 className="mt-6 text-2xl font-semibold">{profile.name}</h2>
+          <h2 className="mt-6 text-2xl font-semibold">{profile.full_name}</h2>
           <button
             className="mt-6 bg-[#dc143c] hover:bg-[#b0102e] transition px-6 py-2 rounded-full flex items-center gap-2"
             onClick={handleEditClick}

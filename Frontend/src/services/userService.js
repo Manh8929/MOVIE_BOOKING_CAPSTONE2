@@ -19,6 +19,25 @@ export const getUserProfile = async (token) => {
 
 
 // Hàm cập nhật thông tin user profile
+// export const updateUserProfile = async (token, data) => {
+//   if (!token) {
+//     throw new Error("Token is required to update user profile");
+//   }
+
+//   try {
+//     const response = await axios.put(`${API_URL}/api/user/profile/update`, data, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         'Content-Type': 'application/json',
+//       },
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error updating user profile:", error);
+//     throw new Error("Unable to update user profile. Please try again later.");
+//   }
+// };
+
 export const updateUserProfile = async (token, data) => {
   if (!token) {
     throw new Error("Token is required to update user profile");
@@ -28,7 +47,7 @@ export const updateUserProfile = async (token, data) => {
     const response = await axios.put(`${API_URL}/api/user/profile/update`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        // ❌ Không thêm Content-Type khi dùng FormData!
       },
     });
     return response.data;

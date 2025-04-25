@@ -4,9 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
 import logo from "../../assets/img/logo_movie.png";
 import * as userService from "../../services/userService";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, login } from "../../redux/slices/userSlice";
 
 const HeaderComponent = () => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.userData);
+  console.log("currentUser",currentUser)
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleMouseEnter = () => setIsMenuOpen(true);
@@ -15,26 +19,16 @@ const HeaderComponent = () => {
   const [active, setActive] = useState(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      try {
-        const user = await userService.getUserProfile(token);
-        setCurrentUser(user);
-        localStorage.setItem("currentUser", JSON.stringify(user));
-      } catch (err) {
-        console.error("Lỗi lấy thông tin người dùng:", err);
-      }
-    };
-
-    fetchUser();
-  }, []);
+    const userData = JSON.parse(localStorage.getItem("currentUser"));
+    if (userData) {
+      dispatch(login(userData));
+    }
+  }, [dispatch]);  
 
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
     localStorage.removeItem("token");
-    setCurrentUser(null);
+    dispatch(logout());
     navigate("/login");
   };
 

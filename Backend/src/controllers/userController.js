@@ -26,14 +26,22 @@ export const getUserProfile = async (req, res) => {
 // PUT update user profile
 export const updateUserProfile = async (req, res) => {
   try {
+    console.log('req.file in updateUserProfile:', req.file);
     const userId = req.user.user_id;
     const { error, value } = updateUserProfileSchema.validate(req.body, { abortEarly: false });
     if (error) {
       const messages = error.details.map((detail) => detail.message);
       return res.status(400).json({ errors: messages });
     }
-
-    const updatedUser = await userService.updateUserProfile(userId, value);
+    const updateData = { ...value };
+    console.log('Uploaded file:', req.file);
+    if (req.file) {
+      console.log('Uploaded file:', req.file);
+      const avatarUrl = `${process.env.SERVER_URL}/uploads/users/${req.file.filename}`;
+      updateData.avatar = avatarUrl; // Cập nhật URL avatar
+    }
+    
+    const updatedUser = await userService.updateUserProfile(userId, updateData);
 
     return res.json({
       message: "User profile updated successfully",

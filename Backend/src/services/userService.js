@@ -39,16 +39,11 @@ exports.updateUserProfile = async (userId, updateData) => {
     if (!user) {
       throw new Error("User not found");
     }
-
-    // Không cho phép update các field nhạy cảm
     delete updateData.email;
     delete updateData.password;
     delete updateData.role_id;
 
-    // Update thông tin
     await user.update(updateData);
-
-    // Lấy lại thông tin đầy đủ sau khi update
     const role = await db.Role.findByPk(user.role_id);
 
     return {
