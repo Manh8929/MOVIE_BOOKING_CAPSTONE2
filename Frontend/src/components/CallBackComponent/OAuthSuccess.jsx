@@ -29,7 +29,7 @@ const OAuthSuccess = () => {
 
         setTimeout(() => {
           navigate("/");
-        }, 3000); // Đợi toast xong rồi mới chuyển
+        }, 3000);
       })
       .catch(err => {
         console.error("Lỗi lấy thông tin người dùng:", err);

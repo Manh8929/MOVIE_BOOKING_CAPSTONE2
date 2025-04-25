@@ -36,9 +36,9 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use("/showtime", userRoute);
 app.use("/auth", authRoute);
-
+app.use("/new", userRoute);
 app.use(authenticate);
 
 app.use("/api/admin", adminRoute);

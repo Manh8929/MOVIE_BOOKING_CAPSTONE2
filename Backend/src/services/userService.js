@@ -66,3 +66,67 @@ exports.updateUserProfile = async (userId, updateData) => {
     throw new Error("Error updating user profile");
   }
 };
+
+//News
+// Các phương thức cho News
+exports.getAllNews = async () => {
+  try {
+    const news = await db.News.findAll();  // Truy vấn tất cả tin tức
+    return news;
+  } catch (error) {
+    console.error('Error fetching news:', error);
+    throw new Error('Error fetching news');
+  }
+};
+
+exports.getNewsById = async (id) => {
+  try {
+    const newsItem = await db.News.findByPk(id);  // Truy vấn tin tức theo ID
+    return newsItem;
+  } catch (error) {
+    console.error('Error fetching news by ID:', error);
+    throw new Error('Error fetching news by ID');
+  }
+};
+
+exports.createNews = async (newsData) => {
+  try {
+    const newNews = await db.News.create(newsData);  // Tạo mới tin tức
+    return newNews;
+  } catch (error) {
+    console.error('Error creating news:', error);
+    throw new Error('Error creating news');
+  }
+};
+
+exports.updateNews = async (id, updateData) => {
+  try {
+    const newsItem = await db.News.findByPk(id);
+    if (!newsItem) {
+      return null;
+    }
+    // Cập nhật thông tin tin tức
+    newsItem.title = updateData.title || newsItem.title;
+    newsItem.content = updateData.content || newsItem.content;
+    newsItem.image_url = updateData.image_url || newsItem.image_url;
+    await newsItem.save();
+    return newsItem;
+  } catch (error) {
+    console.error('Error updating news:', error);
+    throw new Error('Error updating news');
+  }
+};
+
+exports.deleteNews = async (id) => {
+  try {
+    const newsItem = await db.News.findByPk(id);
+    if (!newsItem) {
+      return null;
+    }
+    await newsItem.destroy();  // Xóa tin tức
+    return newsItem;
+  } catch (error) {
+    console.error('Error deleting news:', error);
+    throw new Error('Error deleting news');
+  }
+};

@@ -83,3 +83,30 @@ export const getShowtimeByDate = async (req, res, next) => {
     next(error);
   }
 };
+
+//News
+// GET all news
+export const getAllNews = async (req, res) => {
+  try {
+    const news = await userService.getAllNews();
+    res.status(200).json(news);
+  } catch (error) {
+    console.error('Error fetching news:', error);  // Log lỗi
+    res.status(500).json({ message: 'Error fetching news' });
+  }
+};
+
+// GET a news
+export const getNewsById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const newsItem = await userService.getNewsById(id);
+    if (!newsItem) {
+      return res.status(404).json({ message: 'News not found' });
+    }
+    res.status(200).json(newsItem);
+  } catch (error) {
+    console.error('Error fetching news by id:', error); 
+    res.status(500).json({ message: 'Error fetching news by ID' });
+  }
+};
