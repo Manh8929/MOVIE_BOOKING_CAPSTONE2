@@ -86,7 +86,7 @@ const LoginPage = () => {
         toast.success("Đăng nhập thành công!");
 
         setTimeout(() => {
-          if (user.role_id === 5) {
+          if (user.role_id === 1) {
             navigate("/AddMovieAdm");
           } else {
             navigate("/");

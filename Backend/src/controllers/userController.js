@@ -2,6 +2,7 @@ import userService from "../services/userService.js";
 import { getAllShowtimes, getShowtimesByDate } from "../services/showtimeService.js";
 import { updateUserProfileSchema } from "../helpers/joi_schema.js";
 
+
 // GET user profile
 export const getUserProfile = async (req, res) => {
   try {

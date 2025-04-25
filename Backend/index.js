@@ -6,6 +6,7 @@ import session from "express-session";
 import adminRoute from "./src/routes/adminRoute";
 import userRoute from "./src/routes/userRoute";
 import authRoute from "./src/routes/authRouter";
+import movieRouter from "./src/routes/movieRouter.js";
 import { authenticate } from "./src/middlewares/authMiddleware";
 
 require("dotenv").config();
@@ -41,8 +42,14 @@ app.use("/auth", authRoute);
 app.use("/new", userRoute);
 app.use(authenticate);
 
-app.use("/api/admin", adminRoute);
-app.use("/api/user", userRoute);
+
+// Các route không yêu cầu đăng nhập
+app.use("/", movieRouter);
+
+// Các route yêu cầu đăng nhập
+app.use("/auth", authRoute);
+app.use("/api/admin", authenticate, adminRoute);
+app.use("/api/user", authenticate, userRoute);
 
 app.use("/", (req, res) => {
   return res.send("Server on");
