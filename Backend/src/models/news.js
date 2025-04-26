@@ -8,9 +8,13 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
       },
+      category: {
+        type: DataTypes.ENUM('general', 'specific'),
+        allowNull: false,
+      },
       movie_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       title: {
         type: DataTypes.STRING,
