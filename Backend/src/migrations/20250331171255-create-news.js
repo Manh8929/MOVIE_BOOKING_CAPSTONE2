@@ -10,9 +10,13 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
       },
+      category: {
+        type: Sequelize.ENUM('general', 'specific'),
+        allowNull: false,
+      },
       movie_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "movies", // Tên bảng Movie đã được tạo
           key: "movie_id", // Khóa chính của bảng Movie (điều chỉnh nếu tên khóa chính khác)
