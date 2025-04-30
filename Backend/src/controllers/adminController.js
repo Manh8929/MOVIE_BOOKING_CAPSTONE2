@@ -1,6 +1,6 @@
 import { createShowtime, updateShowtime, deleteShowtime } from "../services/showtimeService.js";
 import userService from '../services/userService';
-import * as movieService from "../services/movieService.js";
+import * as movieService from "../services/adminService.js";
 export const getAllUsers = (req, res) => {
   res.status(200).json({ message: "Admin can view all users" });
 };
@@ -104,24 +104,56 @@ export const getAllMovies = async (req, res) => {
 
 export const createMovie = async (req, res) => {
   try {
-    const movie = await movieService.createMovie(req.body);
-    return res.status(201).json({ message: "Thêm phim thành công", movie });
+    const data = req.body;
+
+    data.duration = parseInt(data.duration);
+    data.rating = parseFloat(data.rating);
+
+    if (req.files?.poster_url?.[0]) {
+      data.poster_url = `${process.env.SERVER_URL}/uploads/admin/${req.files.poster_url[0].filename}`;
+    }
+    if (req.files?.banner_url?.[0]) {
+      data.banner_url = `${process.env.SERVER_URL}/uploads/admin/${req.files.banner_url[0].filename}`;
+    }
+    if (req.files?.avatar_url?.[0]) {
+      data.avatar_url = `${process.env.SERVER_URL}/uploads/admin/${req.files.avatar_url[0].filename}`;
+    }    
+
+    const newMovie = await movieService.createMovie(data); 
+    res.status(201).json(newMovie);
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Lỗi khi thêm phim" });
+    console.error("Error when creating movie:", err);
+    res.status(500).json({ message: "Lỗi khi tạo phim.", detail: err.message });
   }
 };
 
 export const updateMovie = async (req, res) => {
   try {
-    const updated = await movieService.updateMovie(req.params.id, req.body);
+    const data = req.body;
+
+    if (data.duration) data.duration = parseInt(data.duration);
+    if (data.rating) data.rating = parseFloat(data.rating);
+
+    // Xử lý file ảnh mới nếu có upload
+    if (req.files?.poster_url?.[0]) {
+      data.poster_url = `${process.env.SERVER_URL}/uploads/admin/${req.files.poster_url[0].filename}`;
+    }
+    if (req.files?.banner_url?.[0]) {
+      data.banner_url = `${process.env.SERVER_URL}/uploads/admin/${req.files.banner_url[0].filename}`;
+    }
+    if (req.files?.avatar_url?.[0]) {
+      data.avatar_url = `${process.env.SERVER_URL}/uploads/admin/${req.files.avatar_url[0].filename}`;
+    }
+
+    const updated = await movieService.updateMovie(req.params.id, data);
     if (!updated) {
       return res.status(404).json({ message: "Không tìm thấy phim" });
     }
+
     return res.status(200).json({ message: "Cập nhật phim thành công", movie: updated });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Lỗi khi cập nhật phim" });
+    console.error("Error when updating movie:", err);
+    return res.status(500).json({ message: "Lỗi khi cập nhật phim", detail: err.message });
   }
 };
 

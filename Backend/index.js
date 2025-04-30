@@ -38,9 +38,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use("/showtime", userRoute);
-app.use("/auth", authRoute);
 app.use("/new", userRoute);
-app.use(authenticate);
+app.use("/auth", authRoute);
+// app.use(authenticate);
 
 
 // Các route không yêu cầu đăng nhập
