@@ -132,11 +132,11 @@ export const routes = [
     isShowFooter: true,
   },
   {
-    path: "/detail-film",
+    path: "/detail-film/:id",
     page: DetalFilmPage,
     isShowHeader: true,
     isShowFooter: true,
-  },
+  },  
   {
     path: "members",
     page: MemberPage,

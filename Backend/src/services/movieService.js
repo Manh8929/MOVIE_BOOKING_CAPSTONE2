@@ -7,3 +7,12 @@ export const getAvailableMovies = async () => {
     },
   });
 };
+
+// Lấy chi tiết phim theo ID
+export const getMovieDetail = async (movieId) => {
+  return await db.Movie.findOne({
+    where: {
+      movie_id: movieId,
+    },
+  });
+};
