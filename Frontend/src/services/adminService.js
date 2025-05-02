@@ -10,6 +10,49 @@ const config = {
   }
 };
 
+
+/// ---- User --- ///
+export const getAllUsers = async (token) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/admin/getAllUsers`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; // Trả về danh sách người dùng
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    throw error; // Ném lỗi để xử lý ở nơi gọi
+  }
+};
+export const deleteUser = async (token, userId) => {
+  try {
+    await axios.delete(`${API_URL}/api/admin/deleteUsers/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("User deleted successfully"); // Thông báo thành công
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw error; // Ném lỗi để xử lý ở nơi gọi
+  }
+};
+export const updateUser = async (token, userId, userData) => {
+  try {
+    const response = await axios.put(`${API_URL}/api/admin/updateUsers/${userId}`, userData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; // Trả về thông tin người dùng đã cập nhật
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error; // Ném lỗi để xử lý ở nơi gọi
+  }
+};
+
+/// ---- movie --- ///
 // Lấy danh sách phim
 export const getAdminMovies = async () => {
   try {
