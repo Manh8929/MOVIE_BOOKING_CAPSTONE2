@@ -55,11 +55,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       rating: {
         type: DataTypes.DECIMAL(3, 2),
-        allowNull: false,
-        validate: {
-          min: 0,
-          max: 10,
-        },
+        allowNull: true,
+      },
+      average_rating: {
+        type: DataTypes.DECIMAL(3, 2),
+        allowNull: true,
       },
       director: {
         type: DataTypes.STRING,

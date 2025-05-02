@@ -32,11 +32,15 @@ module.exports = {
       },
       rating: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
+        validate: {
+          min: 1,
+          max: 5,
+        },
       },
       comment: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       sentiment: {
         type: Sequelize.ENUM("positive", "neutral", "negative"),

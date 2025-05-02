@@ -35,7 +35,11 @@ module.exports = {
         onDelete: "CASCADE",
       },
       seat_type: {
-        type: Sequelize.ENUM("regular", "vip", "disabled"),
+        type: Sequelize.ENUM("regular", "vip", "disabled","couple"),
+        allowNull: false,
+      },
+      price: {
+        type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
       is_available: {
