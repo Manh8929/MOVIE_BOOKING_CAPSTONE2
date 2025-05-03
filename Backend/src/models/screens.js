@@ -58,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      timestamps: false, // tắt tự động thêm createdAt/updatedAt
+      timestamps: true,
       tableName: "screens",
     }
   );

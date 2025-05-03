@@ -1,7 +1,7 @@
-  import { createShowtime, updateShowtime, deleteShowtime } from "../services/showtimeService.js";
+import { createShowtime, updateShowtime, deleteShowtime } from "../services/showtimeService.js";
 import { badRequest } from "../middlewares/handle_error";
 import { deleteUserService, getAllUsersService, updateUserService } from "../services/adminService.js";
-
+import * as movieService from "../services/movieService.js";
 //api User
 export const getAllUsers = async (req, res) => {
   try {
