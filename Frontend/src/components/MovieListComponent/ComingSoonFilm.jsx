@@ -1,137 +1,87 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getAvailableMovies } from "../../services/movieService";
 import { toast, ToastContainer } from "react-toastify";
-
 import "react-toastify/dist/ReactToastify.css";
-import film1 from "../../assets/img/film/phim8.jpg";
-import film2 from "../../assets/img/film/phim9.jpg";
-import film3 from "../../assets/img/film/phim10.jpg";
-import film4 from "../../assets/img/film/phim11.jpg";
-import film5 from "../../assets/img/film/phim12.jpg";
-import film6 from "../../assets/img/film/phim13.jpg";
-import film7 from "../../assets/img/film/phim14.jpg";
+
 import rank1 from "../../assets/img/topMovie/top1.png";
 import rank2 from "../../assets/img/topMovie/top2.png";
 import rank3 from "../../assets/img/topMovie/top3.png";
+
 import { useNavigate } from "react-router-dom";
 
-const commingSoonMovies = [
-  {
-    id: 1,
-    title: "Quỷ Nhập Tràng (T18)",
-    genre: "Kinh Dị",
-    duration: "120 phút",
-    rating: "C18",
-    releaseDate: "05-03-2025",
-    image: film1,
-    rank: rank1,
-  },
-  {
-    id: 2,
-    title: "Nhà Gia Tiến (T18)",
-    genre: "Hài, Gia Đình",
-    duration: "117 phút",
-    rating: "C18",
-    releaseDate: "21-02-2025",
-    image: film2,
-    rank: rank2,
-  },
-  {
-    id: 3,
-    title: "(Lồng Tiếng) Sát Thủ Vô Cùng Cực",
-    genre: "Hài",
-    duration: "107 phút",
-    rating: "C16",
-    releaseDate: "12-03-2025",
-    image: film3,
-    rank: rank3,
-  },
-  {
-    id: 4,
-    title: "Lạc Trôi",
-    genre: "Hoạt Hình",
-    duration: "85 phút",
-    rating: "P",
-    releaseDate: "07-03-2025",
-    image: film4,
-  },
-  {
-    id: 5,
-    title: "Anh Không Đau (T18)",
-    genre: "Hành Động",
-    duration: "N/A",
-    rating: "T18",
-    releaseDate: "19-03-2025",
-    image: film5,
-  },
-  {
-    id: 6,
-    title: "Mickey 17 (T18)",
-    genre: "Phiêu Lưu",
-    duration: "N/A",
-    rating: "T18",
-    releaseDate: "N/A",
-    image: film6,
-  },
-  {
-    id: 7,
-    title: "Tiếng Vọng Kinh Hoàng",
-    genre: "Kinh Dị",
-    duration: "N/A",
-    rating: "N/A",
-    releaseDate: "14-03-2025",
-    image: film7,
-  },
-];
 const itemsPerPage = 8;
 
 const CommingSoonFilms = () => {
   const navigate = useNavigate();
+  const [movies, setMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(commingSoonMovies.length / itemsPerPage);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentMovies = commingSoonMovies.slice(
-    indexOfFirstItem,
-    indexOfLastItem
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const data = await getAvailableMovies();
+        const sorted = data
+          .filter((movie) => movie.status === "upcoming")
+          .sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating)); // Top rating trước
+        setMovies(sorted);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchMovies();
+  }, []);
+
+  const totalPages = Math.ceil(movies.length / itemsPerPage);
+  const currentMovies = movies.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
   );
 
   const handleBooking = (movie) => {
     toast.info(
-      `Phim "${movie.title}" sắp được công chiếu vào ngày ${movie.releaseDate}. Vui lòng chờ đến ngày khởi chiếu để đặt vé!`,
+      `Phim "${movie.title}" sắp được công chiếu vào ngày ${new Date(
+        movie.release_date
+      ).toLocaleDateString("vi-VN")}. Vui lòng chờ đến ngày khởi chiếu để đặt vé!`,
       {
         position: "top-center",
         autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
         theme: "dark",
       }
     );
   };
 
+  const getRankIcon = (index) => {
+    if (index === 0) return rank1;
+    if (index === 1) return rank2;
+    if (index === 2) return rank3;
+    return null;
+  };
+
   return (
-    <div className="max-w-[90%] mx-auto px-24 mt-10 bg-[#121212] text-white py-16 rounded-lg mb-[80px]">
+    <div className="max-w-[90%] mx-auto px-6 md:px-24 mt-10 bg-[#121212] text-white py-16 rounded-lg mb-[80px]">
       <h2 className="text-4xl font-bold text-center mb-6 text-white">
-        PHIM ĐANG CHIẾU
+        PHIM SẮP CHIẾU
       </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {currentMovies.map((movie) => (
+        {currentMovies.map((movie, index) => (
           <div
-            onClick={() => navigate("/detail-film")}
-            key={movie.id}
+            onClick={() => navigate(`/detail-film/${movie.movie_id}`)}
+            key={movie.movie_id}
             className="relative bg-[#1F2937] rounded-lg shadow-lg p-4 transition-transform transform hover:-translate-y-2 cursor-pointer"
           >
-            {movie.rank && (
+            {getRankIcon(index + (currentPage - 1) * itemsPerPage) && (
               <span className="absolute top-2 right-2">
-                <img src={movie.rank} alt="Rank" className="w-10 h-16" />
+                <img
+                  src={getRankIcon(index + (currentPage - 1) * itemsPerPage)}
+                  alt="Rank"
+                  className="w-10 h-16"
+                />
               </span>
             )}
             <img
-              src={movie.image}
+              src={movie.banner_url}
               alt={movie.title}
               className="w-full h-72 object-cover rounded-lg"
             />
@@ -143,17 +93,18 @@ const CommingSoonFilms = () => {
                 Thể loại: {movie.genre}
               </p>
               <p className="mt-1 text-sm text-gray-300">
-                {movie.duration} | {movie.rating}
+                {movie.duration} phút | {movie.rating}/10
               </p>
               <p className="mt-1 text-sm text-gray-300">
-                Khởi chiếu: {movie.releaseDate}
+                Khởi chiếu:{" "}
+                {new Date(movie.release_date).toLocaleDateString("vi-VN")}
               </p>
               <button
-                onClick={(e)=>{
+                onClick={(e) => {
                   e.stopPropagation();
-                  handleBooking(movie)
+                  handleBooking(movie);
                 }}
-                className="mt-3 bg-red-500  hover:bg-red-600 text-white text-sm py-2 px-5 rounded-lg transition-transform transform hover:scale-110 font-semibold"
+                className="mt-3 bg-red-500 hover:bg-red-600 text-white text-sm py-2 px-5 rounded-lg transition-transform transform hover:scale-110 font-semibold"
               >
                 ĐẶT VÉ
               </button>

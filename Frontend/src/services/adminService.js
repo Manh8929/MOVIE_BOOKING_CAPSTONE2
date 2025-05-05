@@ -1,13 +1,13 @@
 import axios from "axios";
 
-const token = localStorage.getItem("token"); 
+const token = localStorage.getItem("token");
 const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
 const config = {
   headers: {
-    Authorization: `Bearer ${token}`, 
-    Accept: 'application/json',
-  }
+    Authorization: `Bearer ${token}`,
+    Accept: "application/json",
+  },
 };
 
 
@@ -65,34 +65,107 @@ export const getAdminMovies = async () => {
 };
 
 // Tạo phim mới
-export const createAdminMovie = async (data) => {
-  try {
-    const response = await axios.post(`${API_URL}/api/admin/movies`, data, config);
-    return response.data;
-  } catch (error) {
-    console.error("Error creating movie:", error);
-    throw error;
-  }
+export const createAdminMovie = async (formData) => {
+  const token = localStorage.getItem("token"); 
+
+  return await axios.post(
+    "http://localhost:5000/api/admin/movies",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true, 
+    }
+  );
+};
+// Cập nhật phim theo ID
+export const updateAdminMovie = async (id, movieData) => {
+  const token = localStorage.getItem("token");
+
+  return await axios.put(
+    `${API_URL}/api/admin/movies/${id}`,
+    movieData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    }
+  );
 };
 
-// Cập nhật phim theo ID
-export const updateAdminMovie = async (id, data) => {
-  try {
-    const response = await axios.put(`${API_URL}/api/admin/movies/${id}`, data, config);
-    return response.data;
-  } catch (error) {
-    console.error(`Error updating movie with id ${id}:`, error);
-    throw error;
-  }
-};
 
 // Xóa phim theo ID
 export const deleteAdminMovie = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/api/admin/movies/${id}`, config);
+    const response = await axios.delete(
+      `${API_URL}/api/admin/movies/${id}`,
+      config
+    );
     return response.data;
   } catch (error) {
     console.error(`Error deleting movie with id ${id}:`, error);
+    throw error;
+  }
+};
+
+
+/// ---- theaters --- ///
+
+// Lấy danh sách tất cả rạp
+export const getAllTheaters = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/admin/theaters`, config);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching theaters:", error);
+    throw error;
+  }
+};
+
+// Thêm rạp mới
+export const createTheater = async (theaterData) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/api/admin/theaters`,
+      theaterData,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error creating theater:", error);
+    throw error;
+  }
+};
+
+// Cập nhật thông tin rạp
+export const updateTheater = async (id, theaterData) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/api/admin/theaters/${id}`,
+      theaterData,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating theater with id ${id}:`, error);
+    throw error;
+  }
+};
+
+// Xóa rạp
+export const deleteTheater = async (id) => {
+  try {
+    const response = await axios.delete(
+      `${API_URL}/api/admin/theaters/${id}`,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting theater with id ${id}:`, error);
     throw error;
   }
 };

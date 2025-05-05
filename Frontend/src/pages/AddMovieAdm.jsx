@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
-import SidebarAdm from "../components/Admin/SidebarAdm";
-import EditMovie from "../components/Admin/EditMovie";
-import { getAdminMovies, deleteAdminMovie } from "../services/adminService";
+import { toast } from "react-toastify";
 
+import SidebarAdm from "../components/Admin/SidebarAdm";
+import MovieDetailModal from "../components/Admin/MovieDetailModal";
+import ManagerMovies from "../components/Admin/ManagerMovies";
+import { getAdminMovies, deleteAdminMovie } from "../services/adminService";
 const AddMovieAdm = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [movies, setMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null); 
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [viewingMovie, setViewingMovie] = useState(null);
 
   const fetchMovies = async () => {
     try {
-      const data = await getAdminMovies(); 
-      console.log("Movies data:", data); 
+      const data = await getAdminMovies();
+      console.log("Movies data:", data);
 
       if (Array.isArray(data.movies)) {
         setMovies(data.movies);
@@ -19,7 +22,7 @@ const AddMovieAdm = () => {
         console.error(
           "Dữ liệu không chứa thuộc tính movies hoặc movies không phải là mảng!"
         );
-        setMovies([]); 
+        setMovies([]);
       }
     } catch (error) {
       console.error("Failed to fetch movies", error);
@@ -38,18 +41,20 @@ const AddMovieAdm = () => {
   const closeModal = () => {
     setIsEditModalOpen(false);
     setSelectedMovie(null);
-    fetchMovies(); 
+    fetchMovies();
   };
 
   const handleDelete = async (id) => {
-    console.log("Deleting movie with ID:", id); 
-    if (confirm("Bạn có chắc chắn muốn xóa phim này?")) {
-      try {
-        await deleteAdminMovie(id);
-        fetchMovies();
-      } catch (error) {
-        console.error("Xóa thất bại:", error);
-      }
+    const confirmed = window.confirm("Bạn có chắc chắn muốn xóa phim này?");
+    if (!confirmed) return;
+
+    try {
+      await deleteAdminMovie(id);
+      toast.success("Xóa phim thành công!");
+      fetchMovies();
+    } catch (error) {
+      toast.error("Xóa phim thất bại!");
+      console.error("Xóa thất bại:", error);
     }
   };
 
@@ -120,7 +125,12 @@ const AddMovieAdm = () => {
                   {movie.status === "now_showing" ? "Đang chiếu" : "Sắp chiếu"}
                 </td>
                 <td className="border-b border-gray-300 p-4">
-                  <button className="text-blue-500 mr-2">👁️</button>
+                  <button
+                    className="text-blue-500 mr-2"
+                    onClick={() => setViewingMovie(movie)}
+                  >
+                    👁️
+                  </button>
                   <button
                     className="text-yellow-500 mr-2"
                     onClick={() => openModal(movie)}
@@ -148,7 +158,13 @@ const AddMovieAdm = () => {
       </div>
 
       {isEditModalOpen && (
-        <EditMovie movie={selectedMovie} onClose={closeModal} />
+        <ManagerMovies movie={selectedMovie} onClose={closeModal} />
+      )}
+      {viewingMovie && (
+        <MovieDetailModal
+          movie={viewingMovie}
+          onClose={() => setViewingMovie(null)}
+        />
       )}
     </div>
   );

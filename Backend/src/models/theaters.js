@@ -1,11 +1,13 @@
 module.exports = (sequelize, DataTypes) => {
-  const Theater = sequelize.define("Theater", {
-    theater_id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-      allowNull: false,
-    },
+  const Theater = sequelize.define(
+    "Theater",
+    {
+      theater_id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false,
+      },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -27,11 +29,13 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: "active",
       allowNull: false,
     },    
-    created_at: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-  });
+  },
+    {
+      timestamps: true,
+      tableName: "Theaters",
+    }
+  );
+
 
   return Theater;
 };
