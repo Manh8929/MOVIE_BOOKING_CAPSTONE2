@@ -29,24 +29,10 @@ route.delete("/deleteUsers/:id", authenticate, authorize("admin"), deleteUser);
 route.put("/updateUsers/:id", authenticate, authorize("admin"), updateUser);
 
 // CRUD Showtime
-route.post(
-  "/showtimes",
-  authenticate,
-  authorize("admin"),
-  createShowtimeController
-);
-route.put(
-  "/showtimes/:id",
-  authenticate,
-  authorize("admin"),
-  updateShowtimeController
-);
-route.delete(
-  "/showtimes/:id",
-  authenticate,
-  authorize("admin"),
-  deleteShowtimeController
-);
+route.post("/showtimes", authenticate, authorize("admin"), createShowtimeController);
+route.put("/showtimes/:id", authenticate, authorize("admin"), updateShowtimeController);
+route.delete("/showtimes/:id", authenticate, authorize("admin"), deleteShowtimeController);
+
 
 // CRUD News
 route.post("/news", authenticate, createNews);
