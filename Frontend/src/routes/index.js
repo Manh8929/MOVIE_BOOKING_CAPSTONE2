@@ -28,13 +28,11 @@ import DetalFilmPage from "../pages/DetalFilmPage";
 import LoginPage from "../pages/LoginPage";
 import RegistrationForm from "../pages/RegistrationForm";
 import ForgotPassword from "../pages/ForgotPassword";
-<<<<<<< HEAD
 import FAQPage from "../pages/FAQPage";
-=======
 import NewsManagement from "../pages/NewsManagement";
 import PromotionManagement from "../pages/PromotionManagement";
 import OAuthSuccess from "../components/CallBackComponent/OAuthSuccess";
->>>>>>> 42b69ea8753644dfec455f3d8486f5ab117bbae9
+
 
 export const routes = [
   {

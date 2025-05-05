@@ -6,6 +6,7 @@ const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
 export const registerUser = async (data) => {
   try {
     const response = await axios.post(`${API_URL}/auth/register`, data);
+    console.log("User registered successfully:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error during registration:", error);

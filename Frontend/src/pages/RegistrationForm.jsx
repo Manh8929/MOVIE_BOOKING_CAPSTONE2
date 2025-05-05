@@ -91,6 +91,7 @@ const RegisterPage = () => {
     }
     try {
       const newUser = await authService.registerUser(formData);
+      console.log("newUser",newUser)
       toast.success(newUser.message);
       setTimeout(() => navigate("/login"), 2000);
     } catch (error) {
