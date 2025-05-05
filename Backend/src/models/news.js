@@ -8,9 +8,13 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
       },
+      category: {
+        type: DataTypes.ENUM('general', 'specific'),
+        allowNull: false,
+      },
       movie_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       title: {
         type: DataTypes.STRING,
@@ -24,11 +28,6 @@ module.exports = (sequelize, DataTypes) => {
       published_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
-      },
-      updated_at: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        onUpdate: DataTypes.NOW,
       },
       image_url: {
         type: DataTypes.STRING,

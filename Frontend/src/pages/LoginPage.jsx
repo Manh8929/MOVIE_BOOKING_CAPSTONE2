@@ -5,6 +5,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import * as authService from "../services/authService";
 import * as userService from "../services/userService";
+import { useDispatch } from "react-redux";
+import { login as loginAction } from "../redux/slices/userSlice"; 
+
 const InputField = ({
   id,
   label,
@@ -54,6 +57,7 @@ const LoginPage = () => {
     rememberMe: false,
   });
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   const handleInputChange = (e) => {
     const { id, value, type, checked } = e.target;
@@ -76,7 +80,8 @@ const LoginPage = () => {
         localStorage.setItem("token", token);
         const user = await userService.getUserProfile(token);
         localStorage.setItem("currentUser", JSON.stringify(user));
-        setCurrentUser(user);
+        dispatch(loginAction(user));
+        // setCurrentUser(user);
 
         toast.success("Đăng nhập thành công!");
 
@@ -86,7 +91,7 @@ const LoginPage = () => {
           } else {
             navigate("/");
           }
-          window.location.reload();
+          // window.location.reload();
         }, 2000);
       } else {
         toast.error("Không nhận được token!");

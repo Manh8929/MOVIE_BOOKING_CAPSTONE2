@@ -4,6 +4,8 @@ import { routes } from "./routes";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import FooterComponent from "./components/FooterComponent/FooterComponent";
 import ChatBoxComponent from "./components/ChatBoxComponent/ChatBoxComponent";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
@@ -33,6 +35,7 @@ function App() {
         </Routes>
       </Router>
       <ChatBoxComponent />
+      <ToastContainer />
     </div>
   );
 }

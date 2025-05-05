@@ -78,6 +78,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+  },{
+    timestamps: true,
   });
 
   Promotion.associate = (models) => {

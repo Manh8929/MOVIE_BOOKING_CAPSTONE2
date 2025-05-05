@@ -1,0 +1,72 @@
+'use strict';
+
+module.exports = {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkInsert('movies', [
+      {
+        title: 'Avengers: Endgame',
+        genre: 'Action',
+        description: 'The Avengers assemble once more to reverse the damage caused by Thanos.',
+        duration: 181,
+        release_date: new Date('2019-04-26'),
+        status: 'ended',
+        poster_url: 'https://thuvientinhoc.net/wp-content/uploads/2021/08/Avengers_Endgame_bia_teaser.jpg',
+        trailer_url: 'https://thuvientinhoc.net/wp-content/uploads/2021/08/Avengers_Endgame_bia_teaser.jpg',
+        banner_url: 'https://thuvientinhoc.net/wp-content/uploads/2021/08/Avengers_Endgame_bia_teaser.jpg',
+        avatar_url: 'https://thuvientinhoc.net/wp-content/uploads/2021/08/Avengers_Endgame_bia_teaser.jpg',
+        detailed_description: 'After the devastating events of Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos’ actions and restore balance to the universe.',
+        rating: 8.50,
+        average_rating: 8.70,
+        director: 'Anthony Russo, Joe Russo',
+        actors: 'Robert Downey Jr., Chris Evans, Scarlett Johansson',
+        language: 'English',
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        title: 'Inception',
+        genre: 'Sci-Fi',
+        description: 'A thief who steals corporate secrets through the use of dream-sharing technology.',
+        duration: 148,
+        release_date: new Date('2010-07-16'),
+        status: 'ended',
+        poster_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPv38JbVTOJaTlZ15Y9h-NDVfiNN3ITiuQpg&s',
+        trailer_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPv38JbVTOJaTlZ15Y9h-NDVfiNN3ITiuQpg&s',
+        banner_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPv38JbVTOJaTlZ15Y9h-NDVfiNN3ITiuQpg&s',
+        avatar_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPv38JbVTOJaTlZ15Y9h-NDVfiNN3ITiuQpg&s',
+        detailed_description: 'Dom Cobb is a thief with the rare ability to enter the dreams of others. His skills have made him a coveted player in corporate espionage but also an international fugitive.',
+        rating: 8.80,
+        average_rating: 8.75,
+        director: 'Christopher Nolan',
+        actors: 'Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page',
+        language: 'English',
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        title: 'The Godfather',
+        genre: 'Crime',
+        description: 'An organized crime dynasty’s aging patriarch transfers control of his clandestine empire to his reluctant son.',
+        duration: 175,
+        release_date: new Date('1972-03-24'),
+        status: 'ended',
+        poster_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzY1jsvDX9oV8vhZwoHJSPxUfU8pAs1ZFi9w&s',
+        trailer_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzY1jsvDX9oV8vhZwoHJSPxUfU8pAs1ZFi9w&s',
+        banner_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzY1jsvDX9oV8vhZwoHJSPxUfU8pAs1ZFi9w&s',
+        avatar_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzY1jsvDX9oV8vhZwoHJSPxUfU8pAs1ZFi9w&s',
+        detailed_description: 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.',
+        rating: 9.20,
+        average_rating: 9.00,
+        director: 'Francis Ford Coppola',
+        actors: 'Marlon Brando, Al Pacino, James Caan',
+        language: 'English',
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+    ]);
+  },
+
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkDelete('movies', null, {});
+  },
+};

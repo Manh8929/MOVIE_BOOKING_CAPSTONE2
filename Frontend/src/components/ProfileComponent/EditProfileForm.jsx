@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 import * as userService from "../../services/userService";
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/slices/userSlice";
+import { toast } from "react-toastify";
 
 const EditProfileForm = ({ formData, setFormData, onClose }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState("");
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -13,7 +18,10 @@ const EditProfileForm = ({ formData, setFormData, onClose }) => {
     if (storedToken) {
       setToken(storedToken);
     }
-  }, []);
+    if (formData.avatar && typeof formData.avatar === "string") {
+      setAvatarPreview(formData.avatar);
+    }
+  }, [formData]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -21,29 +29,32 @@ const EditProfileForm = ({ formData, setFormData, onClose }) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, avatar: reader.result }));
-      };
-      reader.readAsDataURL(file);
+      const previewURL = URL.createObjectURL(file);
+      setFormData((prev) => ({ ...prev, avatar: file }));
+      setAvatarPreview(previewURL);
     }
   };
 
+
   const handleSave = async () => {
     if (!formData.full_name || !formData.phone_number) {
-      setError("Họ và tên và số điện thoại là bắt buộc.");
+      toast.error("Họ và tên và số điện thoại là bắt buộc.", {
+        autoClose: 1000,
+      });
       return;
     }
 
-    const dataToSend = {
-      full_name: formData.full_name,
-      phone_number: formData.phone_number || "",
-      address: formData.address || "",
-      avatar: formData.avatar || "https://example.com/avatar.jpg",
-      // dob: formData.dob || "",
-      // gender: formData.gender || "male",
-    };
+    const dataToSend = new FormData();
+    dataToSend.append("full_name", formData.full_name);
+    dataToSend.append("phone_number", formData.phone_number || "");
+    dataToSend.append("address", formData.address || "");
 
+    if (formData.avatar instanceof File) {
+      console.log("Avatar file:", formData.avatar);
+      dataToSend.append("avatar", formData.avatar);
+    }
+
+    console.log("Form data before sending:", formData);
     setError("");
     setLoading(true);
 
@@ -51,18 +62,32 @@ const EditProfileForm = ({ formData, setFormData, onClose }) => {
       if (!token) {
         throw new Error("Token không tồn tại. Vui lòng đăng nhập lại.");
       }
-      await userService.updateUserProfile(token, dataToSend);
+
+      const response = await userService.updateUserProfile(token, dataToSend);
+
       const updatedUser = {
         ...JSON.parse(localStorage.getItem("currentUser")),
-        ...dataToSend,
+        ...response.user,
       };
       localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+      dispatch(login(updatedUser));
       setFormData(updatedUser);
-      onClose();
+      setAvatarPreview(response.user.avatar); 
+
+      toast.success("Cập nhật thông tin thành công", {
+        autoClose: 1000,
+      });
+
+      setTimeout(() => {
+        onClose();
+      }, 1000);
     } catch (error) {
-      setError(
-        error.response?.data?.message || error.message || "Đã xảy ra lỗi"
-      );
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Update không thành công";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -79,10 +104,10 @@ const EditProfileForm = ({ formData, setFormData, onClose }) => {
           <div className="text-white text-center">Đang cập nhật...</div>
         )}
         <div className="space-y-4 flex flex-col items-center">
-          {formData.avatar ? (
+          {avatarPreview ? (
             <div className="relative mb-4">
               <img
-                src={formData.avatar}
+                src={avatarPreview}
                 alt="Avatar Preview"
                 className="w-24 h-24 rounded-full object-cover border-2 border-gray-600"
               />
