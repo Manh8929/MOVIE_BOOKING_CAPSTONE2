@@ -11,6 +11,10 @@ import {
   createMovie,
   updateMovie,
   deleteMovie,
+  getAllTheaters,
+  createTheater,
+  updateTheater,
+  deleteTheater,
 } from "../controllers/adminController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import { middlewareUpload } from "../middlewares/middleUploadMovie.js";
@@ -49,4 +53,9 @@ route.post("/movies",authenticate,authorize("admin"),middlewareUpload,createMovi
 route.put("/movies/:id", authenticate, authorize("admin"), middlewareUpload, updateMovie);
 route.delete("/movies/:id", authenticate, authorize("admin"), deleteMovie);
 
+// CRUD Theater (Rạp)
+route.get("/theaters", authenticate, authorize("admin"), getAllTheaters);
+route.post("/theaters", authenticate, authorize("admin"), createTheater);
+route.put("/theaters/:id", authenticate, authorize("admin"), updateTheater);
+route.delete("/theaters/:id", authenticate, authorize("admin"), deleteTheater);
 export default route;
