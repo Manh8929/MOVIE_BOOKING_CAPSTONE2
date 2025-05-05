@@ -30,6 +30,7 @@ const ManagerMovies = ({ onClose, movie }) => {
     banner_url: "",
     avatar_url: "",
     rating: 0,
+    average_rating: null,
     director: "",
     actors: "",
     language: "",
@@ -67,12 +68,15 @@ const ManagerMovies = ({ onClose, movie }) => {
 
     for (const key in form) {
       if (key === "rating" && !movie) continue;
-
       if (
         (!form[key] &&
-          key !== "poster_url" &&
-          key !== "banner_url" &&
-          key !== "avatar_url") ||
+          ![
+            "poster_url",
+            "banner_url",
+            "avatar_url",
+            "rating",
+            "average_rating",
+          ].includes(key)) ||
         (["poster_url", "banner_url", "avatar_url"].includes(key) && !form[key])
       ) {
         toast.error(`${key} không được để trống!`);
@@ -144,7 +148,7 @@ const ManagerMovies = ({ onClose, movie }) => {
     "Hoạt hình",
     "Tài liệu",
     "Tâm lý",
-  ];  
+  ];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -226,17 +230,30 @@ const ManagerMovies = ({ onClose, movie }) => {
               >
                 <option value="">-- Chọn ngôn ngữ --</option>
                 <option value="Tiếng Việt">Tiếng Việt</option>
-                <option value="Tiếng Anh (có Việt sub)">Tiếng Anh (có Việt sub)</option>
-                <option value="Tiếng Trung (có Việt sub)">Tiếng Trung (có Việt sub)</option>
-                <option value="Tiếng Hàn (có Việt sub)">Tiếng Hàn (có Việt sub)</option>
-                <option value="Tiếng Nhật (có Việt sub)">Tiếng Nhật (có Việt sub)</option>
-                <option value="Tiếng Pháp (có Việt sub)">Tiếng Pháp (có Việt sub)</option>
+                <option value="Tiếng Anh (có Việt sub)">
+                  Tiếng Anh (có Việt sub)
+                </option>
+                <option value="Tiếng Trung (có Việt sub)">
+                  Tiếng Trung (có Việt sub)
+                </option>
+                <option value="Tiếng Hàn (có Việt sub)">
+                  Tiếng Hàn (có Việt sub)
+                </option>
+                <option value="Tiếng Nhật (có Việt sub)">
+                  Tiếng Nhật (có Việt sub)
+                </option>
+                <option value="Tiếng Pháp (có Việt sub)">
+                  Tiếng Pháp (có Việt sub)
+                </option>
                 <option value="other">Khác...</option>
               </select>
             ) : key === "genre" ? (
               <div className="grid grid-cols-2 gap-2">
                 {genresList.map((genreOption) => (
-                  <label key={genreOption} className="flex items-center space-x-2">
+                  <label
+                    key={genreOption}
+                    className="flex items-center space-x-2"
+                  >
                     <input
                       type="checkbox"
                       value={genreOption}
@@ -255,20 +272,18 @@ const ManagerMovies = ({ onClose, movie }) => {
                   </label>
                 ))}
               </div>
-            ) : (
-              key === "rating" && !movie ? null : (
-                <input
-                  id={key}
-                  name={key}
-                  type={key === "rating" ? "number" : "text"}
-                  step={key === "rating" ? "0.1" : undefined}
-                  min={key === "rating" ? "0" : undefined}
-                  max={key === "rating" ? "10" : undefined}
-                  value={form[key]}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                />
-              )
+            ) : key === "rating" && !movie ? null : (
+              <input
+                id={key}
+                name={key}
+                type={key === "rating" ? "number" : "text"}
+                step={key === "rating" ? "0.1" : undefined}
+                min={key === "rating" ? "0" : undefined}
+                max={key === "rating" ? "10" : undefined}
+                value={form[key]}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              />
             )}
             {key === "language" && form.language === "other" && (
               <input

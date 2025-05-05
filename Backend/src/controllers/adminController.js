@@ -1,7 +1,8 @@
 import { createShowtime, updateShowtime, deleteShowtime } from "../services/showtimeService.js";
 import { badRequest } from "../middlewares/handle_error";
 import { deleteUserService, getAllUsersService, updateUserService } from "../services/adminService.js";
-import * as movieService from "../services/movieService.js";
+import * as movieService from "../services/adminService.js";
+import * as theaterService from "../services/adminService.js";
 //api User
 export const getAllUsers = async (req, res) => {
   try {
@@ -225,7 +226,7 @@ export const deleteMovie = async (req, res) => {
 // API Lấy tất cả rạp
 export const getAllTheaters = async (req, res) => {
   try {
-    const theaters = await movieService.getAllTheaters();
+    const theaters = await theaterService.getAllTheaters();
     res.status(200).json({ theaters });
   } catch (err) {
     console.error("Error fetching theaters:", err);
@@ -244,7 +245,7 @@ export const createTheater = async (req, res) => {
         .json({ message: "Vui lòng cung cấp đầy đủ thông tin" });
     }
 
-    const newTheater = await movieService.createTheater({
+    const newTheater = await theaterService.createTheater({
       name,
       location,
       total_screens: parseInt(total_screens),
@@ -263,7 +264,7 @@ export const updateTheater = async (req, res) => {
   try {
     const { name, location, total_screens, contact } = req.body;
 
-    const updatedTheater = await movieService.updateTheater(req.params.id, {
+    const updatedTheater = await theaterService.updateTheater(req.params.id, {
       name,
       location,
       total_screens: parseInt(total_screens),
@@ -286,7 +287,7 @@ export const updateTheater = async (req, res) => {
 // API Xoá rạp
 export const deleteTheater = async (req, res) => {
   try {
-    const deleted = await movieService.deleteTheater(req.params.id);
+    const deleted = await theaterService.deleteTheater(req.params.id);
     if (!deleted) {
       return res.status(404).json({ message: "Không tìm thấy rạp" });
     }
