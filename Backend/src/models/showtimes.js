@@ -67,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      timestamps: false, // tắt times
+      timestamps: true,
       tableName: "showtimes",
     }
   );

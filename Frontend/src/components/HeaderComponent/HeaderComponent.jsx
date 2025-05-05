@@ -10,7 +10,7 @@ import { logout, login } from "../../redux/slices/userSlice";
 const HeaderComponent = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.userData);
-  console.log("currentUser",currentUser)
+  console.log("currentUser", currentUser);
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleMouseEnter = () => setIsMenuOpen(true);
@@ -23,7 +23,7 @@ const HeaderComponent = () => {
     if (userData) {
       dispatch(login(userData));
     }
-  }, [dispatch]);  
+  }, [dispatch]);
 
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
@@ -71,22 +71,30 @@ const HeaderComponent = () => {
               <div className="absolute right-0 w-48 bg-white rounded-md shadow-lg py-2 z-50">
                 <Link
                   to="/profile"
-                  className="block px-4 py-2 text-gray-800 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
+                  className="block px-4 py-2 text-center text-gray-800 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
                 >
                   Thông tin của bạn
                 </Link>
                 <Link
                   to="/ticket-up-his"
-                  className="block px-4 py-2 text-gray-800 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
+                  className="block px-4 py-2 text-center text-gray-800 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
                 >
                   Vé của bạn
                 </Link>
                 <Link
                   to="/movie-recommendation"
-                  className="block px-4 py-2 text-gray-800 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
+                  className="block px-4 py-2 text-center text-gray-800 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
                 >
                   Đề xuất phim
                 </Link>
+                {currentUser.role_id === 1 && (
+                  <Link
+                    to="/AddMovieAdm"
+                    className="block px-4 py-2 text-center text-gray-800 hover:bg-gray-200 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
+                  >
+                    Quản lý hệ thống
+                  </Link>
+                )}
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left px-4 py-2 text-gray-800 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
@@ -184,6 +192,16 @@ const HeaderComponent = () => {
                       Đề xuất phim
                     </Link>
                   </li>
+                  {currentUser.role_id === 1 && (
+                    <li>
+                      <Link
+                        to="/AddMovieAdm"
+                        className="block px-4 py-2 text-center text-gray-800 hover:bg-gray-200 hover:text-white hover:bg-gradient-to-br from-black via-black to-[#4f111e]"
+                      >
+                        Quản lý hệ thống
+                      </Link>
+                    </li>
+                  )}
                   <li>
                     <button
                       onClick={handleLogout}

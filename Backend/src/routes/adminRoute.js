@@ -15,12 +15,18 @@ import {
   createTheater,
   updateTheater,
   deleteTheater,
+  deleteUser,
+  updateUser,
 } from "../controllers/adminController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import { middlewareUpload } from "../middlewares/middleUploadMovie.js";
 const route = express.Router();
 
+
+//api manager User
 route.get("/getAllUsers", authenticate, authorize("admin"), getAllUsers);
+route.delete("/deleteUsers/:id", authenticate, authorize("admin"), deleteUser);
+route.put("/updateUsers/:id", authenticate, authorize("admin"), updateUser);
 
 // CRUD Showtime
 route.post(

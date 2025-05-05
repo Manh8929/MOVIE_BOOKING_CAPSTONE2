@@ -19,13 +19,19 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     seat_type: {
-      type: DataTypes.ENUM("regular", "vip", "disabled"),
+      type: DataTypes.ENUM("regular", "vip", "disabled","couple"),
+      allowNull: false,
+    },
+    price: {
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
     is_available: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
+  },{
+    timestamps: true,
   });
 
   Seat.associate = (models) => {

@@ -18,7 +18,7 @@ export const registerUserService = async (userData) => {
     dob: userData.dob,
     gender: userData.gender,
     address: userData.address,
-    role_id: 2,
+    role_id: 1,
   });
 
   return {
