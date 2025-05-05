@@ -39,15 +39,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use("/showtime", userRoute);
 app.use("/new", userRoute);
-app.use("/auth", authRoute);
-// app.use(authenticate);
-
-
-// Các route không yêu cầu đăng nhập
 app.use("/", movieRouter);
+app.use("/auth", authRoute);
+app.use(authenticate);
+
+
 
 // Các route yêu cầu đăng nhập
-app.use("/auth", authRoute);
 app.use("/api/admin", authenticate, adminRoute);
 app.use("/api/user", authenticate, userRoute);
 
