@@ -56,6 +56,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("2D", "3D", "IMAX"),
         allowNull: false,
       },
+      status: {
+        type: DataTypes.ENUM("available", "unavailable", "maintenance"),
+        defaultValue: "available",
+        allowNull: false,
+      },
     },
     {
       timestamps: true,
