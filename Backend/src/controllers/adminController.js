@@ -262,13 +262,14 @@ export const createTheater = async (req, res) => {
 // API Cập nhật rạp
 export const updateTheater = async (req, res) => {
   try {
-    const { name, location, total_screens, contact } = req.body;
+    const { name, location, total_screens, contact, status } = req.body;
 
     const updatedTheater = await theaterService.updateTheater(req.params.id, {
       name,
       location,
       total_screens: parseInt(total_screens),
       contact,
+      status,
     });
 
     if (!updatedTheater) {

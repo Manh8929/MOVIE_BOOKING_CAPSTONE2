@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import {
   getAllTheaters,
+  updateTheater,
   createTheater,
   deleteTheater,
 } from "../services/adminService";
@@ -12,7 +13,8 @@ import SidebarAdm from "../components/Admin/SidebarAdm";
 const Theaters = () => {
   const [theaters, setTheaters] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false); 
+  const [showForm, setShowForm] = useState(false);
+  const [selectedTheater, setSelectedTheater] = useState(null);
 
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
@@ -46,24 +48,65 @@ const Theaters = () => {
 
     setLoading(true);
     try {
-      const newTheater = {
+      const theaterData = {
         name,
         location,
         total_screens: totalScreens,
         contact,
       };
-      const response = await createTheater(newTheater);
-      toast.success("Tạo rạp thành công!");
-      setTheaters((prev) => [...prev, response]);
+
+      if (selectedTheater) {
+        const updated = await updateTheater(
+          selectedTheater.theater_id,
+          theaterData
+        );
+        toast.success("Cập nhật rạp thành công!");
+        setTheaters((prev) =>
+          prev.map((t) => (t.theater_id === updated.theater_id ? updated : t))
+        );
+      } else {
+        const created = await createTheater(theaterData);
+        toast.success("Tạo rạp thành công!");
+        setTheaters((prev) => [...prev, created]);
+      }
+
       setName("");
       setLocation("");
       setTotalScreens(0);
       setContact("");
-      setShowForm(false); 
+      setSelectedTheater(null);
+      setShowForm(false);
     } catch (error) {
-      toast.error("Đã có lỗi xảy ra khi tạo rạp!");
+      toast.error("Đã có lỗi xảy ra!", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleViewDetail = (theater) => {
+    setSelectedTheater(theater);
+    setName(theater.name);
+    setLocation(theater.location);
+    setTotalScreens(theater.total_screens);
+    setContact(theater.contact);
+    setShowForm(true);
+  };
+
+  const handleEditTheater = (theater) => {
+    handleViewDetail(theater);
+  };
+
+  const handleChangeStatus = async (id, newStatus) => {
+    try {
+      const updated = await updateTheater(id, { status: newStatus });
+      toast.success(`Cập nhật trạng thái thành công: ${newStatus}`);
+      setTheaters((prev) =>
+        prev.map((t) =>
+          t.theater_id === id ? { ...t, status: updated.status } : t
+        )
+      );
+    } catch (error) {
+      toast.error("Lỗi khi cập nhật trạng thái!", error);
     }
   };
 
@@ -88,16 +131,22 @@ const Theaters = () => {
 
         <div className="mb-4 text-right">
           <button
-            onClick={() => setShowForm(!showForm)} 
+            onClick={() => setShowForm(!showForm)}
             className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
           >
-            + Thêm Rạp Chiếu
+            {showForm
+              ? selectedTheater
+                ? "– Sửa Rạp Chiếu"
+                : "– Thêm Rạp Chiếu"
+              : "+ Thêm Rạp Chiếu"}
           </button>
         </div>
 
         {showForm && (
           <div className="mb-6 bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Thêm Rạp Chiếu</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              {selectedTheater ? "Cập nhật Rạp Chiếu" : "Thêm Rạp Chiếu"}
+            </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
@@ -159,7 +208,13 @@ const Theaters = () => {
                 }`}
                 disabled={loading}
               >
-                {loading ? "Đang tạo..." : "Tạo Rạp Chiếu"}
+                {loading
+                  ? selectedTheater
+                    ? "Đang cập nhật..."
+                    : "Đang tạo..."
+                  : selectedTheater
+                  ? "Cập nhật Rạp Chiếu"
+                  : "Tạo Rạp Chiếu"}
               </button>
             </form>
           </div>
@@ -172,36 +227,95 @@ const Theaters = () => {
         ) : (
           theaters.map((theater) => (
             <div
-            key={theater.id}
-            className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-300 hover:shadow-2xl transition-shadow duration-300"
-          >
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center space-x-3">
-                <button className="text-blue-500 hover:text-blue-700 hover:underline focus:outline-none">
-                  Xem chi tiết
-                </button>
-                <h2 className="text-xl font-semibold text-gray-800">{theater.name}</h2>
+              key={theater.id}
+              className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-300 hover:shadow-2xl transition-shadow duration-300"
+            >
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center space-x-3">
+                  <button
+                    className="text-blue-500 hover:text-blue-700 hover:underline focus:outline-none"
+                    onClick={() => handleViewDetail(theater)}
+                  >
+                    Xem chi tiết
+                  </button>
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    {theater.name}
+                  </h2>
+                </div>
+                <div className="space-x-3">
+                  <button className="text-green-500 hover:text-green-700 hover:underline focus:outline-none">
+                    + Thêm Phòng
+                  </button>
+                  <button
+                    className="text-yellow-500 hover:text-yellow-700 hover:underline focus:outline-none"
+                    onClick={() => handleEditTheater(theater)}
+                  >
+                    Sửa
+                  </button>
+                  <button
+                    className="text-red-500 hover:text-red-700 hover:underline focus:outline-none"
+                    onClick={() => handleDeleteTheater(theater.theater_id)}
+                  >
+                    Xóa
+                  </button>
+                </div>
               </div>
-              <div className="space-x-3">
-                <button className="text-green-500 hover:text-green-700 hover:underline focus:outline-none">
-                  + Thêm Phòng
-                </button>
-                <button className="text-yellow-500 hover:text-yellow-700 hover:underline focus:outline-none">
-                  Sửa
-                </button>
-                <button
-                  className="text-red-500 hover:text-red-700 hover:underline focus:outline-none"
-                  onClick={() => handleDeleteTheater(theater.theater_id)}
+
+              <div className="flex items-center justify-between text-sm text-gray-500">
+                <p className="italic">
+                  Tổng số phòng chiếu: {theater.total_screens}
+                </p>
+                <p
+                  className={`italic ${
+                    theater.status === "active"
+                      ? "text-green-600"
+                      : theater.status === "maintenance"
+                      ? "text-yellow-600"
+                      : "text-red-600"
+                  }`}
                 >
-                  Xóa
-                </button>
+                  Trạng thái:{" "}
+                  {theater.status === "active"
+                    ? "Hoạt động"
+                    : theater.status === "maintenance"
+                    ? "Bảo trì"
+                    : "Ngừng hoạt động"}
+                </p>
+              </div>
+
+              <div className="mt-2 space-x-2">
+                {theater.status !== "active" && (
+                  <button
+                    className="text-green-600 hover:underline"
+                    onClick={() =>
+                      handleChangeStatus(theater.theater_id, "active")
+                    }
+                  >
+                    Kích hoạt
+                  </button>
+                )}
+                {theater.status !== "maintenance" && (
+                  <button
+                    className="text-yellow-600 hover:underline"
+                    onClick={() =>
+                      handleChangeStatus(theater.theater_id, "maintenance")
+                    }
+                  >
+                    Bảo trì
+                  </button>
+                )}
+                {theater.status !== "inactive" && (
+                  <button
+                    className="text-red-600 hover:underline"
+                    onClick={() =>
+                      handleChangeStatus(theater.theater_id, "inactive")
+                    }
+                  >
+                    Ngừng hoạt động
+                  </button>
+                )}
               </div>
             </div>
-          
-            <div className="flex items-center justify-between text-sm text-gray-500">
-              <p className="italic">Tổng số phòng chiếu: {theater.total_screens}</p>
-            </div>
-          </div>          
           ))
         )}
       </div>
