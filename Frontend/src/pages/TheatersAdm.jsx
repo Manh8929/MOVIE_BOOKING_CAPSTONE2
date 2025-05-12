@@ -21,6 +21,14 @@ const Theaters = () => {
   const [totalScreens, setTotalScreens] = useState(0);
   const [contact, setContact] = useState("");
 
+  // phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentTheaters = theaters.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(theaters.length / itemsPerPage);
+
   const fetchTheaters = async () => {
     try {
       const data = await getAllTheaters();
@@ -225,7 +233,7 @@ const Theaters = () => {
         ) : theaters.length === 0 ? (
           <p className="text-gray-500">Chưa có rạp nào</p>
         ) : (
-          theaters.map((theater) => (
+          currentTheaters.map((theater) => (
             <div
               key={theater.id}
               className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-300 hover:shadow-2xl transition-shadow duration-300"
@@ -317,6 +325,23 @@ const Theaters = () => {
               </div>
             </div>
           ))
+        )}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-4 space-x-2">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => setCurrentPage(index + 1)}
+                className={`px-3 py-1 rounded-md border ${
+                  currentPage === index + 1
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
         )}
       </div>
     </div>

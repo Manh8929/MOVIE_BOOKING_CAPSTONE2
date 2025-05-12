@@ -11,6 +11,14 @@ const AddMovieAdm = () => {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [viewingMovie, setViewingMovie] = useState(null);
 
+  // phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentMovies = movies.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(movies.length / itemsPerPage);
+
   const fetchMovies = async () => {
     try {
       const data = await getAdminMovies();
@@ -104,10 +112,10 @@ const AddMovieAdm = () => {
             </tr>
           </thead>
           <tbody>
-            {movies.map((movie, index) => (
+            {currentMovies.map((movie, index) => (
               <tr key={movie._id}>
                 <td className="border-b border-r border-gray-300 p-4">
-                  {index + 1}
+                  {indexOfFirstItem + index + 1}
                 </td>
                 <td className="border-b border-r border-gray-300 p-4">
                   <img
@@ -122,7 +130,13 @@ const AddMovieAdm = () => {
                   {movie.title}
                 </td>
                 <td className="border-b border-r border-gray-300 p-4">
-                  {movie.status === "now_showing" ? "Đang chiếu" : "Sắp chiếu"}
+                  {movie.status === "now_showing"
+                    ? "Đang chiếu"
+                    : movie.status === "upcoming"
+                    ? "Sắp chiếu"
+                    : movie.status === "ended"
+                    ? "Đã ngừng chiếu"
+                    : "Không xác định"}
                 </td>
                 <td className="border-b border-gray-300 p-4">
                   <button
@@ -155,6 +169,23 @@ const AddMovieAdm = () => {
             )}
           </tbody>
         </table>
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-4 space-x-2">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`px-4 py-2 border rounded-full ${
+                    currentPage === i + 1
+                      ? "bg-[#131c28] text-white"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+          )}
       </div>
 
       {isEditModalOpen && (
