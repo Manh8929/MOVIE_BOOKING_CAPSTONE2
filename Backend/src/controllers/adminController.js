@@ -49,7 +49,6 @@ export const updateUser = async (req, res) => {
   }
 };
 
-
 // API Add lịch chiếu
 export const createShowtimeController = async (req, res, next) => {
   try {
@@ -237,9 +236,9 @@ export const getAllTheaters = async (req, res) => {
 // API Tạo mới rạp
 export const createTheater = async (req, res) => {
   try {
-    const { name, location, total_screens, contact } = req.body;
+    const { name, location, contact } = req.body;
 
-    if (!name || !location || !total_screens || !contact) {
+    if (!name || !location || !contact) {
       return res
         .status(400)
         .json({ message: "Vui lòng cung cấp đầy đủ thông tin" });
@@ -248,7 +247,6 @@ export const createTheater = async (req, res) => {
     const newTheater = await theaterService.createTheater({
       name,
       location,
-      total_screens: parseInt(total_screens),
       contact,
     });
 

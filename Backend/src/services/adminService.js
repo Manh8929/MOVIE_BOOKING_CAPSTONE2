@@ -78,7 +78,23 @@ export const deleteMovie = async (id) => {
 
 // threaters
 export const getAllTheaters = async () => {
-  return await db.Theater.findAll();
+  return await db.Theater.findAll({
+    include: [
+      {
+        model: db.Screen,
+        attributes: [],
+      },
+    ],
+    attributes: {
+      include: [
+        [
+          db.Sequelize.fn("COUNT", db.Sequelize.col("Screens.screen_id")),
+          "total_screens",
+        ],
+      ],
+    },
+    group: ["Theater.theater_id"],
+  });
 };
 
 export const createTheater = async (data) => {

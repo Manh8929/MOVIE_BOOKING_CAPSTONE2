@@ -49,8 +49,17 @@ const Theaters = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name || !location || totalScreens <= 0 || !contact) {
+    const isValidPhoneNumber = (phone) => /^0\d{9}$/.test(phone);
+
+    if (!name || !location || !contact) {
       toast.error("Vui lòng điền đầy đủ thông tin!");
+      return;
+    }
+
+    if (!isValidPhoneNumber(contact)) {
+      toast.error(
+        "Số điện thoại không hợp lệ! (phải bắt đầu bằng số 0 và có 10 chữ số)"
+      );
       return;
     }
 
@@ -59,8 +68,8 @@ const Theaters = () => {
       const theaterData = {
         name,
         location,
-        total_screens: totalScreens,
         contact,
+        total_screens: totalScreens,
       };
 
       if (selectedTheater) {
@@ -95,7 +104,6 @@ const Theaters = () => {
     setSelectedTheater(theater);
     setName(theater.name);
     setLocation(theater.location);
-    setTotalScreens(theater.total_screens);
     setContact(theater.contact);
     setShowForm(true);
   };
@@ -184,20 +192,6 @@ const Theaters = () => {
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
-                  Tổng số phòng chiếu
-                </label>
-                <input
-                  type="number"
-                  className="mt-1 p-2 w-full border border-gray-300 rounded"
-                  value={totalScreens}
-                  onChange={(e) => setTotalScreens(Number(e.target.value))}
-                  min="1"
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
                   Số điện thoại liên hệ
                 </label>
                 <input
@@ -270,9 +264,14 @@ const Theaters = () => {
               </div>
 
               <div className="flex items-center justify-between text-sm text-gray-500">
-                <p className="italic">
-                  Tổng số phòng chiếu: {theater.total_screens}
-                </p>
+                <div>
+                  <h3 className="mb-2 text-black text-base">
+                    Địa điểm: {theater.location}
+                  </h3>
+                  <p className="italic">
+                    Tổng số phòng chiếu: {theater.total_screens}
+                  </p>
+                </div>
                 <p
                   className={`italic ${
                     theater.status === "active"

@@ -18,10 +18,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      total_screens: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
       contact: {
         type: Sequelize.STRING,
         allowNull: false,
