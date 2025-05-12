@@ -1,7 +1,8 @@
 import userService from "../services/userService.js";
 import { getAllShowtimes, getShowtimesByDate } from "../services/showtimeService.js";
 import { updateUserProfileSchema } from "../helpers/joi_schema.js";
-
+import * as theaterService from "../services/userService.js";
+import * as screenService from "../services/userService.js";
 
 // GET user profile
 export const getUserProfile = async (req, res) => {
@@ -109,5 +110,28 @@ export const getNewsById = async (req, res) => {
   } catch (error) {
     console.error('Error fetching news by id:', error); 
     res.status(500).json({ message: 'Error fetching news by ID' });
+  }
+};
+
+
+// theaters
+export const getAllTheaters = async (req, res) => {
+  try {
+    const theaters = await theaterService.getAllTheaters();
+    res.status(200).json({ theaters });
+  } catch (err) {
+    console.error("Error fetching theaters:", err);
+    res.status(500).json({ message: "Lỗi khi lấy tất cả các rạp" });
+  }
+};
+
+// màn hình
+export const getAllScreens = async (req, res) => {
+  try {
+    const screens = await screenService.getAllScreens();
+    res.status(200).json({ screens });
+  } catch (err) {
+    console.error("Lỗi khi lấy danh sách phòng chiếu:", err);
+    res.status(500).json({ message: "Lỗi server" });
   }
 };

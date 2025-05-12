@@ -3,6 +3,8 @@ import { badRequest } from "../middlewares/handle_error";
 import { deleteUserService, getAllUsersService, updateUserService } from "../services/adminService.js";
 import * as movieService from "../services/adminService.js";
 import * as theaterService from "../services/adminService.js";
+import * as screenService from "../services/adminService.js";
+
 //api User
 export const getAllUsers = async (req, res) => {
   try {
@@ -294,5 +296,49 @@ export const deleteTheater = async (req, res) => {
   } catch (err) {
     console.error("Error deleting theater:", err);
     res.status(500).json({ message: "Lỗi khi xoá rạp" });
+  }
+};
+
+// screens
+export const getAllScreens = async (req, res) => {
+  try {
+    const screens = await screenService.getAllScreens();
+    res.status(200).json({ screens });
+  } catch (err) {
+    console.error("Lỗi khi lấy danh sách phòng chiếu:", err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+export const createScreen = async (req, res) => {
+  try {
+    const data = req.body;
+    const newScreen = await screenService.createScreen(data);
+    res.status(201).json({ message: "Tạo phòng chiếu thành công", data: newScreen });
+  } catch (err) {
+    console.error("Lỗi khi tạo phòng chiếu:", err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+export const updateScreen = async (req, res) => {
+  try {
+    const updated = await screenService.updateScreen(req.params.id, req.body);
+    if (!updated) return res.status(404).json({ message: "Không tìm thấy phòng chiếu" });
+    res.status(200).json({ message: "Cập nhật phòng chiếu thành công", data: updated });
+  } catch (err) {
+    console.error("Lỗi khi cập nhật phòng chiếu:", err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+export const deleteScreen = async (req, res) => {
+  try {
+    const deleted = await screenService.deleteScreen(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "Không tìm thấy phòng chiếu" });
+    res.status(200).json({ message: "Xoá phòng chiếu thành công" });
+  } catch (err) {
+    console.error("Lỗi khi xoá phòng chiếu:", err);
+    res.status(500).json({ message: "Lỗi server" });
   }
 };

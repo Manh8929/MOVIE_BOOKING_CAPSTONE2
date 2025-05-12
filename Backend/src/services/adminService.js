@@ -115,5 +115,28 @@ export const deleteTheater = async (id) => {
   return true;
 };
 
+// screen
+export const getAllScreens = async () => {
+  return await db.Screen.findAll({
+    include: [{ model: db.Theater, attributes: ["name", "location"] }],
+    order: [["createdAt", "DESC"]],
+  });
+};
 
+export const createScreen = async (data) => {
+  return await db.Screen.create(data);
+};
 
+export const updateScreen = async (id, data) => {
+  const screen = await db.Screen.findByPk(id);
+  if (!screen) return null;
+  await screen.update(data);
+  return screen;
+};
+
+export const deleteScreen = async (id) => {
+  const screen = await db.Screen.findByPk(id);
+  if (!screen) return null;
+  await screen.destroy();
+  return true;
+};
