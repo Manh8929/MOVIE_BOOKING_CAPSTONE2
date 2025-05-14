@@ -89,13 +89,28 @@ exports.getNewsById = async (id) => {
   }
 };
 
+// exports.createNews = async (newsData) => {
+//   try {
+//     const newNews = await db.News.create(newsData);  // Tạo mới tin tức
+//     return newNews;
+//   } catch (error) {
+//     console.error('Error creating news:', error);
+//     throw new Error('Error creating news');
+//   }
+// };
 exports.createNews = async (newsData) => {
   try {
-    const newNews = await db.News.create(newsData);  // Tạo mới tin tức
+    // Kiểm tra nếu thiếu category, gán giá trị mặc định
+    if (!newsData.category) {
+      throw new Error("Category is required");
+    }
+
+    // Nếu có category hợp lệ, tiến hành tạo tin tức mới
+    const newNews = await db.News.create(newsData);
     return newNews;
   } catch (error) {
     console.error('Error creating news:', error);
-    throw new Error('Error creating news');
+    throw new Error('Error creating news: ' + error.message); // In lỗi chi tiết
   }
 };
 

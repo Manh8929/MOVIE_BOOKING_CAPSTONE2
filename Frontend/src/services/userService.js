@@ -36,3 +36,37 @@ export const updateUserProfile = async (token, data) => {
     throw new Error("Unable to update user profile. Please try again later.");
   }
 };
+
+// Hàm lấy danh sách tin tức
+export const getNews = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/new/news`);
+    return response.data; // trả về dữ liệu tin tức
+  } catch (error) {
+    console.error("Error fetching news data:", error);
+    throw new Error("Không thể tải tin tức. Vui lòng thử lại.");
+  }
+};
+
+// Hàm lấy tin tức theo ID
+export const getNewsById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/new/news/${id}`);
+    return response.data; // trả về tin tức chi tiết theo ID
+  } catch (error) {
+    console.error("Error fetching news by ID:", error);
+    throw new Error("Không thể tải tin tức chi tiết. Vui lòng thử lại.");
+  }
+};
+
+// Hàm lấy danh sách phim
+export const getMovies = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/movies`);
+    return response.data.movies;  // trả về dữ liệu danh sách phim
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;  // ném lỗi ra ngoài để xử lý khi cần
+  }
+};
+
