@@ -4,6 +4,8 @@ import { deleteUserService, getAllUsersService, updateUserService } from "../ser
 import * as movieService from "../services/adminService.js";
 import * as theaterService from "../services/adminService.js";
 import * as userService from "../services/userService.js";
+import * as screenService from "../services/adminService.js";
+
 //api User
 export const getAllUsers = async (req, res) => {
   try {
@@ -49,7 +51,6 @@ export const updateUser = async (req, res) => {
     });
   }
 };
-
 
 // API Add lịch chiếu
 export const createShowtimeController = async (req, res, next) => {
@@ -273,9 +274,9 @@ export const getAllTheaters = async (req, res) => {
 // API Tạo mới rạp
 export const createTheater = async (req, res) => {
   try {
-    const { name, location, total_screens, contact } = req.body;
+    const { name, location, contact } = req.body;
 
-    if (!name || !location || !total_screens || !contact) {
+    if (!name || !location || !contact) {
       return res
         .status(400)
         .json({ message: "Vui lòng cung cấp đầy đủ thông tin" });
@@ -284,7 +285,6 @@ export const createTheater = async (req, res) => {
     const newTheater = await theaterService.createTheater({
       name,
       location,
-      total_screens: parseInt(total_screens),
       contact,
     });
 
@@ -298,13 +298,14 @@ export const createTheater = async (req, res) => {
 // API Cập nhật rạp
 export const updateTheater = async (req, res) => {
   try {
-    const { name, location, total_screens, contact } = req.body;
+    const { name, location, total_screens, contact, status } = req.body;
 
     const updatedTheater = await theaterService.updateTheater(req.params.id, {
       name,
       location,
       total_screens: parseInt(total_screens),
       contact,
+      status,
     });
 
     if (!updatedTheater) {
@@ -331,5 +332,49 @@ export const deleteTheater = async (req, res) => {
   } catch (err) {
     console.error("Error deleting theater:", err);
     res.status(500).json({ message: "Lỗi khi xoá rạp" });
+  }
+};
+
+// screens
+export const getAllScreens = async (req, res) => {
+  try {
+    const screens = await screenService.getAllScreens();
+    res.status(200).json({ screens });
+  } catch (err) {
+    console.error("Lỗi khi lấy danh sách phòng chiếu:", err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+export const createScreen = async (req, res) => {
+  try {
+    const data = req.body;
+    const newScreen = await screenService.createScreen(data);
+    res.status(201).json({ message: "Tạo phòng chiếu thành công", data: newScreen });
+  } catch (err) {
+    console.error("Lỗi khi tạo phòng chiếu:", err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+export const updateScreen = async (req, res) => {
+  try {
+    const updated = await screenService.updateScreen(req.params.id, req.body);
+    if (!updated) return res.status(404).json({ message: "Không tìm thấy phòng chiếu" });
+    res.status(200).json({ message: "Cập nhật phòng chiếu thành công", data: updated });
+  } catch (err) {
+    console.error("Lỗi khi cập nhật phòng chiếu:", err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+export const deleteScreen = async (req, res) => {
+  try {
+    const deleted = await screenService.deleteScreen(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "Không tìm thấy phòng chiếu" });
+    res.status(200).json({ message: "Xoá phòng chiếu thành công" });
+  } catch (err) {
+    console.error("Lỗi khi xoá phòng chiếu:", err);
+    res.status(500).json({ message: "Lỗi server" });
   }
 };

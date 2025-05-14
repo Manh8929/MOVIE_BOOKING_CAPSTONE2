@@ -8,34 +8,33 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
       },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      location: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      contact: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      status: {
+        type: DataTypes.ENUM("active", "inactive", "maintenance"),
+        defaultValue: "active",
+        allowNull: false,
+      },
     },
-    location: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    total_screens: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    contact: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    status: {
-      type: DataTypes.ENUM("active", "inactive", "maintenance"),
-      defaultValue: "active",
-      allowNull: false,
-    },    
-  },
     {
       timestamps: true,
       tableName: "Theaters",
     }
   );
-
+  
+  Theater.associate = (models) => {
+    Theater.hasMany(models.Screen, { foreignKey: "theater_id" });
+  };
 
   return Theater;
 };

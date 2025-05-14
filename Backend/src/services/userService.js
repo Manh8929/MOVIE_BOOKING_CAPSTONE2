@@ -145,3 +145,33 @@ exports.deleteNews = async (id) => {
     throw new Error('Error deleting news');
   }
 };
+
+
+// threaters
+export const getAllTheaters = async () => {
+  return await db.Theater.findAll({
+    include: [
+      {
+        model: db.Screen,
+        attributes: [],
+      },
+    ],
+    attributes: {
+      include: [
+        [
+          db.Sequelize.fn("COUNT", db.Sequelize.col("Screens.screen_id")),
+          "total_screens",
+        ],
+      ],
+    },
+    group: ["Theater.theater_id"],
+  });
+};
+
+// screen
+export const getAllScreens = async () => {
+  return await db.Screen.findAll({
+    include: [{ model: db.Theater, attributes: ["name", "location"] }],
+    order: [["createdAt", "DESC"]],
+  });
+};
