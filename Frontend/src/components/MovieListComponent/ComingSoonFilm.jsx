@@ -20,7 +20,6 @@ const CommingSoonFilms = () => {
     const fetchMovies = async () => {
       try {
         const data = await getAvailableMovies();
-        console.log('data',data);
         const sorted = data
           .filter((movie) => movie.status === "upcoming")
           .sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating)); // Top rating trước
