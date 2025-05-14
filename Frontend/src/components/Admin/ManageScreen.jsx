@@ -146,7 +146,7 @@ const ManageScreen = ({ theaterId }) => {
         >
           <option value="available">Đang hoạt động</option>
           <option value="maintenance">Bảo trì</option>
-          <option value="closed">Đóng cửa</option>
+          <option value="unavailable">Đóng cửa</option>
         </select>
         <div className="col-span-2">
           <button
@@ -178,7 +178,16 @@ const ManageScreen = ({ theaterId }) => {
                 <td className="p-2 border">{screen.screen_name}</td>
                 <td className="p-2 border text-center">{screen.total_seats}</td>
                 <td className="p-2 border text-center">{screen.screen_type}</td>
-                <td className="p-2 border text-center">{screen.status}</td>
+                <td className="p-2 border text-center">
+                  {screen.status === "available"
+                    ? "Đang hoạt động"
+                    : screen.status === "maintenance"
+                    ? "Bảo trì"
+                    : screen.status === "unavailable"
+                    ? "Đóng cửa"
+                    : screen.status}
+                </td>
+
                 <td className="p-2 border text-center space-x-2">
                   <button
                     onClick={() => handleEdit(screen)}
