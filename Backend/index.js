@@ -39,6 +39,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use("/showtime", userRoute);
 app.use("/new", userRoute);
+app.use("/", userRoute);
 app.use("/", movieRouter);
 app.use("/auth", authRoute);
 app.use(authenticate);
