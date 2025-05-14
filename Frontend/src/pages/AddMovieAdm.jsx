@@ -11,13 +11,30 @@ const AddMovieAdm = () => {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [viewingMovie, setViewingMovie] = useState(null);
 
+  // search phim
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  // không phân biệt chữ có dấu hay ko
+  const removeVietnameseTones = (str) => {
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  };
+
+  const filteredMovies = movies.filter((movie) =>
+    removeVietnameseTones(movie.title).includes(
+      removeVietnameseTones(searchTerm)
+    )
+  );
+
   // phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentMovies = movies.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(movies.length / itemsPerPage);
+  const currentMovies = filteredMovies.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredMovies.length / itemsPerPage);
 
   const fetchMovies = async () => {
     try {
@@ -82,7 +99,18 @@ const AddMovieAdm = () => {
 
         <div className="border-t border-gray-300 mb-6"></div>
 
-        <div className="flex justify-end mb-6">
+        <div className="flex justify-between items-center mb-6">
+          <input
+            type="text"
+            placeholder="Tìm phim theo tên..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="border border-gray-300 rounded-full px-4 py-2 w-1/3"
+          />
+
           <button
             className="bg-[#131c28] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#1a2636]"
             onClick={() => openModal()}
@@ -169,23 +197,23 @@ const AddMovieAdm = () => {
             )}
           </tbody>
         </table>
-          {totalPages > 1 && (
-            <div className="flex justify-center mt-4 space-x-2">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`px-4 py-2 border rounded-full ${
-                    currentPage === i + 1
-                      ? "bg-[#131c28] text-white"
-                      : "bg-gray-200"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
-          )}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-4 space-x-2">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentPage(i + 1)}
+                className={`px-4 py-2 border rounded-full ${
+                  currentPage === i + 1
+                    ? "bg-[#131c28] text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {isEditModalOpen && (
