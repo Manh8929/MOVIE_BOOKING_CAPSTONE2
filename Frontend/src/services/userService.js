@@ -47,3 +47,14 @@ export const getAvailableTheaters = async () => {
     throw error;
   }
 };
+
+// xem comment
+export const getAvailableComment = async (movieId) => {
+  try {
+    const response = await axios.get(`http://localhost:5000/review/${movieId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    throw error;
+  }
+};

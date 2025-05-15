@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getMovieDetail } from "../services/movieService";
+import { getAvailableComment } from "../services/userService";
 import FilmImg from "../assets/img/film/phim1.jpg";
 
 const MovieDetail = () => {
@@ -8,6 +9,7 @@ const MovieDetail = () => {
   const [movie, setMovie] = useState(null);
   const navigate = useNavigate();
   const [rating, setRating] = useState(4);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const fetchMovieDetail = async () => {
@@ -20,13 +22,25 @@ const MovieDetail = () => {
       }
     };
 
+    const fetchComments = async () => {
+      try {
+        const response = await getAvailableComment(id);
+        console.log("FULL RESPONSE:", response);
+        setComments(response);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
+
+
     fetchMovieDetail();
+    fetchComments();
   }, [id]);
 
   if (!movie) return <div>Loading...</div>;
 
   // Reviews processing
-  const reviews = movie.reviews || [];
+  const reviews = comments || [];
   const positiveKeywords = ["tuyệt vời", "hay", "phải xem", "xuất sắc"];
   const negativeKeywords = ["chán", "buồn ngủ", "tệ"];
 
@@ -154,30 +168,51 @@ const MovieDetail = () => {
         <div className="mt-8">
           <h3 className="text-lg font-semibold">Đánh Giá của người xem</h3>
           <div className="mt-4 space-y-4">
+            {console.log(reviews.length)}
             {reviews.length === 0 ? (
               <p className="text-gray-400">Chưa có nhận xét</p>
             ) : (
               reviews.map((review, index) => (
                 <div key={index} className="bg-gray-800 p-4 rounded-lg">
-                  <h4 className="font-semibold">{review.name}</h4>
-                  <p className="text-gray-300">{review.comment}</p>
-                  <div className="flex">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <span
-                        key={star}
-                        className={`text-xl ${star <= review.rating
-                          ? "text-yellow-400"
-                          : "text-gray-500"
-                          }`}
-                      >
-                        ★
-                      </span>
-                    ))}
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={`/path/to/avatar/folder/${review.User?.avatar || "default-avatar.png"}`}
+                      alt="Avatar"
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <h4 className="font-semibold">{review.User?.full_name || "Người dùng ẩn danh"}</h4>
                   </div>
+                  <p className="text-gray-300 mt-2">{review.comment}</p>
+                  {review.rating !== null && (
+                    <div className="flex">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`text-xl ${star <= review.rating ? "text-yellow-400" : "text-gray-500"}`}
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))
             )}
+
           </div>
+        </div>
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold mb-2">Thêm nhận xét của bạn</h3>
+          <textarea
+            placeholder="Viết nhận xét..."
+            className="w-full p-3 rounded-lg bg-gray-700 text-white resize-none focus:outline-none focus:ring-2 focus:ring-red-500"
+            rows={4}
+          />
+          <button
+            className="mt-3 px-5 py-2 bg-[#E63946] rounded-lg text-white font-semibold hover:bg-red-700"
+          >
+            Gửi nhận xét
+          </button>
         </div>
       </div>
     </div>
