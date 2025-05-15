@@ -46,6 +46,13 @@ const ManageScreen = ({ theaterId }) => {
     e.preventDefault();
     const payload = { ...formData, theater_id: theaterId };
 
+    console.log(formData)
+
+    if (formData.total_seats <= 0) {
+      toast.error("Sức chứa phải là số nguyên dương lớn hơn 0");
+      return;
+    }
+
     try {
       if (isEdit) {
         await updateScreen(editingId, payload);
@@ -182,10 +189,10 @@ const ManageScreen = ({ theaterId }) => {
                   {screen.status === "available"
                     ? "Đang hoạt động"
                     : screen.status === "maintenance"
-                    ? "Bảo trì"
-                    : screen.status === "unavailable"
-                    ? "Đóng cửa"
-                    : screen.status}
+                      ? "Bảo trì"
+                      : screen.status === "unavailable"
+                        ? "Đóng cửa"
+                        : screen.status}
                 </td>
 
                 <td className="p-2 border text-center space-x-2">
