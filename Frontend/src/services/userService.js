@@ -74,3 +74,17 @@ export const postReview = async (token, reviewData) => {
     throw error;
   }
 };
+
+export const deleteReview = async (token, reviewId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/api/user/review/${reviewId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    throw error;
+  }
+};

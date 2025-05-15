@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { FaTrashAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, useParams } from "react-router-dom";
 
 import FilmImg from "../assets/img/film/phim1.jpg";
 import { getMovieDetail } from "../services/movieService";
-import { getAvailableComment, postReview } from "../services/userService";
+import {
+  getAvailableComment,
+  postReview,
+  deleteReview,
+} from "../services/userService";
 
 const MovieDetail = () => {
   const { id } = useParams();
@@ -15,8 +20,7 @@ const MovieDetail = () => {
   const [comments, setComments] = useState([]);
   const [userComment, setUserComment] = useState("");
 
-  const userInfo = JSON.parse(localStorage.getItem('currentUser'));
-
+  const userInfo = JSON.parse(localStorage.getItem("currentUser"));
 
   useEffect(() => {
     const fetchMovieDetail = async () => {
@@ -38,7 +42,6 @@ const MovieDetail = () => {
         console.error("Error fetching comments:", error);
       }
     };
-
 
     fetchMovieDetail();
     fetchComments();
@@ -78,6 +81,31 @@ const MovieDetail = () => {
     } catch (error) {
       toast.error("Gửi nhận xét thất bại, vui lòng thử lại.");
       console.error("Error posting comment:", error);
+    }
+  };
+
+  const handleDeleteComment = async (reviewId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Bạn cần đăng nhập để xoá nhận xét");
+      return;
+    }
+
+    const confirmDelete = window.confirm(
+      "Bạn có chắc chắn muốn xoá nhận xét này không?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await deleteReview(token, reviewId);
+      toast.success("Xoá nhận xét thành công!");
+
+      // Cập nhật lại danh sách comment
+      const updatedComments = await getAvailableComment(id);
+      setComments(updatedComments);
+    } catch (error) {
+      toast.error("Không thể xoá nhận xét. Vui lòng thử lại.");
+      console.error("Error deleting comment:", error);
     }
   };
 
@@ -157,8 +185,9 @@ const MovieDetail = () => {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
                     key={star}
-                    className={`text-3xl cursor-pointer ${star <= rating / 2 ? "text-yellow-400" : "text-gray-500"
-                      }`}
+                    className={`text-3xl cursor-pointer ${
+                      star <= rating / 2 ? "text-yellow-400" : "text-gray-500"
+                    }`}
                   >
                     ★
                   </span>
@@ -219,19 +248,36 @@ const MovieDetail = () => {
                 <div key={index} className="bg-gray-800 p-4 rounded-lg">
                   <div className="flex items-center gap-3">
                     <img
-                      src={`/path/to/avatar/folder/${review.User?.avatar || "default-avatar.png"}`}
+                      src={`${review.User?.avatar || "default-avatar.png"}`}
                       alt="Avatar"
                       className="w-10 h-10 rounded-full"
                     />
-                    <h4 className="font-semibold">{review.User?.full_name || "Người dùng ẩn danh"}</h4>
+                    <h4 className="font-semibold">
+                      {review.User?.full_name || "Người dùng ẩn danh"}
+                    </h4>
                   </div>
-                  <p className="text-gray-300 mt-2">{review.comment}</p>
+                  <div className="flex justify-between mt-2">
+                    <p className="text-gray-300">{review.comment}</p>
+                    {userInfo?.user_id === review.user_id && (
+                      <button
+                        onClick={() => handleDeleteComment(review.review_id)}
+                        className="text-red-400 hover:text-red-600"
+                        title="Xoá nhận xét"
+                      >
+                        <FaTrashAlt />
+                      </button>
+                    )}
+                  </div>
                   {review.rating !== null && (
                     <div className="flex">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <span
                           key={star}
-                          className={`text-xl ${star <= review.rating ? "text-yellow-400" : "text-gray-500"}`}
+                          className={`text-xl ${
+                            star <= review.rating
+                              ? "text-yellow-400"
+                              : "text-gray-500"
+                          }`}
                         >
                           ★
                         </span>

@@ -197,3 +197,22 @@ export const createReview = async (reviewData) => {
     throw err;
   }
 };
+
+export const deleteReviewByUser = async (reviewId, userId) => {
+  try {
+    const review = await db.Review.findByPk(reviewId);
+
+    if (!review) throw new Error("Không tìm thấy review");
+
+    // Kiểm tra quyền sở hữu
+    if (review.user_id !== userId) {
+      return false; // Không cho xoá nếu không phải chủ sở hữu
+    }
+
+    await review.destroy();
+    return true;
+  } catch (err) {
+    console.error("Error deleting review:", err);
+    throw err;
+  }
+};

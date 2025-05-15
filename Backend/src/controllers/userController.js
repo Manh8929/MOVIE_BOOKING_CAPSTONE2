@@ -168,3 +168,21 @@ export const createReview = async (req, res) => {
     res.status(500).json({ message: "Error creating review", error: error.message });
   }
 };
+
+export const deleteReview = async (req, res) => {
+  try {
+    const reviewId = req.params.reviewId;
+    const userId = req.user.user_id; 
+
+    const deleted = await userService.deleteReviewByUser(reviewId, userId);
+
+    if (!deleted) {
+      return res.status(403).json({ message: "Bạn không có quyền xoá review này." });
+    }
+
+    return res.status(200).json({ message: "Xoá review thành công." });
+  } catch (error) {
+    console.error("Lỗi khi xoá review:", error);
+    return res.status(500).json({ message: "Lỗi server", error: error.message });
+  }
+};
