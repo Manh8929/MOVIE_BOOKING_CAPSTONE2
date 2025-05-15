@@ -4,6 +4,7 @@ import { deleteUserService, getAllUsersService, updateUserService } from "../ser
 import * as movieService from "../services/adminService.js";
 import * as theaterService from "../services/adminService.js";
 import * as screenService from "../services/adminService.js";
+import * as adminService from "../services/adminService.js";
 
 //api User
 export const getAllUsers = async (req, res) => {
@@ -340,5 +341,32 @@ export const deleteScreen = async (req, res) => {
   } catch (err) {
     console.error("Lỗi khi xoá phòng chiếu:", err);
     res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+//----------------ghế---------//
+// API tạo ghế tự động
+export const createSeats = async (req, res) => {
+  const { screen_id, showtime_id, total_seats } = req.body;
+
+  // Kiểm tra các trường thông tin có hợp lệ không
+  if (!screen_id || !showtime_id || !total_seats) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    // Gọi service để tạo ghế
+    const createdSeats = await adminService.createSeatsService(screen_id, showtime_id, total_seats);
+
+    // Trả về kết quả thành công
+    return res.status(201).json({
+      message: `${createdSeats.length} seats created successfully`,
+      seats: createdSeats,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: error.message || "Internal Server Error",
+    });
   }
 };

@@ -1,5 +1,5 @@
 import db from "../models"; 
-import { User, Role } from "../models";
+import { User, Role, Seat } from "../models";
 
 //user 
 export const getAllUsersService = async () => {
@@ -139,4 +139,28 @@ export const deleteScreen = async (id) => {
   if (!screen) return null;
   await screen.destroy();
   return true;
+};
+
+//---------Ghế--------------/
+//Tạo ghế
+// Tạo ghế tự động
+export const createSeatsService = async (screen_id, showtime_id, total_seats) => {
+  const seatsToCreate = [];
+
+  // Tạo ghế tự động
+  for (let i = 1; i <= total_seats; i++) {
+    const seatNumber = `Seat-${i}`; // Tạo tên ghế tự động
+    seatsToCreate.push({
+      seat_number: seatNumber,
+      screen_id,
+      showtime_id,
+      seat_type: 'regular', // Có thể thay đổi theo nhu cầu
+      price: 100.00, // Giá ghế mặc định, có thể thay đổi
+      is_available: true, // Ghế mặc định là có sẵn
+    });
+  }
+
+  // Tạo ghế trong cơ sở dữ liệu
+  const createdSeats = await Seat.bulkCreate(seatsToCreate);
+  return createdSeats;
 };
