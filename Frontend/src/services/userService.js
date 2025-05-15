@@ -47,14 +47,3 @@ export const getAvailableTheaters = async () => {
     throw error;
   }
 };
-
-// xem màn hình
-export const getAvailableScreens = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/screens`);
-    return response.data.screens;
-  } catch (error) {
-    console.error("Error fetching available screens:", error);
-    throw error;
-  }
-};

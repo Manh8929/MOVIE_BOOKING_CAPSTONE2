@@ -41,7 +41,7 @@ export const updateUserProfile = async (req, res) => {
       const avatarUrl = `${process.env.SERVER_URL}/uploads/users/${req.file.filename}`;
       updateData.avatar = avatarUrl; // Cập nhật URL avatar
     }
-    
+
     const updatedUser = await userService.updateUserProfile(userId, updateData);
 
     return res.json({
@@ -107,7 +107,7 @@ export const getNewsById = async (req, res) => {
     }
     res.status(200).json(newsItem);
   } catch (error) {
-    console.error('Error fetching news by id:', error); 
+    console.error('Error fetching news by id:', error);
     res.status(500).json({ message: 'Error fetching news by ID' });
   }
 };
@@ -132,5 +132,39 @@ export const getAllScreens = async (req, res) => {
   } catch (err) {
     console.error("Lỗi khi lấy danh sách phòng chiếu:", err);
     res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+// review
+export const getReviews = async (req, res) => {
+  try {
+    const { movieId } = req.params;
+    const reviews = await userService.getReviewsByMovieId(movieId);
+    return res.status(200).json(reviews);
+  } catch (error) {
+    return res.status(500).json({ message: "Lỗi khi lấy đánh giá", error: error.message });
+  }
+};
+
+export const createReview = async (req, res) => {
+  try {
+    const reviewData = {
+      user_id: req.body.user_id || (req.user && req.user.user_id),
+      movie_id: req.body.movie_id,
+      rating: req.body.rating,
+      comment: req.body.comment,
+      sentiment: req.body.sentiment,
+      review_time: new Date(),
+    };
+
+    const review = await userService.createReview(reviewData);
+
+    res.status(201).json({
+      message: "Review created successfully",
+      review,
+    });
+  } catch (error) {
+    console.error("Error creating review:", error);
+    res.status(500).json({ message: "Error creating review", error: error.message });
   }
 };
