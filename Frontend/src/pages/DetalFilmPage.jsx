@@ -99,9 +99,8 @@ const MovieDetail = () => {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
                     key={star}
-                    className={`text-3xl cursor-pointer ${
-                      star <= rating / 2 ? "text-yellow-400" : "text-gray-500"
-                    }`}
+                    className={`text-3xl cursor-pointer ${star <= rating / 2 ? "text-yellow-400" : "text-gray-500"
+                      }`}
                   >
                     ★
                   </span>
@@ -122,13 +121,28 @@ const MovieDetail = () => {
             </div>
           </div>
         </div>
-
+        {/* trailler */}
+        {movie.trailer_url && (
+          <div className="mt-10">
+            <h3 className="text-xl font-semibold mb-4">Trailer</h3>
+            <div className="aspect-w-16 aspect-h-9">
+              <iframe
+                src={movie.trailer_url}
+                title="Trailer phim"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-96 rounded-lg shadow-lg"
+              ></iframe>
+            </div>
+          </div>
+        )}
 
         {/* Proceed Button */}
         {movie.status !== "upcoming" && (
           <div className="mt-6">
             <button
-              onClick={() => navigate("/booking-movie")}
+              onClick={() => navigate(`/theaters`)}
               className="px-6 py-3 bg-[#E63946] text-white rounded-lg text-lg font-semibold hover:bg-transparent hover:border-gray-400 hover:border"
             >
               Đặt vé
@@ -151,11 +165,10 @@ const MovieDetail = () => {
                     {[1, 2, 3, 4, 5].map((star) => (
                       <span
                         key={star}
-                        className={`text-xl ${
-                          star <= review.rating
-                            ? "text-yellow-400"
-                            : "text-gray-500"
-                        }`}
+                        className={`text-xl ${star <= review.rating
+                          ? "text-yellow-400"
+                          : "text-gray-500"
+                          }`}
                       >
                         ★
                       </span>

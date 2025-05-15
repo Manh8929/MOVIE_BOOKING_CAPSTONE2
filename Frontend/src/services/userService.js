@@ -36,3 +36,25 @@ export const updateUserProfile = async (token, data) => {
     throw new Error("Unable to update user profile. Please try again later.");
   }
 };
+
+// xem rạp chiếu
+export const getAvailableTheaters = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/theaters`);
+    return response.data.theaters;
+  } catch (error) {
+    console.error("Error fetching available theaters:", error);
+    throw error;
+  }
+};
+
+// xem màn hình
+export const getAvailableScreens = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/screens`);
+    return response.data.screens;
+  } catch (error) {
+    console.error("Error fetching available screens:", error);
+    throw error;
+  }
+};
