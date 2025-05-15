@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { getMovieDetail } from "../services/movieService";
-import { getAvailableComment } from "../services/userService";
+
 import FilmImg from "../assets/img/film/phim1.jpg";
+import { getMovieDetail } from "../services/movieService";
+import { getAvailableComment, postReview } from "../services/userService";
 
 const MovieDetail = () => {
   const { id } = useParams();
@@ -10,6 +13,10 @@ const MovieDetail = () => {
   const navigate = useNavigate();
   const [rating, setRating] = useState(4);
   const [comments, setComments] = useState([]);
+  const [userComment, setUserComment] = useState("");
+
+  const userInfo = JSON.parse(localStorage.getItem('currentUser'));
+
 
   useEffect(() => {
     const fetchMovieDetail = async () => {
@@ -36,6 +43,43 @@ const MovieDetail = () => {
     fetchMovieDetail();
     fetchComments();
   }, [id]);
+
+  const handlePostComment = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Vui lòng đăng nhập để sử dụng chức năng này");
+      return;
+    }
+    if (!userComment.trim()) {
+      toast.error("Vui lòng nhập nội dung nhận xét");
+      return;
+    }
+    if (!userInfo || !userInfo.user_id) {
+      toast.error("Không tìm thấy thông tin người dùng");
+      return;
+    }
+
+    try {
+      const reviewData = {
+        movie_id: parseInt(id, 10),
+        comment: userComment,
+        sentiment: "positive",
+        user_id: userInfo.user_id,
+      };
+
+      await postReview(token, reviewData);
+      toast.success("Gửi nhận xét thành công!");
+
+      // Cập nhật lại comments
+      const updatedComments = await getAvailableComment(id);
+      setComments(updatedComments);
+
+      setUserComment("");
+    } catch (error) {
+      toast.error("Gửi nhận xét thất bại, vui lòng thử lại.");
+      console.error("Error posting comment:", error);
+    }
+  };
 
   if (!movie) return <div>Loading...</div>;
 
@@ -168,11 +212,10 @@ const MovieDetail = () => {
         <div className="mt-8">
           <h3 className="text-lg font-semibold">Đánh Giá của người xem</h3>
           <div className="mt-4 space-y-4">
-            {console.log(reviews.length)}
-            {reviews.length === 0 ? (
+            {comments.length === 0 ? (
               <p className="text-gray-400">Chưa có nhận xét</p>
             ) : (
-              reviews.map((review, index) => (
+              comments.map((review, index) => (
                 <div key={index} className="bg-gray-800 p-4 rounded-lg">
                   <div className="flex items-center gap-3">
                     <img
@@ -198,17 +241,21 @@ const MovieDetail = () => {
                 </div>
               ))
             )}
-
           </div>
         </div>
+
+        {/* Form gửi nhận xét */}
         <div className="mt-6">
           <h3 className="text-lg font-semibold mb-2">Thêm nhận xét của bạn</h3>
           <textarea
             placeholder="Viết nhận xét..."
             className="w-full p-3 rounded-lg bg-gray-700 text-white resize-none focus:outline-none focus:ring-2 focus:ring-red-500"
             rows={4}
+            value={userComment}
+            onChange={(e) => setUserComment(e.target.value)}
           />
           <button
+            onClick={handlePostComment}
             className="mt-3 px-5 py-2 bg-[#E63946] rounded-lg text-white font-semibold hover:bg-red-700"
           >
             Gửi nhận xét

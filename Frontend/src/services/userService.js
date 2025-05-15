@@ -51,9 +51,25 @@ export const getAvailableTheaters = async () => {
 // xem comment
 export const getAvailableComment = async (movieId) => {
   try {
-    const response = await axios.get(`http://localhost:5000/review/${movieId}`);
+    const response = await axios.get(`${API_URL}/review/${movieId}`);
     return response.data;
   } catch (error) {
+    console.error("Error fetching comments:", error);
+    throw error;
+  }
+};
+
+//
+export const postReview = async (token, reviewData) => {
+  try {
+    const response = await axios.post(`${API_URL}/api/user/review`, reviewData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  }
+  catch (error) {
     console.error("Error fetching comments:", error);
     throw error;
   }
