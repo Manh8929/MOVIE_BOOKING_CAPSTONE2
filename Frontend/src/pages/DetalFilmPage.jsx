@@ -16,10 +16,8 @@ const MovieDetail = () => {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
   const navigate = useNavigate();
-  const [rating, setRating] = useState(4);
   const [comments, setComments] = useState([]);
   const [userComment, setUserComment] = useState("");
-
   const userInfo = JSON.parse(localStorage.getItem("currentUser"));
 
   useEffect(() => {
@@ -27,7 +25,6 @@ const MovieDetail = () => {
       try {
         const data = await getMovieDetail(id);
         setMovie(data);
-        setRating(data.rating);
       } catch (err) {
         console.error("Error fetching movie details:", err);
       }
@@ -180,19 +177,23 @@ const MovieDetail = () => {
 
             {/* Rating System */}
             <div className="mt-4">
-              <h3 className="text-lg font-semibold">Đánh giá</h3>
-              <div className="flex">
+              <h3 className="text-lg font-semibold">Đánh giá trung bình</h3>
+              <div className="flex items-center">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
                     key={star}
-                    className={`text-3xl cursor-pointer ${
-                      star <= rating / 2 ? "text-yellow-400" : "text-gray-500"
+                    className={`text-3xl ${
+                      star <= (movie.average_rating / 2 || 0)
+                        ? "text-yellow-400"
+                        : "text-gray-500"
                     }`}
                   >
                     ★
                   </span>
                 ))}
-                <p className="text-sm m-2">{totalReviews} lượt</p>
+                <span className="ml-2 text-sm text-gray-300">
+                  ({Number(movie.average_rating || 0).toFixed(1)}/10)
+                </span>
               </div>
             </div>
 
