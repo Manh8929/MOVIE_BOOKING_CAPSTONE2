@@ -142,25 +142,50 @@ export const deleteScreen = async (id) => {
 };
 
 //---------Ghế--------------/
-//Tạo ghế
+
 // Tạo ghế tự động
 export const createSeatsService = async (screen_id, showtime_id, total_seats) => {
+  const seatsPerRow = 10; // Số ghế mỗi hàng
   const seatsToCreate = [];
 
-  // Tạo ghế tự động
-  for (let i = 1; i <= total_seats; i++) {
-    const seatNumber = `Seat-${i}`; // Tạo tên ghế tự động
+  for (let i = 0; i < total_seats; i++) {
+    const rowIndex = Math.floor(i / seatsPerRow); // Tính chỉ số hàng
+    const seatIndex = (i % seatsPerRow) + 1; // Số ghế trong hàng (bắt đầu từ 1)
+    const rowLetter = String.fromCharCode(65 + rowIndex); // Chuyển 0 => 'A', 1 => 'B', ...
+
+    const seatNumber = `${rowLetter}${seatIndex}`; // VD: A1, A2, ..., B1, B2,...
+
     seatsToCreate.push({
       seat_number: seatNumber,
       screen_id,
       showtime_id,
-      seat_type: 'regular', // Có thể thay đổi theo nhu cầu
-      price: 100.00, // Giá ghế mặc định, có thể thay đổi
-      is_available: true, // Ghế mặc định là có sẵn
+      seat_type: 'regular',
+      price: 100.00,
+      is_available: true,
     });
   }
 
-  // Tạo ghế trong cơ sở dữ liệu
   const createdSeats = await Seat.bulkCreate(seatsToCreate);
   return createdSeats;
+};
+
+//getAllSeats
+export const getAllSeats = async () => {
+  return await Seat.findAll();  
+};
+
+
+//update
+export const updateSeat = async (id, seatData) => {
+  const seat = await Seat.findByPk(id);
+  if (!seat) {
+    throw new Error("Seat not found");
+  }
+
+  if (seatData.seat_number) seat.seat_number = seatData.seat_number;
+  if (seatData.seat_type) seat.seat_type = seatData.seat_type;
+  if (seatData.price) seat.price = seatData.price;
+
+  await seat.save(); 
+  return seat;
 };

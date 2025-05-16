@@ -22,6 +22,8 @@ import {
   deleteUser,
   updateUser,
   createSeats,
+  getAllSeatsController,
+  updateSeatController,
 } from "../controllers/adminController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import { middlewareUpload } from "../middlewares/middleUploadMovie.js";
@@ -91,5 +93,8 @@ route.delete("/screens/:id", authenticate, authorize("admin"), deleteScreen);
 // Ghế
 
 route.post('/create-seats',authenticate, authorize("admin"), createSeats);
+route.get('/viewAll-seats',authenticate, authorize("admin"), getAllSeatsController);
+route.put('/seats/:id',authenticate, authorize("admin"), updateSeatController);
+
 
 export default route;

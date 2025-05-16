@@ -345,20 +345,17 @@ export const deleteScreen = async (req, res) => {
 };
 
 //----------------ghế---------//
-// API tạo ghế tự động
+//tạo ghế tự động
 export const createSeats = async (req, res) => {
   const { screen_id, showtime_id, total_seats } = req.body;
 
-  // Kiểm tra các trường thông tin có hợp lệ không
   if (!screen_id || !showtime_id || !total_seats) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
-    // Gọi service để tạo ghế
     const createdSeats = await adminService.createSeatsService(screen_id, showtime_id, total_seats);
 
-    // Trả về kết quả thành công
     return res.status(201).json({
       message: `${createdSeats.length} seats created successfully`,
       seats: createdSeats,
@@ -367,6 +364,39 @@ export const createSeats = async (req, res) => {
     console.error(error);
     return res.status(500).json({
       message: error.message || "Internal Server Error",
+    });
+  }
+};
+
+// API lấy tất cả ghế
+export const getAllSeatsController = async (req, res) => {
+  try {
+    const seats = await adminService.getAllSeats();
+    res.status(200).json(seats);
+  } catch (err) {
+    console.error(err);
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+// API cập nhật ghế
+export const updateSeatController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const seatData = req.body;
+
+    if (!seatData.seat_number && !seatData.seat_type && !seatData.price) {
+      return res.status(400).json({ message: "At least one field is required to update" });
+    }
+
+    const updatedSeat = await adminService.updateSeat(id, seatData);
+    res.status(200).json(updatedSeat);
+  } catch (err) {
+    console.error(err);
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
     });
   }
 };

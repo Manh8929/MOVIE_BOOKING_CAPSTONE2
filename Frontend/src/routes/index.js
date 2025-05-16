@@ -31,6 +31,7 @@ import ForgotPassword from "../pages/ForgotPassword";
 import NewsManagement from "../pages/NewsManagement";
 import PromotionManagement from "../pages/PromotionManagement";
 import OAuthSuccess from "../components/CallBackComponent/OAuthSuccess";
+import SeatsManagement from "../pages/SeatsManagement";
 
 export const routes = [
   {
@@ -264,6 +265,12 @@ export const routes = [
   {
     path: "/reportsadm",
     page: ReportsAdm,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  {
+    path: "/seat-management",
+    page: SeatsManagement,
     isShowHeader: false,
     isShowFooter: false,
   },

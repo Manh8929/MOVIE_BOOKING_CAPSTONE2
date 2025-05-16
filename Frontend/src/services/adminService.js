@@ -169,3 +169,63 @@ export const deleteTheater = async (id) => {
     throw error;
   }
 };
+//--------------quản lý ghế-------------------//
+
+// Lấy tất cả ghế
+export const getAllSeats = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/admin/viewAll-seats`, config);
+    return response.data; 
+  } catch (error) {
+    console.error("Error fetching all seats:", error);
+    throw error; // Ném lỗi để xử lý ở nơi gọi
+  }
+};
+
+// Cập nhật ghế
+export const updateSeat = async (id, seatData) => {
+  try {
+    const response = await axios.put(`${API_URL}/api/admin/seats/${id}`, seatData, config);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating seat:", error);
+    throw error;
+  }
+};
+
+// Tạo ghế tự động
+export const createSeats = async (showtime_id, screen_id, total_seats) => {
+  try {
+    const response = await axios.post(`${API_URL}/api/admin/create-seats`, { showtime_id, screen_id,total_seats }, config);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating seats:", error);
+    throw error;
+  }
+};
+
+/// ---- Screen --- ///
+export const getAllScreens = async (token) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/admin/screens`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    });
+    return response.data.screens; // Trả về mảng screens
+  } catch (error) {
+    console.error("Lỗi khi gọi API getAllScreens:", error);
+    throw error;
+  }
+};
+
+export const fetchShowtimes = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/showtime/showtimes`);
+    return res.data.data; // Lấy danh sách lịch chiếu
+  } catch (err) {
+    console.error("Lỗi lấy lịch chiếu:", err);
+    throw err;
+  }
+};
