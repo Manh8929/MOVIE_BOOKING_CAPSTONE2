@@ -1,221 +1,201 @@
 import axios from "axios";
 
-const token = localStorage.getItem("token");
 const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
-const config = {
+const getToken = () => localStorage.getItem("token");
+
+const getConfig = (contentType = "application/json") => ({
   headers: {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${getToken()}`,
     Accept: "application/json",
+    "Content-Type": contentType,
   },
-};
+  withCredentials: true, // nếu cần gửi cookie, auth
+});
 
 /// ---- User --- ///
-export const getAllUsers = async (token) => {
+export const getAllUsers = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/admin/getAllUsers`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data; // Trả về danh sách người dùng
+    const response = await axios.get(`${API_URL}/api/admin/getAllUsers`, getConfig());
+    return response.data;
   } catch (error) {
-    console.error("Error fetching all users:", error);
-    throw error; // Ném lỗi để xử lý ở nơi gọi
+    console.error("Lỗi khi lấy danh sách user:", error);
+    throw error;
   }
 };
-export const deleteUser = async (token, userId) => {
+
+export const deleteUser = async (userId) => {
   try {
-    await axios.delete(`${API_URL}/api/admin/deleteUsers/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    console.log("User deleted successfully"); // Thông báo thành công
+    const response = await axios.delete(`${API_URL}/api/admin/deleteUsers/${userId}`, getConfig());
+    return response.data;
   } catch (error) {
-    console.error("Error deleting user:", error);
-    throw error; // Ném lỗi để xử lý ở nơi gọi
+    console.error("Lỗi khi xóa user:", error);
+    throw error;
   }
 };
-export const updateUser = async (token, userId, userData) => {
+
+export const updateUser = async (userId, userData) => {
   try {
     const response = await axios.put(
       `${API_URL}/api/admin/updateUsers/${userId}`,
       userData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      getConfig()
     );
-    return response.data; // Trả về thông tin người dùng đã cập nhật
+    return response.data;
   } catch (error) {
-    console.error("Error updating user:", error);
-    throw error; // Ném lỗi để xử lý ở nơi gọi
+    console.error("Lỗi khi cập nhật user:", error);
+    throw error;
   }
 };
 
-/// ---- movie --- ///
-// Lấy danh sách phim
+/// ---- Movie --- ///
 export const getAdminMovies = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/admin/movies`, config);
+    const response = await axios.get(`${API_URL}/api/admin/movies`, getConfig());
     return response.data;
   } catch (error) {
-    console.error("Error fetching movies:", error);
+    console.error("Lỗi khi lấy phim:", error);
     throw error;
   }
 };
 
-// Tạo phim mới
 export const createAdminMovie = async (formData) => {
-  const token = localStorage.getItem("token");
-
-  return await axios.post("http://localhost:5000/api/admin/movies", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
-    },
-    withCredentials: true,
-  });
+  try {
+    const response = await axios.post(
+      `${API_URL}/api/admin/movies`,
+      formData,
+      getConfig("multipart/form-data")
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi tạo phim:", error);
+    throw error;
+  }
 };
-// Cập nhật phim theo ID
+
 export const updateAdminMovie = async (id, movieData) => {
-  const token = localStorage.getItem("token");
-
-  return await axios.put(`${API_URL}/api/admin/movies/${id}`, movieData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
-    },
-    withCredentials: true,
-  });
+  try {
+    const response = await axios.put(
+      `${API_URL}/api/admin/movies/${id}`,
+      movieData,
+      getConfig("multipart/form-data")
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi cập nhật phim:", error);
+    throw error;
+  }
 };
 
-// Xóa phim theo ID
 export const deleteAdminMovie = async (id) => {
   try {
-    const response = await axios.delete(
-      `${API_URL}/api/admin/movies/${id}`,
-      config
-    );
+    const response = await axios.delete(`${API_URL}/api/admin/movies/${id}`, getConfig());
     return response.data;
   } catch (error) {
-    console.error(`Error deleting movie with id ${id}:`, error);
+    console.error(`Lỗi khi xóa phim với id ${id}:`, error);
     throw error;
   }
 };
 
-/// ---- theaters --- ///
-
-// Lấy danh sách tất cả rạp
+/// ---- Theaters --- ///
 export const getAllTheaters = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/admin/theaters`, config);
+    const response = await axios.get(`${API_URL}/api/admin/theaters`, getConfig());
     return response.data;
   } catch (error) {
-    console.error("Error fetching theaters:", error);
+    console.error("Lỗi khi lấy danh sách rạp:", error);
     throw error;
   }
 };
 
-// Thêm rạp mới
 export const createTheater = async (theaterData) => {
   try {
-    const response = await axios.post(
-      `${API_URL}/api/admin/theaters`,
-      theaterData,
-      config
-    );
+    const response = await axios.post(`${API_URL}/api/admin/theaters`, theaterData, getConfig());
     return response.data;
   } catch (error) {
-    console.error("Error creating theater:", error);
+    console.error("Lỗi khi tạo rạp:", error);
     throw error;
   }
 };
 
-// Cập nhật thông tin rạp
 export const updateTheater = async (id, theaterData) => {
   try {
-    const response = await axios.put(
-      `${API_URL}/api/admin/theaters/${id}`,
-      theaterData,
-      config
-    );
+    const response = await axios.put(`${API_URL}/api/admin/theaters/${id}`, theaterData, getConfig());
     return response.data;
   } catch (error) {
-    console.error(`Error updating theater with id ${id}:`, error);
+    console.error(`Lỗi khi cập nhật rạp với id ${id}:`, error);
     throw error;
   }
 };
 
-// Xóa rạp
 export const deleteTheater = async (id) => {
   try {
-    const response = await axios.delete(
-      `${API_URL}/api/admin/theaters/${id}`,
-      config
-    );
+    const response = await axios.delete(`${API_URL}/api/admin/theaters/${id}`, getConfig());
     return response.data;
   } catch (error) {
-    console.error(`Error deleting theater with id ${id}:`, error);
+    console.error(`Lỗi khi xóa rạp với id ${id}:`, error);
     throw error;
   }
 };
 
-/// ---- screens --- ///
-
-// Lấy danh sách phòng chiếu
+/// ---- Screens --- ///
 export const getAllScreens = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/admin/screens`, config);
+    const response = await axios.get(`${API_URL}/api/admin/screens`, getConfig());
     return response.data;
   } catch (error) {
-    console.error("Error fetching screens:", error);
+    console.error("Lỗi khi lấy danh sách phòng chiếu:", error);
     throw error;
   }
 };
 
-// Thêm phòng chiếu mới
 export const createScreen = async (screenData) => {
   try {
-    const response = await axios.post(
-      `${API_URL}/api/admin/screens`,
-      screenData,
-      config
-    );
+    const response = await axios.post(`${API_URL}/api/admin/screens`, screenData, getConfig());
     return response.data;
   } catch (error) {
-    console.error("Error creating screen:", error);
+    console.error("Lỗi khi tạo phòng chiếu:", error);
     throw error;
   }
 };
 
-// Cập nhật thông tin phòng chiếu
 export const updateScreen = async (id, screenData) => {
   try {
-    const response = await axios.put(
-      `${API_URL}/api/admin/screens/${id}`,
-      screenData,
-      config
-    );
+    const response = await axios.put(`${API_URL}/api/admin/screens/${id}`, screenData, getConfig());
     return response.data;
   } catch (error) {
-    console.error(`Error updating screen with id ${id}:`, error);
+    console.error(`Lỗi khi cập nhật phòng chiếu với id ${id}:`, error);
     throw error;
   }
 };
 
-// Xoá phòng chiếu
 export const deleteScreen = async (id) => {
   try {
-    const response = await axios.delete(
-      `${API_URL}/api/admin/screens/${id}`,
-      config
-    );
+    const response = await axios.delete(`${API_URL}/api/admin/screens/${id}`, getConfig());
     return response.data;
   } catch (error) {
-    console.error(`Error deleting screen with id ${id}:`, error);
+    console.error(`Lỗi khi xóa phòng chiếu với id ${id}:`, error);
+    throw error;
+  }
+};
+
+/// ---- News --- ///
+export const addNews = async (data) => {
+  try {
+    const response = await axios.post(`${API_URL}/api/admin/news`, data, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi thêm tin tức:", error);
+    throw error;
+  }
+};
+
+export const deleteNews = async (newsId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/api/admin/news/${newsId}`, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi xóa tin tức:", error);
     throw error;
   }
 };

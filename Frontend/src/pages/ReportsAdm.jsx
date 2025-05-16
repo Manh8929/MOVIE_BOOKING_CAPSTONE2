@@ -28,14 +28,14 @@ const Report = () => {
       {/* Nội dung chính */}
       <div className="flex-1 p-6 bg-gray-50">
         {/* Header */}
-        <header className="mb-6 flex justify-between items-center">
-          <div className="ml-auto flex items-center">
-            <div className="w-10 h-10 bg-[#131c28] text-white flex justify-center items-center rounded-full font-semibold">
-              a
-            </div>
-            <span className="ml-3 text-xl font-semibold">a đờ min</span>
+        <header className="mb-6 flex justify-start items-center">
+          <div className="flex items-center ml-6">
+            <span className="ml-3 text-xl font-semibold">Quản lý báo cáo</span>
           </div>
-        </header>
+        </header> 
+
+        {/* Đường kẻ phân cách */}
+        <div className="border-t border-gray-300 mb-6"></div>
 
         {/* Tìm kiếm */}
         <div className="mb-4">

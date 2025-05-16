@@ -3,6 +3,7 @@ import { badRequest } from "../middlewares/handle_error";
 import { deleteUserService, getAllUsersService, updateUserService } from "../services/adminService.js";
 import * as movieService from "../services/adminService.js";
 import * as theaterService from "../services/adminService.js";
+import * as userService from "../services/userService.js";
 import * as screenService from "../services/adminService.js";
 import * as adminService from "../services/adminService.js";
 
@@ -92,19 +93,54 @@ export const deleteShowtimeController = async (req, res, next) => {
 
 //News
 // Add news
-export const createNews = async (req, res) => {
-  const { movie_id, title, content, image_url } = req.body;
+// exports.createNews = async (req, res) => {
+//   const { movie_id, title, content, image_url, category } = req.body;
+//   try {
+// <<<<<<< Updated upstream
+//     const newNews = await userService.createNews({
+//       movie_id,
+//       title,
+//       content,
+//       image_url,
+//     });
+//     res.status(201).json(newNews);
+//   } catch (error) {
+//     console.error("Error creating news:", error);
+//     res.status(500).json({ message: "Error creating news" });
+// =======
+//     if (!category) {
+//       return res.status(400).json({ message: "Category is required" });
+//     }
+
+//     // Gọi service để tạo tin tức
+//     const newNews = await userService.createNews({ movie_id, title, content, image_url, category });
+//     res.status(201).json(newNews);
+//   } catch (error) {
+//     console.error('Error creating news:', error);
+//     res.status(500).json({ message: 'Error creating news: ' + error.message });
+// >>>>>>> Stashed changes
+//   }
+// };
+exports.createNews = async (req, res) => {
+  const { movie_id, title, content, image_url, category } = req.body;
   try {
+    if (!category) {
+      return res.status(400).json({ message: "Category is required" });
+    }
+
+    // Gọi service để tạo tin tức
     const newNews = await userService.createNews({
       movie_id,
       title,
       content,
       image_url,
+      category,
     });
+
     res.status(201).json(newNews);
   } catch (error) {
     console.error("Error creating news:", error);
-    res.status(500).json({ message: "Error creating news" });
+    res.status(500).json({ message: "Error creating news: " + error.message });
   }
 };
 

@@ -55,9 +55,9 @@ route.delete(
 );
 
 // CRUD News
-route.post("/news", authenticate, createNews);
-route.put("/news/:id", authenticate, updateNews);
-route.delete("/news/:id", authenticate, deleteNews);
+route.post("/news", authenticate, authorize("admin"), createNews);
+route.put("/news/:id", authenticate, authorize("admin"), updateNews);
+route.delete("/news/:id", authenticate, authorize("admin"), deleteNews); 
 
 // CRUD Movie
 route.get("/movies", authenticate, authorize("admin"), getAllMovies);

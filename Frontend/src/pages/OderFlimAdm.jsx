@@ -12,13 +12,9 @@ const Orders = () => {
       {/* Nội dung chính */}
       <div className="flex-1 p-6 bg-gray-50"> {/* Đặt margin-left là 0 để bảng sát với Sidebar */}
         {/* Header */}
-        <header className="mb-6 flex justify-between items-center">
-          {/* Tên admin nằm bên phải */}
-          <div className="ml-auto flex items-center">
-            <div className="w-10 h-10 bg-[#131c28] text-white flex justify-center items-center rounded-full font-semibold">
-              ảnh
-            </div>
-            <span className="ml-3 text-xl font-semibold">Tên admin</span>
+        <header className="mb-6 flex justify-start items-center">
+          <div className="flex items-center ml-6">
+            <span className="ml-3 text-xl font-semibold">Quản lý phim</span>
           </div>
         </header>
 
