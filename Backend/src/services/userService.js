@@ -175,3 +175,59 @@ export const getAllScreens = async () => {
     order: [["createdAt", "DESC"]],
   });
 };
+
+// review
+export const getReviewsByMovieId = async (movieId) => {
+  try {
+    const reviews = await db.Review.findAll({
+      where: { movie_id: movieId },
+      include: [
+        {
+          model: db.User,
+          attributes: ["user_id", "full_name", "avatar"],
+        },
+      ],
+      order: [["review_time", "DESC"]],
+    });
+    return reviews;
+  } catch (err) {
+    console.error("Error fetching reviews:", err);
+    throw new Error("Error fetching reviews");
+  }
+};
+
+// Tạo một review mới
+export const createReview = async (reviewData) => {
+  try {
+    const user = await db.User.findByPk(reviewData.user_id);
+    if (!user) throw new Error("User not found");
+
+    const movie = await db.Movie.findByPk(reviewData.movie_id);
+    if (!movie) throw new Error("Movie not found");
+
+    const newReview = await db.Review.create(reviewData);
+    return newReview;
+  } catch (err) {
+    console.error("Error creating review:", err);
+    throw err;
+  }
+};
+
+export const deleteReviewByUser = async (reviewId, userId) => {
+  try {
+    const review = await db.Review.findByPk(reviewId);
+
+    if (!review) throw new Error("Không tìm thấy review");
+
+    // Kiểm tra quyền sở hữu
+    if (review.user_id !== userId) {
+      return false; // Không cho xoá nếu không phải chủ sở hữu
+    }
+
+    await review.destroy();
+    return true;
+  } catch (err) {
+    console.error("Error deleting review:", err);
+    throw err;
+  }
+};

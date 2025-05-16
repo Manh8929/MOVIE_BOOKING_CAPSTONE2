@@ -37,6 +37,7 @@ export const updateUserProfile = async (token, data) => {
   }
 };
 
+<<<<<<< HEAD
 // Hàm lấy danh sách tin tức
 export const getNews = async () => {
   try {
@@ -70,3 +71,56 @@ export const getMovies = async () => {
   }
 };
 
+=======
+// xem rạp chiếu
+export const getAvailableTheaters = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/theaters`);
+    return response.data.theaters;
+  } catch (error) {
+    console.error("Error fetching available theaters:", error);
+    throw error;
+  }
+};
+
+// xem comment
+export const getAvailableComment = async (movieId) => {
+  try {
+    const response = await axios.get(`${API_URL}/review/${movieId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    throw error;
+  }
+};
+
+//
+export const postReview = async (token, reviewData) => {
+  try {
+    const response = await axios.post(`${API_URL}/api/user/review`, reviewData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  }
+  catch (error) {
+    console.error("Error fetching comments:", error);
+    throw error;
+  }
+};
+
+export const deleteReview = async (token, reviewId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/api/user/review/${reviewId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    throw error;
+  }
+};
+>>>>>>> 344bfacfb751fbfa5600745460574733c827eb15

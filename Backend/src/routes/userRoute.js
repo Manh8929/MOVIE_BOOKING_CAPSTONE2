@@ -9,6 +9,9 @@ import {
   getNewsById,
   getAllTheaters,
   getAllScreens,
+  getReviews,
+  createReview,
+  deleteReview 
 } from "../controllers/userController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware";
 import { middlewareUpload } from "../middlewares/middleUploadUser";
@@ -23,4 +26,7 @@ route.get("/news", getAllNews);
 route.get("/news/:id", getNewsById);
 route.get("/theaters", getAllTheaters);
 route.get("/screens", getAllScreens);
+route.get("/review/:movieId", getReviews);
+route.post("/review", createReview);
+route.delete("/review/:reviewId", authenticate, deleteReview);
 export default route;
