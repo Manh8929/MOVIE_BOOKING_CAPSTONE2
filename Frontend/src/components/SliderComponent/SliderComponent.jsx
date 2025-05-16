@@ -3,7 +3,6 @@ import slider1 from "../../assets/img/slider/slider1.jpg";
 import slider2 from "../../assets/img/slider/slider2.jpg";
 import slider3 from "../../assets/img/slider/slider3.jpg";
 
-
 const images = [slider1, slider2, slider3];
 
 const SliderComponent = () => {
