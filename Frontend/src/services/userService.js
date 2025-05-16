@@ -37,7 +37,6 @@ export const updateUserProfile = async (token, data) => {
   }
 };
 
-<<<<<<< HEAD
 // Hàm lấy danh sách tin tức
 export const getNews = async () => {
   try {
@@ -71,7 +70,6 @@ export const getMovies = async () => {
   }
 };
 
-=======
 // xem rạp chiếu
 export const getAvailableTheaters = async () => {
   try {
@@ -123,4 +121,3 @@ export const deleteReview = async (token, reviewId) => {
     throw error;
   }
 };
->>>>>>> 344bfacfb751fbfa5600745460574733c827eb15
