@@ -9,12 +9,14 @@ import {
   deleteTheater,
 } from "../services/adminService";
 import SidebarAdm from "../components/Admin/SidebarAdm";
+import ManageScreen from "../components/Admin/ManageScreen";
 
 const Theaters = () => {
   const [theaters, setTheaters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedTheater, setSelectedTheater] = useState(null);
+  const [expandedTheaterId, setExpandedTheaterId] = useState(null);
 
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
@@ -23,7 +25,7 @@ const Theaters = () => {
 
   // phân trang
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = 2;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentTheaters = theaters.slice(indexOfFirstItem, indexOfLastItem);
@@ -49,7 +51,17 @@ const Theaters = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const isValidPhoneNumber = (phone) => /^0\d{9}$/.test(phone);
+    const isValidPhoneNumber = (phone) => {
+      // Loại bỏ khoảng trắng và dấu gạch ngang
+      const cleaned = phone.replace(/[\s\-]/g, '');
+
+      // Kiểm tra định dạng:
+      // - Bắt đầu bằng 0
+      // - Tiếp theo 9-10 chữ số (tổng cộng 10 hoặc 11 chữ số)
+      return /^0\d{9,10}$/.test(cleaned);
+    };
+
+
 
     if (!name || !location || !contact) {
       toast.error("Vui lòng điền đầy đủ thông tin!");
@@ -58,7 +70,7 @@ const Theaters = () => {
 
     if (!isValidPhoneNumber(contact)) {
       toast.error(
-        "Số điện thoại không hợp lệ! (phải bắt đầu bằng số 0 và có 10 chữ số)"
+        "Số điện thoại không hợp lệ!"
       );
       return;
     }
@@ -106,6 +118,7 @@ const Theaters = () => {
     setLocation(theater.location);
     setContact(theater.contact);
     setShowForm(true);
+    setExpandedTheaterId(theater.theater_id);
   };
 
   const handleEditTheater = (theater) => {
@@ -135,6 +148,14 @@ const Theaters = () => {
       } catch (error) {
         toast.error("Lỗi khi xóa rạp:", error);
       }
+    }
+  };
+
+  const toggleDetail = (theater) => {
+    if (expandedTheaterId === theater.theater_id) {
+      setExpandedTheaterId(null);
+    } else {
+      setExpandedTheaterId(theater.theater_id);
     }
   };
 
@@ -205,9 +226,8 @@ const Theaters = () => {
 
               <button
                 type="submit"
-                className={`w-full p-2 bg-blue-600 text-white rounded-lg ${
-                  loading && "opacity-50 cursor-not-allowed"
-                }`}
+                className={`w-full p-2 bg-blue-600 text-white rounded-lg ${loading && "opacity-50 cursor-not-allowed"
+                  }`}
                 disabled={loading}
               >
                 {loading
@@ -215,8 +235,8 @@ const Theaters = () => {
                     ? "Đang cập nhật..."
                     : "Đang tạo..."
                   : selectedTheater
-                  ? "Cập nhật Rạp Chiếu"
-                  : "Tạo Rạp Chiếu"}
+                    ? "Cập nhật Rạp Chiếu"
+                    : "Tạo Rạp Chiếu"}
               </button>
             </form>
           </div>
@@ -245,9 +265,6 @@ const Theaters = () => {
                   </h2>
                 </div>
                 <div className="space-x-3">
-                  <button className="text-green-500 hover:text-green-700 hover:underline focus:outline-none">
-                    + Thêm Phòng
-                  </button>
                   <button
                     className="text-yellow-500 hover:text-yellow-700 hover:underline focus:outline-none"
                     onClick={() => handleEditTheater(theater)}
@@ -262,7 +279,23 @@ const Theaters = () => {
                   </button>
                 </div>
               </div>
+              <button
+                onClick={() => toggleDetail(theater)}
+                className={`px-4 mb-2 py-2 rounded-md font-semibold transition duration-300 ${expandedTheaterId === theater.theater_id
+                  ? "bg-red-100 text-red-600 hover:bg-red-200"
+                  : "bg-blue-100 text-blue-600 hover:bg-blue-200"
+                  }`}
+              >
+                {expandedTheaterId === theater.theater_id
+                  ? "Ẩn"
+                  : "Xem phòng chiếu"}
+              </button>
 
+              {expandedTheaterId === theater.theater_id && (
+                <div className="mt-4">
+                  <ManageScreen theaterId={theater.theater_id} />
+                </div>
+              )}
               <div className="flex items-center justify-between text-sm text-gray-500">
                 <div>
                   <h3 className="mb-2 text-black text-base">
@@ -273,20 +306,19 @@ const Theaters = () => {
                   </p>
                 </div>
                 <p
-                  className={`italic ${
-                    theater.status === "active"
-                      ? "text-green-600"
-                      : theater.status === "maintenance"
+                  className={`italic ${theater.status === "active"
+                    ? "text-green-600"
+                    : theater.status === "maintenance"
                       ? "text-yellow-600"
                       : "text-red-600"
-                  }`}
+                    }`}
                 >
                   Trạng thái:{" "}
                   {theater.status === "active"
                     ? "Hoạt động"
                     : theater.status === "maintenance"
-                    ? "Bảo trì"
-                    : "Ngừng hoạt động"}
+                      ? "Bảo trì"
+                      : "Ngừng hoạt động"}
                 </p>
               </div>
 
@@ -331,11 +363,10 @@ const Theaters = () => {
               <button
                 key={index + 1}
                 onClick={() => setCurrentPage(index + 1)}
-                className={`px-3 py-1 rounded-md border ${
-                  currentPage === index + 1
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-200"
-                }`}
+                className={`px-3 py-1 rounded-md border ${currentPage === index + 1
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-200"
+                  }`}
               >
                 {index + 1}
               </button>

@@ -14,7 +14,7 @@ const MoviesSection = () => {
   const [moviesNowShowing, setMoviesNowShowing] = useState([]);
   const [moviesComingSoon, setMoviesComingSoon] = useState([]);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const fetchMovies = async () => {
       try {
@@ -44,8 +44,7 @@ const MoviesSection = () => {
         }
       );
     } else {
-      // Navigate to booking page for now showing movies
-      navigate(`/booking-movie`);
+      navigate(`/theaters`);
     }
   };
 

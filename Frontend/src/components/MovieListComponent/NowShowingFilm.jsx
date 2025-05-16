@@ -83,7 +83,7 @@ const NowShowingFilmsAPI = () => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  navigate(`/booking-movie`);
+                  navigate(`/theaters`);
                 }}
                 className="mt-3 bg-red-500 hover:bg-red-600 text-white text-sm py-2 px-5 rounded-lg transition-transform transform hover:scale-110 font-semibold"
               >
@@ -96,11 +96,10 @@ const NowShowingFilmsAPI = () => {
 
       <div className="flex justify-center mt-8 space-x-4">
         <button
-          className={`px-5 py-2 rounded transition-transform transform hover:-translate-y-1 font-bold ${
-            currentPage === 1
-              ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-              : "bg-[#E63946] text-white"
-          }`}
+          className={`px-5 py-2 rounded transition-transform transform hover:-translate-y-1 font-bold ${currentPage === 1
+            ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+            : "bg-[#E63946] text-white"
+            }`}
           disabled={currentPage === 1}
           onClick={() => setCurrentPage(currentPage - 1)}
         >
@@ -112,11 +111,10 @@ const NowShowingFilmsAPI = () => {
         </span>
 
         <button
-          className={`px-5 py-2 rounded transition-transform transform hover:-translate-y-1 font-bold ${
-            currentPage === totalPages
-              ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-              : "bg-[#E63946] text-white"
-          }`}
+          className={`px-5 py-2 rounded transition-transform transform hover:-translate-y-1 font-bold ${currentPage === totalPages
+            ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+            : "bg-[#E63946] text-white"
+            }`}
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage(currentPage + 1)}
         >

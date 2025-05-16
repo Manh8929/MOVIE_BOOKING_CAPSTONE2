@@ -21,7 +21,7 @@ const SeatsManagement = () => {
   useEffect(() => {
     const fetchScreens = async () => {
       try {
-        const data = await adminService.getAllScreens(token);
+        const data = await adminService.getAllSelectScreens(token);
         console.log("scre", data);
         setScreens(data);
       } catch (err) {
@@ -298,6 +298,8 @@ const SeatsManagement = () => {
                 >
                   <option value="regular">Regular</option>
                   <option value="vip">VIP</option>
+                  <option value="couple">Couple</option>
+                  <option value="disabled">Disable</option>
                 </select>
               </div>
 
