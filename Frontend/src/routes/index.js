@@ -7,6 +7,7 @@ import PaymentOtp from "../pages/PaymentOtp";
 import PaymentSuccess from "../pages/PaymentSuccess";
 import BookingFilmPage from "../pages/BookingFilmPage";
 import SeatSelectPage from "../pages/SeatSelectPage";
+import TheaterPage from "../pages/Theater";
 import PromotionsPage from "../pages/PromotionsPage";
 import AIRecommendedFilms from "../pages/AIRecommendedFilms";
 import PromotionDetail from "../pages/PromotionDetailPage";
@@ -64,6 +65,12 @@ export const routes = [
   {
     path: "/my-ticket",
     page: MyTicketPage,
+    isShowHeader: true,
+    isShowFooter: true,
+  },
+  {
+    path: "/theaters",
+    page: TheaterPage,
     isShowHeader: true,
     isShowFooter: true,
   },
@@ -138,7 +145,7 @@ export const routes = [
     page: DetalFilmPage,
     isShowHeader: true,
     isShowFooter: true,
-  },  
+  },
   {
     path: "members",
     page: MemberPage,
