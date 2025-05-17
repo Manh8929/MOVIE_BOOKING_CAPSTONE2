@@ -102,8 +102,9 @@ const SeatsManagement = () => {
   }, []);
 
   const filteredSeats = filterShowtime
-    ? seats.filter((s) => s.showtime_id === filterShowtime)
+    ? seats.filter((s) => String(s.showtime_id) === filterShowtime.trim())
     : seats;
+
   const openEditModal = (seat) => {
     setSelectedSeat(seat);
     setEditModalOpen(true);
@@ -157,6 +158,7 @@ const SeatsManagement = () => {
           <table className="w-full bg-white shadow rounded-lg overflow-hidden text-sm">
             <thead className="bg-gray-200 text-gray-700">
               <tr>
+                <th className="px-4 py-2 text-left">showtime_id</th>
                 <th className="px-4 py-2 text-left">Số ghế</th>
                 <th className="px-4 py-2 text-left">Loại</th>
                 <th className="px-4 py-2 text-left">Giá</th>
@@ -167,6 +169,7 @@ const SeatsManagement = () => {
             <tbody>
               {filteredSeats.map((seat, idx) => (
                 <tr key={idx} className="border-t">
+                  <td className="px-4 py-2">{seat.showtime_id}</td>
                   <td className="px-4 py-2">{seat.seat_number}</td>
                   <td className="px-4 py-2 capitalize">{seat.seat_type}</td>
                   <td className="px-4 py-2">{seat.price.toLocaleString()}₫</td>

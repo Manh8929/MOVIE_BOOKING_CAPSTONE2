@@ -204,7 +204,7 @@ export const deleteNews = async (newsId) => {
 // Lấy tất cả ghế
 export const getAllSeats = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/admin/viewAll-seats`, config);
+    const response = await axios.get(`${API_URL}/api/admin/viewAll-seats`, getConfig());
     return response.data; 
   } catch (error) {
     console.error("Error fetching all seats:", error);
@@ -215,7 +215,7 @@ export const getAllSeats = async () => {
 // Cập nhật ghế
 export const updateSeat = async (id, seatData) => {
   try {
-    const response = await axios.put(`${API_URL}/api/admin/seats/${id}`, seatData, config);
+    const response = await axios.put(`${API_URL}/api/admin/seats/${id}`, seatData, getConfig());
     return response.data;
   } catch (error) {
     console.error("Error updating seat:", error);
@@ -226,7 +226,7 @@ export const updateSeat = async (id, seatData) => {
 // Tạo ghế tự động
 export const createSeats = async (showtime_id, screen_id, total_seats) => {
   try {
-    const response = await axios.post(`${API_URL}/api/admin/create-seats`, { showtime_id, screen_id,total_seats }, config);
+    const response = await axios.post(`${API_URL}/api/admin/create-seats`, { showtime_id, screen_id,total_seats }, getConfig());
     return response.data;
   } catch (error) {
     console.error("Error creating seats:", error);

@@ -33,6 +33,7 @@ import NewsManagement from "../pages/NewsManagement";
 import PromotionManagement from "../pages/PromotionManagement";
 import OAuthSuccess from "../components/CallBackComponent/OAuthSuccess";
 import SeatsManagement from "../pages/SeatsManagement";
+import CommentManagement from "../pages/CommentManagement";
 
 export const routes = [
   {
@@ -278,6 +279,12 @@ export const routes = [
   {
     path: "/seat-management",
     page: SeatsManagement,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  {
+    path: "/comment-management",
+    page: CommentManagement,
     isShowHeader: false,
     isShowFooter: false,
   },
