@@ -15,13 +15,16 @@ import {
   createTheater,
   updateTheater,
   deleteTheater,
+  getAllScreens,
+  createScreen,
+  updateScreen,
+  deleteScreen,
   deleteUser,
   updateUser,
 } from "../controllers/adminController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import { middlewareUpload } from "../middlewares/middleUploadMovie.js";
 const route = express.Router();
-
 
 //api manager User
 route.get("/getAllUsers", authenticate, authorize("admin"), getAllUsers);
@@ -55,13 +58,32 @@ route.delete("/news/:id", authenticate, deleteNews);
 
 // CRUD Movie
 route.get("/movies", authenticate, authorize("admin"), getAllMovies);
-route.post("/movies",authenticate,authorize("admin"),middlewareUpload,createMovie);
-route.put("/movies/:id", authenticate, authorize("admin"), middlewareUpload, updateMovie);
+route.post(
+  "/movies",
+  authenticate,
+  authorize("admin"),
+  middlewareUpload,
+  createMovie
+);
+route.put(
+  "/movies/:id",
+  authenticate,
+  authorize("admin"),
+  middlewareUpload,
+  updateMovie
+);
 route.delete("/movies/:id", authenticate, authorize("admin"), deleteMovie);
+
 
 // CRUD Theater (Rạp)
 route.get("/theaters", authenticate, authorize("admin"), getAllTheaters);
 route.post("/theaters", authenticate, authorize("admin"), createTheater);
 route.put("/theaters/:id", authenticate, authorize("admin"), updateTheater);
 route.delete("/theaters/:id", authenticate, authorize("admin"), deleteTheater);
+
+// screens
+route.get("/screens", authenticate, authorize("admin"), getAllScreens);
+route.post("/screens", authenticate, authorize("admin"), createScreen);
+route.put("/screens/:id", authenticate, authorize("admin"), updateScreen);
+route.delete("/screens/:id", authenticate, authorize("admin"), deleteScreen);
 export default route;

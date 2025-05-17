@@ -10,7 +10,6 @@ const config = {
   },
 };
 
-
 /// ---- User --- ///
 export const getAllUsers = async (token) => {
   try {
@@ -40,11 +39,15 @@ export const deleteUser = async (token, userId) => {
 };
 export const updateUser = async (token, userId, userData) => {
   try {
-    const response = await axios.put(`${API_URL}/api/admin/updateUsers/${userId}`, userData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.put(
+      `${API_URL}/api/admin/updateUsers/${userId}`,
+      userData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data; // Trả về thông tin người dùng đã cập nhật
   } catch (error) {
     console.error("Error updating user:", error);
@@ -66,37 +69,28 @@ export const getAdminMovies = async () => {
 
 // Tạo phim mới
 export const createAdminMovie = async (formData) => {
-  const token = localStorage.getItem("token"); 
+  const token = localStorage.getItem("token");
 
-  return await axios.post(
-    "http://localhost:5000/api/admin/movies",
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true, 
-    }
-  );
+  return await axios.post("http://localhost:5000/api/admin/movies", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+  });
 };
 // Cập nhật phim theo ID
 export const updateAdminMovie = async (id, movieData) => {
   const token = localStorage.getItem("token");
 
-  return await axios.put(
-    `${API_URL}/api/admin/movies/${id}`,
-    movieData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true,
-    }
-  );
+  return await axios.put(`${API_URL}/api/admin/movies/${id}`, movieData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+  });
 };
-
 
 // Xóa phim theo ID
 export const deleteAdminMovie = async (id) => {
@@ -111,7 +105,6 @@ export const deleteAdminMovie = async (id) => {
     throw error;
   }
 };
-
 
 /// ---- theaters --- ///
 
@@ -166,6 +159,63 @@ export const deleteTheater = async (id) => {
     return response.data;
   } catch (error) {
     console.error(`Error deleting theater with id ${id}:`, error);
+    throw error;
+  }
+};
+
+/// ---- screens --- ///
+
+// Lấy danh sách phòng chiếu
+export const getAllScreens = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/admin/screens`, config);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching screens:", error);
+    throw error;
+  }
+};
+
+// Thêm phòng chiếu mới
+export const createScreen = async (screenData) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/api/admin/screens`,
+      screenData,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error creating screen:", error);
+    throw error;
+  }
+};
+
+// Cập nhật thông tin phòng chiếu
+export const updateScreen = async (id, screenData) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/api/admin/screens/${id}`,
+      screenData,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating screen with id ${id}:`, error);
+    throw error;
+  }
+};
+
+// Xoá phòng chiếu
+export const deleteScreen = async (id) => {
+  try {
+    const response = await axios.delete(
+      `${API_URL}/api/admin/screens/${id}`,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting screen with id ${id}:`, error);
     throw error;
   }
 };
