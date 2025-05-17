@@ -5,6 +5,7 @@ import * as movieService from "../services/adminService.js";
 import * as theaterService from "../services/adminService.js";
 import * as userService from "../services/userService.js";
 import * as screenService from "../services/adminService.js";
+import * as promotionService from "../services/adminService.js";
 import * as adminService from "../services/adminService.js";
 
 //api User
@@ -434,5 +435,79 @@ export const updateSeatController = async (req, res) => {
     res.status(err.statusCode || 500).json({
       message: err.message || "Internal Server Error",
     });
+  }
+};
+
+// Tạo promotion mới
+export const createPromotion = async (req, res) => {
+  try {
+    const data = req.body;
+
+    // Nếu có upload ảnh thì xử lý image_url tại đây
+    if (req.file) {
+      data.image_url = `${process.env.SERVER_URL}/uploads/admin/${req.file.filename}`;
+    }
+
+    const newPromo = await promotionService.createPromotion(data);
+    res.status(201).json({
+      message: "Tạo promotion thành công",
+      data: newPromo,
+    });
+  } catch (error) {
+    console.error("Error creating promotion:", error);
+    res.status(500).json({ message: "Lỗi tạo promotion" });
+  }
+};
+
+// khuyến mãi
+// Cập nhật promotion
+export const updatePromotion = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    if (req.file) {
+      updateData.image_url = `${process.env.SERVER_URL}/uploads/admin/${req.file.filename}`;
+    }
+
+    const updatedPromo = await promotionService.updatePromotion(id, updateData);
+    if (!updatedPromo) {
+      return res.status(404).json({ message: "Không tìm thấy promotion" });
+    }
+
+    res.status(200).json({
+      message: "Cập nhật promotion thành công",
+      data: updatedPromo,
+    });
+  } catch (error) {
+    console.error("Error updating promotion:", error);
+    res.status(500).json({ message: "Lỗi cập nhật promotion" });
+  }
+};
+
+// Xoá promotion
+export const deletePromotion = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await promotionService.deletePromotion(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Không tìm thấy promotion" });
+    }
+
+    res.status(200).json({ message: "Xoá promotion thành công" });
+  } catch (error) {
+    console.error("Error deleting promotion:", error);
+    res.status(500).json({ message: "Lỗi xoá promotion" });
+  }
+};
+
+// Lấy tất cả promotion
+export const getAllPromotions = async (req, res) => {
+  try {
+    const promotions = await promotionService.getAllPromotions();
+    res.status(200).json(promotions);
+  } catch (error) {
+    console.error("Error fetching promotions:", error);
+    res.status(500).json({ message: "Lỗi lấy danh sách promotion" });
   }
 };
