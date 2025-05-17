@@ -33,7 +33,9 @@ const Sidebar = () => {
       dropdown: true,
       subMenu: [
         { name: "Q.Lý Tin Tức", icon: FaNewspaper, path: "/newsmanageadm" },
-        { name: "Q.Lý Khuyến Mãi", icon: FaTags, path: "/promotionManagement" }
+        { name: "Q.Lý Khuyến Mãi", icon: FaTags, path: "/promotionManagement" },
+        { name: "Q.Lý Ghế", icon: FaTags, path: "/seat-management" },
+        { name: "Q.Lý comment", icon: FaTags, path: "/comment-management" }
       ]
     }
   ];

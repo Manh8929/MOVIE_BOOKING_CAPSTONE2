@@ -23,7 +23,6 @@ const Theaters = () => {
   const [totalScreens, setTotalScreens] = useState(0);
   const [contact, setContact] = useState("");
 
-  // phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -50,7 +49,6 @@ const Theaters = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const isValidPhoneNumber = (phone) => {
       // Loại bỏ khoảng trắng và dấu gạch ngang
       const cleaned = phone.replace(/[\s\-]/g, '');
@@ -62,13 +60,13 @@ const Theaters = () => {
     };
 
 
-
     if (!name || !location || !contact) {
       toast.error("Vui lòng điền đầy đủ thông tin!");
       return;
     }
 
     if (!isValidPhoneNumber(contact)) {
+      toast.error("Số điện thoại không hợp lệ! (phải bắt đầu bằng số 0 và có 10 chữ số)");
       toast.error(
         "Số điện thoại không hợp lệ!"
       );
@@ -85,10 +83,7 @@ const Theaters = () => {
       };
 
       if (selectedTheater) {
-        const updated = await updateTheater(
-          selectedTheater.theater_id,
-          theaterData
-        );
+        const updated = await updateTheater(selectedTheater.theater_id, theaterData);
         toast.success("Cập nhật rạp thành công!");
         setTheaters((prev) =>
           prev.map((t) => (t.theater_id === updated.theater_id ? updated : t))
@@ -164,7 +159,13 @@ const Theaters = () => {
       <ToastContainer />
       <SidebarAdm />
       <div className="flex-1 p-6 bg-gray-50">
-        <h1 className="text-2xl font-semibold mb-6">Quản Lý Rạp Chiếu</h1>
+        <header className="mb-6 flex justify-start items-center">
+          <div className="flex items-center ml-6">
+            <span className="ml-3 text-xl font-semibold">Quản lý rạp chiếu phim</span>
+          </div>
+        </header>
+
+        <div className="border-t border-gray-300 mb-6"></div>
 
         <div className="mb-4 text-right">
           <button
@@ -186,9 +187,7 @@ const Theaters = () => {
             </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Tên Rạp
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Tên Rạp</label>
                 <input
                   type="text"
                   className="mt-1 p-2 w-full border border-gray-300 rounded"
@@ -199,9 +198,7 @@ const Theaters = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Địa điểm
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Địa điểm</label>
                 <input
                   type="text"
                   className="mt-1 p-2 w-full border border-gray-300 rounded"
@@ -212,9 +209,19 @@ const Theaters = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Số điện thoại liên hệ
-                </label>
+                <label className="block text-sm font-medium text-gray-700">Tổng số phòng chiếu</label>
+                <input
+                  type="number"
+                  className="mt-1 p-2 w-full border border-gray-300 rounded"
+                  value={totalScreens}
+                  onChange={(e) => setTotalScreens(Number(e.target.value))}
+                  min="1"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Số điện thoại liên hệ</label>
                 <input
                   type="text"
                   className="mt-1 p-2 w-full border border-gray-300 rounded"
@@ -260,9 +267,7 @@ const Theaters = () => {
                   >
                     Xem chi tiết
                   </button>
-                  <h2 className="text-xl font-semibold text-gray-800">
-                    {theater.name}
-                  </h2>
+                  <h2 className="text-xl font-semibold text-gray-800">{theater.name}</h2>
                 </div>
                 <div className="space-x-3">
                   <button
@@ -298,12 +303,8 @@ const Theaters = () => {
               )}
               <div className="flex items-center justify-between text-sm text-gray-500">
                 <div>
-                  <h3 className="mb-2 text-black text-base">
-                    Địa điểm: {theater.location}
-                  </h3>
-                  <p className="italic">
-                    Tổng số phòng chiếu: {theater.total_screens}
-                  </p>
+                  <h3 className="mb-2 text-black text-base">Địa điểm: {theater.location}</h3>
+                  <p className="italic">Tổng số phòng chiếu: {theater.total_screens}</p>
                 </div>
                 <p
                   className={`italic ${theater.status === "active"
@@ -326,9 +327,7 @@ const Theaters = () => {
                 {theater.status !== "active" && (
                   <button
                     className="text-green-600 hover:underline"
-                    onClick={() =>
-                      handleChangeStatus(theater.theater_id, "active")
-                    }
+                    onClick={() => handleChangeStatus(theater.theater_id, "active")}
                   >
                     Kích hoạt
                   </button>
@@ -336,9 +335,7 @@ const Theaters = () => {
                 {theater.status !== "maintenance" && (
                   <button
                     className="text-yellow-600 hover:underline"
-                    onClick={() =>
-                      handleChangeStatus(theater.theater_id, "maintenance")
-                    }
+                    onClick={() => handleChangeStatus(theater.theater_id, "maintenance")}
                   >
                     Bảo trì
                   </button>
@@ -346,9 +343,7 @@ const Theaters = () => {
                 {theater.status !== "inactive" && (
                   <button
                     className="text-red-600 hover:underline"
-                    onClick={() =>
-                      handleChangeStatus(theater.theater_id, "inactive")
-                    }
+                    onClick={() => handleChangeStatus(theater.theater_id, "inactive")}
                   >
                     Ngừng hoạt động
                   </button>
@@ -357,6 +352,7 @@ const Theaters = () => {
             </div>
           ))
         )}
+
         {totalPages > 1 && (
           <div className="flex justify-center mt-4 space-x-2">
             {Array.from({ length: totalPages }, (_, index) => (

@@ -1,5 +1,5 @@
 import db from "../models"; 
-import { User, Role } from "../models";
+import { User, Role, Seat } from "../models";
 
 //user 
 export const getAllUsersService = async () => {
@@ -139,4 +139,53 @@ export const deleteScreen = async (id) => {
   if (!screen) return null;
   await screen.destroy();
   return true;
+};
+
+//---------Ghế--------------/
+
+// Tạo ghế tự động
+export const createSeatsService = async (screen_id, showtime_id, total_seats) => {
+  const seatsPerRow = 10; // Số ghế mỗi hàng
+  const seatsToCreate = [];
+
+  for (let i = 0; i < total_seats; i++) {
+    const rowIndex = Math.floor(i / seatsPerRow); // Tính chỉ số hàng
+    const seatIndex = (i % seatsPerRow) + 1; // Số ghế trong hàng (bắt đầu từ 1)
+    const rowLetter = String.fromCharCode(65 + rowIndex); // Chuyển 0 => 'A', 1 => 'B', ...
+
+    const seatNumber = `${rowLetter}${seatIndex}`; // VD: A1, A2, ..., B1, B2,...
+
+    seatsToCreate.push({
+      seat_number: seatNumber,
+      screen_id,
+      showtime_id,
+      seat_type: 'regular',
+      price: 100.00,
+      is_available: true,
+    });
+  }
+
+  const createdSeats = await Seat.bulkCreate(seatsToCreate);
+  return createdSeats;
+};
+
+//getAllSeats
+export const getAllSeats = async () => {
+  return await Seat.findAll();  
+};
+
+
+//update
+export const updateSeat = async (id, seatData) => {
+  const seat = await Seat.findByPk(id);
+  if (!seat) {
+    throw new Error("Seat not found");
+  }
+
+  if (seatData.seat_number) seat.seat_number = seatData.seat_number;
+  if (seatData.seat_type) seat.seat_type = seatData.seat_type;
+  if (seatData.price) seat.price = seatData.price;
+
+  await seat.save(); 
+  return seat;
 };

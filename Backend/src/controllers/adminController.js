@@ -3,7 +3,9 @@ import { badRequest } from "../middlewares/handle_error";
 import { deleteUserService, getAllUsersService, updateUserService } from "../services/adminService.js";
 import * as movieService from "../services/adminService.js";
 import * as theaterService from "../services/adminService.js";
+import * as userService from "../services/userService.js";
 import * as screenService from "../services/adminService.js";
+import * as adminService from "../services/adminService.js";
 
 //api User
 export const getAllUsers = async (req, res) => {
@@ -91,19 +93,54 @@ export const deleteShowtimeController = async (req, res, next) => {
 
 //News
 // Add news
-export const createNews = async (req, res) => {
-  const { movie_id, title, content, image_url } = req.body;
+// exports.createNews = async (req, res) => {
+//   const { movie_id, title, content, image_url, category } = req.body;
+//   try {
+// <<<<<<< Updated upstream
+//     const newNews = await userService.createNews({
+//       movie_id,
+//       title,
+//       content,
+//       image_url,
+//     });
+//     res.status(201).json(newNews);
+//   } catch (error) {
+//     console.error("Error creating news:", error);
+//     res.status(500).json({ message: "Error creating news" });
+// =======
+//     if (!category) {
+//       return res.status(400).json({ message: "Category is required" });
+//     }
+
+//     // Gọi service để tạo tin tức
+//     const newNews = await userService.createNews({ movie_id, title, content, image_url, category });
+//     res.status(201).json(newNews);
+//   } catch (error) {
+//     console.error('Error creating news:', error);
+//     res.status(500).json({ message: 'Error creating news: ' + error.message });
+// >>>>>>> Stashed changes
+//   }
+// };
+exports.createNews = async (req, res) => {
+  const { movie_id, title, content, image_url, category } = req.body;
   try {
+    if (!category) {
+      return res.status(400).json({ message: "Category is required" });
+    }
+
+    // Gọi service để tạo tin tức
     const newNews = await userService.createNews({
       movie_id,
       title,
       content,
       image_url,
+      category,
     });
+
     res.status(201).json(newNews);
   } catch (error) {
     console.error("Error creating news:", error);
-    res.status(500).json({ message: "Error creating news" });
+    res.status(500).json({ message: "Error creating news: " + error.message });
   }
 };
 
@@ -340,5 +377,62 @@ export const deleteScreen = async (req, res) => {
   } catch (err) {
     console.error("Lỗi khi xoá phòng chiếu:", err);
     res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+//----------------ghế---------//
+//tạo ghế tự động
+export const createSeats = async (req, res) => {
+  const { screen_id, showtime_id, total_seats } = req.body;
+
+  if (!screen_id || !showtime_id || !total_seats) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const createdSeats = await adminService.createSeatsService(screen_id, showtime_id, total_seats);
+
+    return res.status(201).json({
+      message: `${createdSeats.length} seats created successfully`,
+      seats: createdSeats,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: error.message || "Internal Server Error",
+    });
+  }
+};
+
+// API lấy tất cả ghế
+export const getAllSeatsController = async (req, res) => {
+  try {
+    const seats = await adminService.getAllSeats();
+    res.status(200).json(seats);
+  } catch (err) {
+    console.error(err);
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+// API cập nhật ghế
+export const updateSeatController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const seatData = req.body;
+
+    if (!seatData.seat_number && !seatData.seat_type && !seatData.price) {
+      return res.status(400).json({ message: "At least one field is required to update" });
+    }
+
+    const updatedSeat = await adminService.updateSeat(id, seatData);
+    res.status(200).json(updatedSeat);
+  } catch (err) {
+    console.error(err);
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
   }
 };

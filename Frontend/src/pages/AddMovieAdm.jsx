@@ -72,7 +72,7 @@ const AddMovieAdm = () => {
   const handleDelete = async (id) => {
     const confirmed = window.confirm("Bạn có chắc chắn muốn xóa phim này?");
     if (!confirmed) return;
-
+  
     try {
       await deleteAdminMovie(id);
       toast.success("Xóa phim thành công!");
@@ -82,20 +82,19 @@ const AddMovieAdm = () => {
       console.error("Xóa thất bại:", error);
     }
   };
+  
 
   return (
     <div className="flex h-screen">
       <SidebarAdm />
 
       <div className="flex-1 p-6 bg-white overflow-y-auto">
-        <header className="mb-6 flex justify-end items-center">
-          <div className="flex items-center mr-6">
-            <div className="w-10 h-10 bg-[#131c28] text-white flex justify-center items-center rounded-full font-semibold">
-              ảnh
-            </div>
-            <span className="ml-3 text-xl font-semibold">Tên admin</span>
+        <header className="mb-6 flex justify-start items-center">
+          <div className="flex items-center ml-6">
+            <span className="ml-3 text-xl font-semibold">Quản lý phim</span>
           </div>
         </header>
+
 
         <div className="border-t border-gray-300 mb-6"></div>
 

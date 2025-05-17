@@ -21,6 +21,9 @@ import {
   deleteScreen,
   deleteUser,
   updateUser,
+  createSeats,
+  getAllSeatsController,
+  updateSeatController,
 } from "../controllers/adminController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import { middlewareUpload } from "../middlewares/middleUploadMovie.js";
@@ -52,9 +55,9 @@ route.delete(
 );
 
 // CRUD News
-route.post("/news", authenticate, createNews);
-route.put("/news/:id", authenticate, updateNews);
-route.delete("/news/:id", authenticate, deleteNews);
+route.post("/news", authenticate, authorize("admin"), createNews);
+route.put("/news/:id", authenticate, authorize("admin"), updateNews);
+route.delete("/news/:id", authenticate, authorize("admin"), deleteNews); 
 
 // CRUD Movie
 route.get("/movies", authenticate, authorize("admin"), getAllMovies);
@@ -86,4 +89,12 @@ route.get("/screens", authenticate, authorize("admin"), getAllScreens);
 route.post("/screens", authenticate, authorize("admin"), createScreen);
 route.put("/screens/:id", authenticate, authorize("admin"), updateScreen);
 route.delete("/screens/:id", authenticate, authorize("admin"), deleteScreen);
+
+// Ghế
+
+route.post('/create-seats',authenticate, authorize("admin"), createSeats);
+route.get('/viewAll-seats',authenticate, authorize("admin"), getAllSeatsController);
+route.put('/seats/:id',authenticate, authorize("admin"), updateSeatController);
+
+
 export default route;
