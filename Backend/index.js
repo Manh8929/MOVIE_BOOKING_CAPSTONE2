@@ -7,6 +7,7 @@ import adminRoute from "./src/routes/adminRoute";
 import userRoute from "./src/routes/userRoute";
 import authRoute from "./src/routes/authRouter";
 import movieRouter from "./src/routes/movieRouter.js";
+import paymentRoute from './src/routes/paymentRoute.js';
 import { authenticate } from "./src/middlewares/authMiddleware";
 
 require("dotenv").config();
@@ -49,8 +50,9 @@ app.use(authenticate);
 // Các route yêu cầu đăng nhập
 app.use("/api/admin", authenticate, adminRoute);
 app.use("/api/user", authenticate, userRoute);
+app.use("/payment",authenticate, paymentRoute);
 
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
   return res.send("Server on");
 });
 
