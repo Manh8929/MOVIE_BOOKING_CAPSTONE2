@@ -10,7 +10,14 @@ import {
   getAvailableComment,
   postReview,
   deleteReview,
+  analyzeSentiment,
 } from "../services/userService";
+
+const sentimentDisplayMap = {
+  positive: "Tích cực",
+  neutral: "Trung lập",
+  negative: "Tiêu cực",
+};
 
 const MovieDetail = () => {
   const { id } = useParams();
@@ -33,7 +40,6 @@ const MovieDetail = () => {
     const fetchComments = async () => {
       try {
         const response = await getAvailableComment(id);
-        console.log("FULL RESPONSE:", response);
         setComments(response);
       } catch (error) {
         console.error("Error fetching comments:", error);
@@ -60,17 +66,26 @@ const MovieDetail = () => {
     }
 
     try {
+      // Gọi API phân tích sentiment
+      const sentimentResult = await analyzeSentiment(userComment);
+      const score = sentimentResult.score;
+
+      let sentimentLabel = "neutral";
+      if (score >= 0.25) sentimentLabel = "positive";
+      else if (score <= -0.25) sentimentLabel = "negative";
+
+      // Gửi comment kèm sentiment lên backend
       const reviewData = {
         movie_id: parseInt(id, 10),
         comment: userComment,
-        sentiment: "positive",
         user_id: userInfo.user_id,
+        sentiment: sentimentLabel,
       };
 
       await postReview(token, reviewData);
       toast.success("Gửi nhận xét thành công!");
 
-      // Cập nhật lại comments
+      // Cập nhật lại comment
       const updatedComments = await getAvailableComment(id);
       setComments(updatedComments);
 
@@ -108,189 +123,13 @@ const MovieDetail = () => {
 
   if (!movie) return <div>Loading...</div>;
 
-  // Reviews processing
-  const reviews = comments || [];
-  const positiveKeywords = [
-    // 🇻🇳 Tiếng Việt phổ thông
-    "tuyệt vời",
-    "rất hay",
-    "xuất sắc",
-    "phải xem",
-    "cảm động",
-    "ấn tượng",
-    "hấp dẫn",
-    "mãn nhãn",
-    "hay",
-    "kịch tính",
-    "đáng xem",
-    "cuốn",
-    "tình tiết hay",
-    "hài hước",
-    "sáng tạo",
-    "lôi cuốn",
-    "tạo cảm hứng",
-    "gây xúc động",
-    "rất đỉnh",
+  // Tính tổng hợp sentiment
+  const positiveReviews = comments.filter((c) => c.sentiment === "positive").length;
+  const negativeReviews = comments.filter((c) => c.sentiment === "negative").length;
+  const totalReviews = comments.length;
 
-    // Gen Z Việt
-    "đỉnh kout",
-    "xịn xò",
-    "cháy",
-    "nức nở",
-    "hết nước chấm",
-    "đỉnh của chóp",
-    "best",
-    "gắt",
-    "khum thể tin nổi",
-    "iu quá",
-    "nghệ thật",
-    "tấu hài",
-    "bùng nổ",
-    "bốc lửa",
-    "cưng xỉu",
-    "trùm cuối",
-    "đậm đà bản sắc",
-    "đáng đồng tiền bát gạo",
-    "xịn mịn",
-
-    // 🇺🇸 English (formal + informal)
-    "awesome",
-    "great",
-    "excellent",
-    "must watch",
-    "masterpiece",
-    "touching",
-    "exciting",
-    "emotional",
-    "amazing",
-    "worth it",
-    "loved it",
-    "heartwarming",
-    "funny",
-    "engaging",
-    "inspiring",
-    "mind-blowing",
-    "cool",
-    "unique",
-    "brilliant",
-
-    // English Gen Z / Slang
-    "fire",
-    "banger",
-    "goat",
-    "lit",
-    "dope",
-    "next level",
-    "slaps",
-    "vibes",
-    "on point",
-    "chef's kiss",
-    "peak",
-    "10/10",
-    "💯",
-    "🔥",
-    "😍",
-    "🤩",
-    "👏",
-    "👌",
-  ];
-
-  const negativeKeywords = [
-    // 🇻🇳 Tiếng Việt phổ thông
-    "chán",
-    "tệ",
-    "buồn ngủ",
-    "dở",
-    "nhàm chán",
-    "thiếu muối",
-    "vô vị",
-    "không cảm xúc",
-    "xem xong quên luôn",
-    "lỗi",
-    "cẩu thả",
-    "rời rạc",
-    "thiếu logic",
-    "diễn dở",
-    "thiếu chiều sâu",
-    "quá nhanh",
-    "quá dài",
-    "ngủ gật",
-    "xàm",
-
-    // Gen Z Việt
-    "toang",
-    "flop",
-    "xỉu ngang",
-    "tụt mood",
-    "fail",
-    "rác",
-    "chán đời",
-    "xàm xí",
-    "lươn lẹo",
-    "mất vibe",
-    "ngáo",
-    "nghe mệt",
-    "xàm ghê",
-    "khó nuốt",
-    "xỉn",
-    "ghẻ",
-    "tạch",
-    "khoai",
-
-    // 🇺🇸 English (formal + informal)
-    "boring",
-    "bad",
-    "terrible",
-    "lame",
-    "weak",
-    "poor",
-    "slow",
-    "predictable",
-    "not worth it",
-    "mediocre",
-    "unrealistic",
-    "flat",
-    "shallow",
-    "cringe",
-    "forgettable",
-    "overrated",
-    "underwhelming",
-    "dragging",
-    "messy",
-    "cliché",
-
-    // English Gen Z / Slang
-    "mid",
-    "trash",
-    "sleepy",
-    "flop",
-    "dry",
-    "snoozefest",
-    "yawn",
-    "👎",
-    "😴",
-    "💤",
-    "🤮",
-    "🙄",
-    "😑",
-    "😬",
-  ];
-
-  const positiveReviews = reviews.filter((r) =>
-    positiveKeywords.some((word) => r.comment.toLowerCase().includes(word))
-  ).length;
-
-  const negativeReviews = reviews.filter((r) =>
-    negativeKeywords.some((word) => r.comment.toLowerCase().includes(word))
-  ).length;
-
-  const totalReviews = reviews.length;
-  const positivePercentage = ((positiveReviews / totalReviews) * 100).toFixed(
-    1
-  );
-  const negativePercentage = ((negativeReviews / totalReviews) * 100).toFixed(
-    1
-  );
+  const positivePercentage = totalReviews ? ((positiveReviews / totalReviews) * 100).toFixed(1) : 0;
+  const negativePercentage = totalReviews ? ((negativeReviews / totalReviews) * 100).toFixed(1) : 0;
 
   return (
     <div className="mt-[80px] min-h-screen bg-gradient-to-r from-red-900 to-black text-white p-6">
@@ -309,33 +148,15 @@ const MovieDetail = () => {
           <div className="flex-1 space-y-2">
             <h2 className="text-2xl font-bold text-white">{movie.title}</h2>
             <p className="text-sm italic text-gray-300">{movie.description}</p>
-            <p className="text-sm text-gray-400">
-              {movie.detailed_description}
-            </p>
+            <p className="text-sm text-gray-400">{movie.detailed_description}</p>
 
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-4 text-sm text-gray-300">
-              <div>
-                <span className="font-semibold">Thời gian:</span>{" "}
-                {movie.duration} phút
-              </div>
-              <div>
-                <span className="font-semibold">Thể loại:</span> {movie.genre}
-              </div>
-              <div>
-                <span className="font-semibold">Khởi chiếu:</span>{" "}
-                {new Date(movie.release_date).toLocaleDateString()}
-              </div>
-              <div>
-                <span className="font-semibold">Đạo diễn:</span>{" "}
-                {movie.director}
-              </div>
-              <div>
-                <span className="font-semibold">Diễn viên:</span> {movie.actors}
-              </div>
-              <div>
-                <span className="font-semibold">Ngôn ngữ:</span>{" "}
-                {movie.language}
-              </div>
+              <div><span className="font-semibold">Thời gian:</span> {movie.duration} phút</div>
+              <div><span className="font-semibold">Thể loại:</span> {movie.genre}</div>
+              <div><span className="font-semibold">Khởi chiếu:</span> {new Date(movie.release_date).toLocaleDateString()}</div>
+              <div><span className="font-semibold">Đạo diễn:</span> {movie.director}</div>
+              <div><span className="font-semibold">Diễn viên:</span> {movie.actors}</div>
+              <div><span className="font-semibold">Ngôn ngữ:</span> {movie.language}</div>
             </div>
 
             {/* Rating System */}
@@ -346,9 +167,7 @@ const MovieDetail = () => {
                   <span
                     key={star}
                     className={`text-3xl ${
-                      star <= (movie.average_rating / 2 || 0)
-                        ? "text-yellow-400"
-                        : "text-gray-500"
+                      star <= (movie.average_rating / 2 || 0) ? "text-yellow-400" : "text-gray-500"
                     }`}
                   >
                     ★
@@ -372,7 +191,8 @@ const MovieDetail = () => {
             </div>
           </div>
         </div>
-        {/* trailler */}
+
+        {/* Trailer */}
         {movie.trailer_url && (
           <div className="mt-10">
             <h3 className="text-xl font-semibold mb-4">Trailer</h3>
@@ -384,7 +204,7 @@ const MovieDetail = () => {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full h-96 rounded-lg shadow-lg"
-              ></iframe>
+              />
             </div>
           </div>
         )}
@@ -420,12 +240,23 @@ const MovieDetail = () => {
                       {review.User?.full_name || "Người dùng ẩn danh"}
                     </h4>
                   </div>
-                  <div className="flex justify-between mt-2">
+                  <div className="flex justify-between mt-2 items-center">
                     <p className="text-gray-300">{review.comment}</p>
+                    {/* <span
+                      className={`ml-4 px-2 py-1 rounded text-sm font-semibold ${
+                        review.sentiment === "positive"
+                          ? "bg-green-600 text-green-100"
+                          : review.sentiment === "negative"
+                          ? "bg-red-600 text-red-100"
+                          : "bg-gray-600 text-gray-100"
+                      }`}
+                    >
+                      {sentimentDisplayMap[review.sentiment] || review.sentiment}
+                    </span> */}
                     {userInfo?.user_id === review.user_id && (
                       <button
                         onClick={() => handleDeleteComment(review.review_id)}
-                        className="text-red-400 hover:text-red-600"
+                        className="text-red-400 hover:text-red-600 ml-4"
                         title="Xoá nhận xét"
                       >
                         <FaTrashAlt />
@@ -438,9 +269,7 @@ const MovieDetail = () => {
                         <span
                           key={star}
                           className={`text-xl ${
-                            star <= review.rating
-                              ? "text-yellow-400"
-                              : "text-gray-500"
+                            star <= review.rating ? "text-yellow-400" : "text-gray-500"
                           }`}
                         >
                           ★
