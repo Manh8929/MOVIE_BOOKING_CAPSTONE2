@@ -186,3 +186,15 @@ export const deleteReview = async (req, res) => {
     return res.status(500).json({ message: "Lỗi server", error: error.message });
   }
 };
+
+
+// Lấy tất cả promotion
+export const getAllPromotions = async (req, res) => {
+  try {
+    const promotions = await userService.getAllPromotions();
+    res.status(200).json(promotions);
+  } catch (error) {
+    console.error("Error fetching promotions:", error);
+    res.status(500).json({ message: "Lỗi lấy danh sách promotion" });
+  }
+};

@@ -121,3 +121,14 @@ export const deleteReview = async (token, reviewId) => {
     throw error;
   }
 };
+
+// promotion
+export const getAvailablPromotion = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/promotion`);
+    return response.data.promotions;
+  } catch (error) {
+    console.error("Error fetching available promotion:", error);
+    throw error;
+  }
+};

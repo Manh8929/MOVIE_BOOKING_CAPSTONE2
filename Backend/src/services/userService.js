@@ -231,3 +231,8 @@ export const deleteReviewByUser = async (reviewId, userId) => {
     throw err;
   }
 };
+
+// khuyến mãi
+export const getAllPromotions = async () => {
+  return await db.Promotion.findAll();
+};
