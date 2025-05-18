@@ -31,6 +31,7 @@ import {
 } from "../controllers/adminController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import { middlewareUpload } from "../middlewares/middleUploadMovie.js";
+import { middlewareUploadPromotion } from "../middlewares/middleUploadPromotion.js";
 const route = express.Router();
 
 //api manager User
@@ -86,14 +87,14 @@ route.post(
   "/promotion",
   authenticate,
   authorize("admin"),
-  middlewareUpload,
+  middlewareUploadPromotion,
   createPromotion
 );
 route.put(
   "/promotion/:id",
   authenticate,
   authorize("admin"),
-  middlewareUpload,
+  middlewareUploadPromotion,
   updatePromotion
 );
 route.delete("/promotion/:id", authenticate, deletePromotion);
