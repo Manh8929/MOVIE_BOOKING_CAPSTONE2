@@ -17,7 +17,6 @@ export const getUserProfile = async (token) => {
   }
 };
 
-
 // Hàm cập nhật thông tin user profile
 export const updateUserProfile = async (token, data) => {
   if (!token) {
@@ -25,11 +24,15 @@ export const updateUserProfile = async (token, data) => {
   }
 
   try {
-    const response = await axios.put(`${API_URL}/api/user/profile/update`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.put(
+      `${API_URL}/api/user/profile/update`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error updating user profile:", error);
@@ -63,10 +66,10 @@ export const getNewsById = async (id) => {
 export const getMovies = async () => {
   try {
     const response = await axios.get(`${API_URL}/movies`);
-    return response.data.movies;  // trả về dữ liệu danh sách phim
+    return response.data.movies; // trả về dữ liệu danh sách phim
   } catch (error) {
     console.error("Error fetching movies:", error);
-    throw error;  // ném lỗi ra ngoài để xử lý khi cần
+    throw error; // ném lỗi ra ngoài để xử lý khi cần
   }
 };
 
@@ -95,14 +98,17 @@ export const getAvailableComment = async (movieId) => {
 //
 export const postReview = async (token, reviewData) => {
   try {
-    const response = await axios.post(`${API_URL}/api/user/review`, reviewData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.post(
+      `${API_URL}/api/user/review`,
+      reviewData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
-  }
-  catch (error) {
+  } catch (error) {
     console.error("Error fetching comments:", error);
     throw error;
   }
@@ -110,11 +116,14 @@ export const postReview = async (token, reviewData) => {
 
 export const deleteReview = async (token, reviewId) => {
   try {
-    const response = await axios.delete(`${API_URL}/api/user/review/${reviewId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.delete(
+      `${API_URL}/api/user/review/${reviewId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error deleting review:", error);
@@ -126,7 +135,7 @@ export const deleteReview = async (token, reviewId) => {
 export const getAvailablPromotion = async () => {
   try {
     const response = await axios.get(`${API_URL}/promotion`);
-    return response.data.promotions;
+    return response.data;
   } catch (error) {
     console.error("Error fetching available promotion:", error);
     throw error;
