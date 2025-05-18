@@ -8,9 +8,11 @@ import {
   createPromotion,
   updatePromotion,
   deletePromotion,
+  getAdminMovies,
 } from "../services/adminService";
 
 const PromotionManagement = () => {
+  const [movies, setMovies] = useState([]);
   const [promotions, setPromotions] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentPromo, setCurrentPromo] = useState({
@@ -33,7 +35,6 @@ const PromotionManagement = () => {
   });
 
   const validatePromo = () => {
-    // Danh sách các trường bắt buộc phải có giá trị (có thể điều chỉnh tùy nhu cầu)
     const requiredFields = [
       "title",
       "code",
@@ -43,6 +44,17 @@ const PromotionManagement = () => {
       "valid_from",
       "valid_to",
     ];
+
+    const isDuplicateCode = promotions.some(
+      (promo) =>
+        promo.code.toLowerCase() === currentPromo.code.toLowerCase() &&
+        promo.promo_id !== currentPromo.promo_id
+    );
+
+    if (isDuplicateCode) {
+      toast.error("Mã khuyến mãi đã tồn tại!");
+      return false;
+    }
 
     // Validate các trường bắt buộc
     for (const field of requiredFields) {
@@ -102,6 +114,8 @@ const PromotionManagement = () => {
 
   const handleSubmit = async () => {
     if (!validatePromo()) return;
+
+    currentPromo.applicable_payment = "cash";
 
     const formData = new FormData();
     for (let key in currentPromo) {
@@ -166,6 +180,21 @@ const PromotionManagement = () => {
     fetchPromotions();
   };
 
+  useEffect(() => {
+    fetchPromotions();
+    fetchMovies();
+  }, []);
+
+  const fetchMovies = async () => {
+    try {
+      const data = await getAdminMovies();
+      console.log("Dữ liệu phim từ API:", data);
+      setMovies(data.movies);
+    } catch (err) {
+      console.error("Lỗi khi lấy danh sách phim:", err);
+    }
+  };
+
   return (
     <div className="flex h-screen">
       <SidebarAdm />
@@ -207,36 +236,26 @@ const PromotionManagement = () => {
 
             <div>
               <label className="block mb-1 font-medium text-gray-700">
-                Giá trị giảm
+                Giá trị giảm (%)
               </label>
-              <input
+              <select
                 name="discount_value"
-                type="number"
-                placeholder="% hoặc số tiền"
                 value={currentPromo.discount_value}
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Loại giảm giá
-              </label>
-              <select
-                name="discount_type"
-                value={currentPromo.discount_type}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="percentage">Phần trăm</option>
-                <option value="amount">Số tiền</option>
+                <option value="">Chọn giá trị %</option>
+                {Array.from({ length: 100 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1}%
+                  </option>
+                ))}
               </select>
             </div>
 
             <div>
               <label className="block mb-1 font-medium text-gray-700">
-                Đơn hàng tối thiểu
+                Giá đơn hàng tối được thiểu áp dụng
               </label>
               <input
                 name="min_order_value"
@@ -344,28 +363,22 @@ const PromotionManagement = () => {
 
             <div>
               <label className="block mb-1 font-medium text-gray-700">
-                Phương thức thanh toán
-              </label>
-              <input
-                name="applicable_payment"
-                placeholder="Ví dụ: MoMo, ZaloPay"
-                value={currentPromo.applicable_payment}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
                 Áp dụng cho phim
               </label>
-              <input
+              <select
                 name="applicable_movies"
-                placeholder="ID phim cách nhau bằng dấu phẩy"
                 value={currentPromo.applicable_movies}
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              >
+                <option value="">-- Chọn phim áp dụng --</option>
+                <option value="all">Tất cả phim</option>
+                {movies.map((movie) => (
+                  <option key={movie.movie_id} value={movie.movie_id}>
+                    {movie.title}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -390,66 +403,51 @@ const PromotionManagement = () => {
         </div>
 
         {/* Danh sách khuyến mãi */}
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border rounded shadow">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="px-4 py-2 border">#</th>
-                <th className="px-4 py-2 border">Tiêu đề</th>
-                <th className="px-4 py-2 border">Mã</th>
-                <th className="px-4 py-2 border">Giảm</th>
-                <th className="px-4 py-2 border">Từ - Đến</th>
-                <th className="px-4 py-2 border">Giới hạn</th>
-                <th className="px-4 py-2 border">Trạng thái</th>
-                <th className="px-4 py-2 border">Hành động</th>
-              </tr>
-            </thead>
-            <tbody>
-              {promotions.map((promo, idx) => (
-                <tr key={promo.promo_id}>
-                  <td className="px-4 py-2 border">{idx + 1}</td>
-                  <td className="px-4 py-2 border">{promo.title}</td>
-                  <td className="px-4 py-2 border">{promo.code}</td>
-                  <td className="px-4 py-2 border">
-                    {promo.discount_value}
-                    {promo.discount_type === "percentage" ? "%" : "₫"}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {promo.valid_from?.slice(0, 10)} →{" "}
-                    {promo.valid_to?.slice(0, 10)}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {promo.usage_limit} / mỗi người: {promo.user_limit}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {promo.status === "active" ? (
-                      <span className="text-green-600 font-semibold">
-                        Hiệu lực
-                      </span>
-                    ) : (
-                      <span className="text-red-500 font-semibold">
-                        Hết hạn
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-2 border space-x-2">
-                    <button
-                      onClick={() => handleEdit(promo)}
-                      className="text-blue-500 hover:underline"
-                    >
-                      Sửa
-                    </button>
-                    <button
-                      onClick={() => handleDelete(promo.promo_id)}
-                      className="text-red-500 hover:underline"
-                    >
-                      Xoá
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="mt-8 mb-16">
+          <h2 className="text-xl font-semibold mb-4">Danh sách khuyến mãi</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {promotions.map((promo) => (
+              <div
+                key={promo.promo_id}
+                className="bg-white rounded-xl shadow-md p-4 border"
+              >
+                <h3 className="text-lg font-bold text-gray-800 mb-2">
+                  {promo.title}
+                </h3>
+                <p className="text-sm text-gray-600 mb-2">
+                  {promo.description}
+                </p>
+                <p className="text-sm text-gray-500 mb-2">
+                  Mã KM: <strong>{promo.code}</strong>
+                </p>
+                {promo.image_url && (
+                  <img
+                    src={
+                      typeof promo.image_url === "string"
+                        ? promo.image_url
+                        : URL.createObjectURL(promo.image_url)
+                    }
+                    alt={promo.title}
+                    className="w-full h-48 object-cover rounded-lg mt-2"
+                  />
+                )}
+                <div className="flex justify-between mt-4">
+                  <button
+                    onClick={() => handleEdit(promo)}
+                    className="text-blue-500 hover:underline"
+                  >
+                    Sửa
+                  </button>
+                  <button
+                    onClick={() => handleDelete(promo.promo_id)}
+                    className="text-red-500 hover:underline"
+                  >
+                    Xóa
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
