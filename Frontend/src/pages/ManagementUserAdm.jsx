@@ -69,9 +69,14 @@ const Users = () => {
     }
   };
 
-  const filteredUsers = users.filter((user) =>
-    user.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+const filteredUsers = users.filter((user) => {
+  const search = searchTerm.toLowerCase();
+  return (
+    user.full_name?.toLowerCase().includes(search) ||
+    user.email?.toLowerCase().includes(search) ||
+    user.phone_number?.toLowerCase().includes(search)
   );
+});
 
   // chart
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
@@ -120,7 +125,7 @@ const Users = () => {
           <div className="mb-6 flex items-center space-x-2">
             <input
               type="text"
-              placeholder="Tìm kiếm..."
+              placeholder="Tìm kiếm theo tên, gmail hoặc số điện thoại"
               className="border border-gray-300 p-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg transition duration-300 ease-in-out transform hover:scale-105 w-64"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
