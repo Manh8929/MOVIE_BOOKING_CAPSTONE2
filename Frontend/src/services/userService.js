@@ -142,3 +142,14 @@ export const getShowtimesByMovieTheaterDate = async (movieId, theaterId, date) =
     throw error;
   }
 };
+
+
+export const getSeatsByShowtime = async (showtimeId) => {
+  try {
+    const response = await axios.get(`${API_URL}/seats/${showtimeId}`);
+    return response.data.seats;
+  } catch (error) {
+    console.error("Error fetching seats:", error);
+    throw error;
+  }
+};

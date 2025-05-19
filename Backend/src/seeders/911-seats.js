@@ -44,7 +44,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        showtime_id: 3,
+        showtime_id: 2,
         seat_number: 'C1',
         screen_id: 3,
         seat_type: 'regular',

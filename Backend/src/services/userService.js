@@ -292,3 +292,31 @@ export const getTheatersByMovie = async (movieId) => {
     throw new Error("Error fetching theaters by movie");
   }
 };
+
+
+export const getSeatsByShowtime = async (showtimeId) => {
+  try {
+    const seats = await db.Seat.findAll({
+      where: { showtime_id: showtimeId },
+      include: [
+        {
+          model: db.BookingSeat,
+          include: [{ model: db.Booking }],
+        },
+      ],
+    });
+
+    return seats.map((seat) => ({
+      seat_id: seat.seat_id,
+      seat_number: seat.seat_number,
+      seat_type: seat.seat_type,
+      price: seat.price,
+      is_available: seat.is_available,
+      is_booked: seat.BookingSeats && seat.BookingSeats.length > 0,
+    }));
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error fetching seats");
+  }
+};
+

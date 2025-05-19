@@ -105,7 +105,9 @@ const DateMovieComponent = () => {
     toast.success("Đang chuyển hướng...", { position: "top-right" });
 
     setTimeout(() => {
-      navigate("/seat-select", { state: { showtime: selectedShowtime } });
+      navigate("/seat-select", {
+        state: { showtime: selectedShowtime, movie, theater },
+      });
     }, 1500);
   };
 

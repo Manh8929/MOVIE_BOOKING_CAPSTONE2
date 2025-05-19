@@ -13,7 +13,8 @@ import {
   createReview,
   deleteReview, 
   getShowtimesByTheaterAndDate,
-  getTheatersByMovie
+  getTheatersByMovie,
+  getSeatsByShowtime
 } from "../controllers/userController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware";
 import { middlewareUpload } from "../middlewares/middleUploadUser";
@@ -33,4 +34,5 @@ route.get("/review/:movieId", getReviews);
 route.post("/review", createReview);
 route.delete("/review/:reviewId", authenticate, deleteReview);
 route.get("/theaters-by-movie", getTheatersByMovie);
+route.get("/seats/:showtimeId", getSeatsByShowtime);
 export default route;
