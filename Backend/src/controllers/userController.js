@@ -186,3 +186,44 @@ export const deleteReview = async (req, res) => {
     return res.status(500).json({ message: "Lỗi server", error: error.message });
   }
 };
+
+//showtimeBydate và theater
+export const getShowtimesByTheaterAndDate = async (req, res) => {
+  try {
+    const { theaterId, movieId, date } = req.query;
+
+    if (!theaterId || !movieId || !date) {
+      return res.status(400).json({ message: "Missing theater_id, movie_id or date" });
+    }
+
+    const showtimes = await userService.getShowtimesByTheaterAndDate(theaterId, movieId, date);
+
+    return res.json({ showtimes });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Error fetching showtimes" });
+  }
+};
+
+
+//lấy rạp theo movie
+
+// GET /api/theaters-by-movie?movieId=1
+export const getTheatersByMovie = async (req, res) => {
+  try {
+    const { movieId } = req.query;
+
+    if (!movieId) {
+      return res.status(400).json({ message: "Missing movieId in query params" });
+    }
+
+    const theaters = await userService.getTheatersByMovie(movieId);
+
+    return res.json({ theaters });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Server error while fetching theaters by movie",
+    });
+  }
+};

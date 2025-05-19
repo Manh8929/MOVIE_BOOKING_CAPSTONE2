@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import db from "../models";
 exports.getUserProfile = async (userId) => {
   try {
@@ -229,5 +230,65 @@ export const deleteReviewByUser = async (reviewId, userId) => {
   } catch (err) {
     console.error("Error deleting review:", err);
     throw err;
+  }
+};
+
+//showtimebydate
+export const getShowtimesByTheaterAndDate = async (theaterId, movieId, date) => {
+  try {
+    const startOfDay = new Date(`${date}T00:00:00`);
+    const endOfDay = new Date(`${date}T23:59:59`);
+
+    const showtimes = await db.Showtime.findAll({
+      where: {
+        show_time: { [Op.between]: [startOfDay, endOfDay] },
+        movie_id: movieId,
+        status: "scheduled"
+      },
+      include: [
+        {
+          model: db.Screen,
+          where: { theater_id: theaterId },
+          attributes: []
+        },
+        {
+          model: db.Movie,
+          attributes: ["title", "duration"]
+        }
+      ],
+      order: [["show_time", "ASC"]]
+    });
+
+    return showtimes;
+  } catch (error) {
+    console.error("Error in getShowtimesByTheaterAndDate:", error);
+    throw error;
+  }
+};
+
+
+
+//lấy rạp theo movie
+export const getTheatersByMovie = async (movieId) => {
+  try {
+    const theaters = await db.Theater.findAll({
+      include: {
+        model: db.Screen,
+        required: true,
+        include: {
+          model: db.Showtime,
+          required: true,
+          where: {
+            movie_id: movieId,
+            status: "scheduled",
+          },
+        },
+      },
+    });
+
+    return theaters;
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error fetching theaters by movie");
   }
 };

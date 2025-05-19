@@ -119,7 +119,7 @@ const CommentManagement = () => {
                 <td className="p-3">{r.movie}</td>
                 <td className="p-3">{r.user}</td>
                 <td className="p-3">
-                  <FaStar count={5} />
+                  <FaStar count={r.rating} />
                 </td>
                 <td className="p-3 truncate max-w-xs" title={r.comment}>
                   {r.comment}

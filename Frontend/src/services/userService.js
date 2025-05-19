@@ -121,3 +121,24 @@ export const deleteReview = async (token, reviewId) => {
     throw error;
   }
 };
+export const getTheatersByMovie = async (movieId) => {
+  try {
+    const response = await axios.get(`${API_URL}/theaters-by-movie?movieId=${movieId}`);
+    return response.data.theaters;
+  } catch (error) {
+    console.error("Error fetching available theaters-by-movie:", error);
+    throw error;
+  }
+};
+
+export const getShowtimesByMovieTheaterDate = async (movieId, theaterId, date) => {
+  try {
+    const response = await axios.get(`${API_URL}/showtime/showtimes-by-date-and-theater`, {
+      params: { movieId, theaterId, date },
+    });
+    return response.data.showtimes;
+  } catch (error) {
+    console.error("Error fetching showtimes by movie, theater and date:", error);
+    throw error;
+  }
+};
