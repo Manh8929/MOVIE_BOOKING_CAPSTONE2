@@ -155,12 +155,27 @@ export const createSeatsService = async (screen_id, showtime_id, total_seats) =>
 
     const seatNumber = `${rowLetter}${seatIndex}`; // VD: A1, A2, ..., B1, B2,...
 
+    let seatType = 'regular'; // Mặc định là ghế thường
+    let price = 100.00; // Giá ghế thường
+
+    // Phân loại ghế
+    if (rowLetter >= 'A' && rowLetter <= 'F') {
+      seatType = 'regular'; // Ghế thường
+      price = 100.00;
+    } else if (rowLetter >= 'G' && rowLetter <= 'K') {
+      seatType = 'vip'; // Ghế VIP
+      price = 200.00; // Giá ghế VIP
+    } else {
+      seatType = 'couple'; // Ghế đôi
+      price = 300.00; // Giá ghế đôi
+    }
+
     seatsToCreate.push({
       seat_number: seatNumber,
       screen_id,
       showtime_id,
-      seat_type: 'regular',
-      price: 100.00,
+      seat_type: seatType,
+      price: price,
       is_available: true,
     });
   }
@@ -168,6 +183,7 @@ export const createSeatsService = async (screen_id, showtime_id, total_seats) =>
   const createdSeats = await Seat.bulkCreate(seatsToCreate);
   return createdSeats;
 };
+
 
 //getAllSeats
 export const getAllSeats = async () => {

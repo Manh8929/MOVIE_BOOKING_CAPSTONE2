@@ -12,7 +12,11 @@ import {
   getReviews,
   createReview,
   deleteReview,
-  getAllPromotions 
+  getAllPromotions,
+  getShowtimesByTheaterAndDate,
+  getTheatersByMovie,
+  getSeatsByShowtime
+
 } from "../controllers/userController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware";
 import { middlewareUpload } from "../middlewares/middleUploadUser";
@@ -23,6 +27,7 @@ route.get("/profile", authenticate, getUserProfile);
 route.put("/profile/update", authenticate, middlewareUpload, updateUserProfile);
 route.get("/showtimes", getAllShowtime);
 route.get("/showtimes-by-date", getShowtimeByDate);
+route.get("/showtimes-by-date-and-theater", getShowtimesByTheaterAndDate);
 route.get("/news", getAllNews);
 route.get("/news/:id", getNewsById);
 route.get("/theaters", getAllTheaters);
@@ -31,4 +36,6 @@ route.get("/review/:movieId", getReviews);
 route.get("/promotion", getAllPromotions);
 route.post("/review", createReview);
 route.delete("/review/:reviewId", authenticate, deleteReview);
+route.get("/theaters-by-movie", getTheatersByMovie);
+route.get("/seats/:showtimeId", getSeatsByShowtime);
 export default route;

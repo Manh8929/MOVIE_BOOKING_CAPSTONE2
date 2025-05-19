@@ -439,7 +439,7 @@ const MovieDetail = () => {
         {movie.status !== "upcoming" && (
           <div className="mt-6">
             <button
-              onClick={() => navigate(`/theaters`)}
+              onClick={() => navigate("/theaters",{ state: { movie } })}
               className="px-6 py-3 bg-[#E63946] text-white rounded-lg text-lg font-semibold hover:bg-transparent hover:border-gray-400 hover:border"
             >
               Đặt vé
