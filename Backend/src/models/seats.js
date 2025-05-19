@@ -37,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
   Seat.associate = (models) => {
     Seat.belongsTo(models.Showtime, { foreignKey: "showtime_id" });
     Seat.belongsTo(models.Screen, { foreignKey: "screen_id" });
+    Seat.hasMany(models.BookingSeat, { foreignKey: "seat_id" });
   };
 
   return Seat;

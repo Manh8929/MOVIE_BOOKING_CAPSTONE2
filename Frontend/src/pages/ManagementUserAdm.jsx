@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa"; // Import icon xóa từ react-icons
-import SidebarAdm from "../components/Admin/SidebarAdm"; // Đảm bảo import đúng SidebarAdm
+import { toast } from "react-toastify";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
 
+import SidebarAdm from "../components/Admin/SidebarAdm";
 import * as adminService from "../services/adminService";
-import { toast } from "react-toastify";
 const Users = () => {
   const [activePage, setActivePage] = useState("users");
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({
     full_name: "",
     phone_number: "",
@@ -19,6 +18,7 @@ const Users = () => {
     role_id: "",
     email: "",
   });
+  const [searchTerm, setSearchTerm] = useState("");
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const Users = () => {
       const res = await adminService.getAllUsers(token);
       setUsers(res.users);
     } catch (err) {
-      toast.error("Lỗi tải danh sách người dùng");
+      toast.error("Lỗi tải danh sách người dùng", err);
     }
   };
 
@@ -65,18 +65,13 @@ const Users = () => {
       setEditingUser(null);
       fetchUsers();
     } catch (err) {
-      toast.error("Cập nhật thất bại");
+      toast.error("Cập nhật thất bại", err);
     }
   };
-  // tìm kiếm
-  const filteredUsers = users.filter((user) => {
-    const keyword = searchTerm.toLowerCase();
-    return (
-      user.full_name?.toLowerCase().includes(keyword) ||
-      user.email?.toLowerCase().includes(keyword) ||
-      user.phone_number?.toLowerCase().includes(keyword)
-    );
-  });
+
+  const filteredUsers = users.filter((user) =>
+    user.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // chart
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
@@ -113,24 +108,27 @@ const Users = () => {
       {/* Nội dung chính */}
       <div className="max-h-[800px] xl2:max-h-[100vh] w-full overflow-y-auto">
         <div className="flex-1 p-6 bg-gray-50">
-          {/* tìm kiếm */}
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Tìm theo tên, email hoặc số điện thoại"
-              className="border p-2 rounded w-1/3"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+          {/* Header */}
           <header className="mb-6 flex justify-start items-center">
-            {/* Header */}
             <div className="flex items-center">
               <span className="ml-3 text-xl font-semibold">
                 Quản lý người dùng
               </span>
             </div>
           </header>
+          {/* Tìm kiếm */}
+          <div className="mb-6 flex items-center space-x-2">
+            <input
+              type="text"
+              placeholder="Tìm kiếm..."
+              className="border border-gray-300 p-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg transition duration-300 ease-in-out transform hover:scale-105 w-64"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {/* <button className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-2 rounded-r-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center">
+    <FaSearch className="mr-1" />
+  </button> */}
+          </div>
 
           {/* Đường kẻ phân cách */}
           <div className="border-t border-gray-300 mb-6"></div>
@@ -216,6 +214,7 @@ const Users = () => {
               ))}
             </tbody>
           </table>
+
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="bg-white p-6 rounded shadow-md">
               <h2 className="text-lg font-semibold mb-4">Tỉ lệ giới tính</h2>
