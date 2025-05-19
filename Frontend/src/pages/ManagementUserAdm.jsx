@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa"; // Import icon xóa từ react-icons
+import { FaEdit, FaSearch, FaTrash } from "react-icons/fa"; // Import icon xóa từ react-icons
 import SidebarAdm from "../components/Admin/SidebarAdm"; // Đảm bảo import đúng SidebarAdm
 import * as adminService from "../services/adminService";
 import { toast } from "react-toastify";
@@ -16,6 +16,7 @@ const Users = () => {
     role_id: "",
     email: "",
   });
+  const [searchTerm, setSearchTerm] = useState("");
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -65,6 +66,10 @@ const Users = () => {
       toast.error("Cập nhật thất bại");
     }
   };
+
+  const filteredUsers = users.filter((user) =>
+    user.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
@@ -75,9 +80,25 @@ const Users = () => {
         {/* Header */}
         <header className="mb-6 flex justify-start items-center">
           <div className="flex items-center">
-            <span className="ml-3 text-xl font-semibold">Quản lý người dùng</span>
+            <span className="ml-3 text-xl font-semibold">
+              Quản lý người dùng
+            </span>
           </div>
         </header>
+{/* Tìm kiếm */}
+<div className="mb-6 flex items-center space-x-2">
+  <input
+    type="text"
+    placeholder="Tìm kiếm..."
+    className="border border-gray-300 p-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg transition duration-300 ease-in-out transform hover:scale-105 w-64"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+  {/* <button className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-2 rounded-r-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center">
+    <FaSearch className="mr-1" />
+  </button> */}
+</div>
+
 
         {/* Đường kẻ phân cách */}
         <div className="border-t border-gray-300 mb-6"></div>
@@ -118,7 +139,7 @@ const Users = () => {
           </thead>
           <tbody>
             {/* Dữ liệu người dùng */}
-            {users.map((user, index) => (
+            {filteredUsers.map((user, index) => (
               <tr className="border-t border-gray-200 hover:bg-gray-100 hover:scale-102 transition-all duration-200">
                 <td className="py-3 px-4 text-gray-600 border-r border-gray-300">
                   {index + 1}
@@ -133,7 +154,11 @@ const Users = () => {
                   {user.phone_number || "-"}
                 </td>
                 <td className="py-3 px-4 text-gray-600 border-r border-gray-300">
-                {user.gender === 'male' ? 'Nam' : user.gender === 'female' ? 'Nữ' : 'Khác'}
+                  {user.gender === "male"
+                    ? "Nam"
+                    : user.gender === "female"
+                    ? "Nữ"
+                    : "Khác"}
                 </td>
                 <td className="py-3 px-4 text-gray-600 border-r border-gray-300">
                   {new Date(user.dob).toLocaleDateString("vi-VN")}
