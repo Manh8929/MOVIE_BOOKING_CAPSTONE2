@@ -1,10 +1,23 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+  Tooltip,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
 
 import SidebarAdm from "../components/Admin/SidebarAdm";
 import * as adminService from "../services/adminService";
+import { useMemo } from "react";
 const Users = () => {
   const [activePage, setActivePage] = useState("users");
   const [users, setUsers] = useState([]);
@@ -69,14 +82,14 @@ const Users = () => {
     }
   };
 
-const filteredUsers = users.filter((user) => {
-  const search = searchTerm.toLowerCase();
-  return (
-    user.full_name?.toLowerCase().includes(search) ||
-    user.email?.toLowerCase().includes(search) ||
-    user.phone_number?.toLowerCase().includes(search)
-  );
-});
+  const filteredUsers = users.filter((user) => {
+    const search = searchTerm.toLowerCase();
+    return (
+      user.full_name?.toLowerCase().includes(search) ||
+      user.email?.toLowerCase().includes(search) ||
+      user.phone_number?.toLowerCase().includes(search)
+    );
+  });
 
   // chart
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
@@ -105,11 +118,48 @@ const filteredUsers = users.filter((user) => {
     ];
   };
 
+  const getMonthlyRegistrations = (users, selectedYear) => {
+    const counts = {};
+
+    users.forEach((user) => {
+      const date = new Date(user.createdAt);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+
+      if (year === selectedYear) {
+        const key = `${month}/${year}`;
+        counts[key] = (counts[key] || 0) + 1;
+      }
+    });
+
+    return Object.keys(counts)
+      .sort((a, b) => {
+        const [ma] = a.split("/").map(Number);
+        const [mb] = b.split("/").map(Number);
+        return ma - mb;
+      })
+      .map((key) => ({ month: key, users: counts[key] }));
+  };
+
+  // Lấy các năm có trong dữ liệu
+  const years = useMemo(() => {
+    const allYears = users.map((u) => new Date(u.createdAt).getFullYear());
+    return Array.from(new Set(allYears)).sort((a, b) => b - a);
+  }, [users]);
+
+  const [selectedYear, setSelectedYear] = useState(
+    years[0] || new Date().getFullYear()
+  );
+
+  const data = useMemo(
+    () => getMonthlyRegistrations(users, selectedYear),
+    [users, selectedYear]
+  );
+
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
       <SidebarAdm activePage={activePage} setActivePage={setActivePage} />
-
       {/* Nội dung chính */}
       <div className="max-h-[800px] xl2:max-h-[100vh] w-full overflow-y-auto">
         <div className="flex-1 p-6 bg-gray-50">
@@ -121,6 +171,40 @@ const filteredUsers = users.filter((user) => {
               </span>
             </div>
           </header>
+          {/* chart */}
+          <div className="bg-white p-6 rounded shadow-md mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">
+                Số lượng người dùng đăng ký theo tháng
+              </h2>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+                className="border border-gray-300 rounded px-2 py-1"
+              >
+                {years.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="users"
+                  stroke="#8884d8"
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
           {/* Tìm kiếm */}
           <div className="mb-6 flex items-center space-x-2">
             <input
