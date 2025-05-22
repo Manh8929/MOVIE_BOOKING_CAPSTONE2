@@ -1,27 +1,15 @@
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-  Tooltip,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-} from "recharts";
+import { FaEdit, FaTrash } from "react-icons/fa"; // Import icon xóa từ react-icons
+import SidebarAdm from "../components/Admin/SidebarAdm"; // Đảm bảo import đúng SidebarAdm
+import { PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
 
-import SidebarAdm from "../components/Admin/SidebarAdm";
 import * as adminService from "../services/adminService";
-import { useMemo } from "react";
+import { toast } from "react-toastify";
 const Users = () => {
   const [activePage, setActivePage] = useState("users");
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({
     full_name: "",
     phone_number: "",
@@ -31,7 +19,6 @@ const Users = () => {
     role_id: "",
     email: "",
   });
-  const [searchTerm, setSearchTerm] = useState("");
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -43,7 +30,7 @@ const Users = () => {
       const res = await adminService.getAllUsers(token);
       setUsers(res.users);
     } catch (err) {
-      toast.error("Lỗi tải danh sách người dùng", err);
+      toast.error("Lỗi tải danh sách người dùng");
     }
   };
 
@@ -78,16 +65,16 @@ const Users = () => {
       setEditingUser(null);
       fetchUsers();
     } catch (err) {
-      toast.error("Cập nhật thất bại", err);
+      toast.error("Cập nhật thất bại");
     }
   };
-
+  // tìm kiếm
   const filteredUsers = users.filter((user) => {
-    const search = searchTerm.toLowerCase();
+    const keyword = searchTerm.toLowerCase();
     return (
-      user.full_name?.toLowerCase().includes(search) ||
-      user.email?.toLowerCase().includes(search) ||
-      user.phone_number?.toLowerCase().includes(search)
+      user.full_name?.toLowerCase().includes(keyword) ||
+      user.email?.toLowerCase().includes(keyword) ||
+      user.phone_number?.toLowerCase().includes(keyword)
     );
   });
 
@@ -118,106 +105,32 @@ const Users = () => {
     ];
   };
 
-  const getMonthlyRegistrations = (users, selectedYear) => {
-    const counts = {};
-
-    users.forEach((user) => {
-      const date = new Date(user.createdAt);
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-
-      if (year === selectedYear) {
-        const key = `${month}/${year}`;
-        counts[key] = (counts[key] || 0) + 1;
-      }
-    });
-
-    return Object.keys(counts)
-      .sort((a, b) => {
-        const [ma] = a.split("/").map(Number);
-        const [mb] = b.split("/").map(Number);
-        return ma - mb;
-      })
-      .map((key) => ({ month: key, users: counts[key] }));
-  };
-
-  // Lấy các năm có trong dữ liệu
-  const years = useMemo(() => {
-    const allYears = users.map((u) => new Date(u.createdAt).getFullYear());
-    return Array.from(new Set(allYears)).sort((a, b) => b - a);
-  }, [users]);
-
-  const [selectedYear, setSelectedYear] = useState(
-    years[0] || new Date().getFullYear()
-  );
-
-  const data = useMemo(
-    () => getMonthlyRegistrations(users, selectedYear),
-    [users, selectedYear]
-  );
-
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
       <SidebarAdm activePage={activePage} setActivePage={setActivePage} />
+
       {/* Nội dung chính */}
       <div className="max-h-[800px] xl2:max-h-[100vh] w-full overflow-y-auto">
         <div className="flex-1 p-6 bg-gray-50">
-          {/* Header */}
+          {/* tìm kiếm */}
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Tìm theo tên, email hoặc số điện thoại"
+              className="border p-2 rounded w-1/3"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           <header className="mb-6 flex justify-start items-center">
+            {/* Header */}
             <div className="flex items-center">
               <span className="ml-3 text-xl font-semibold">
                 Quản lý người dùng
               </span>
             </div>
           </header>
-          {/* chart */}
-          <div className="bg-white p-6 rounded shadow-md mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">
-                Số lượng người dùng đăng ký theo tháng
-              </h2>
-              <select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(Number(e.target.value))}
-                className="border border-gray-300 rounded px-2 py-1"
-              >
-                {years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="users"
-                  stroke="#8884d8"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          {/* Tìm kiếm */}
-          <div className="mb-6 flex items-center space-x-2">
-            <input
-              type="text"
-              placeholder="Tìm kiếm theo tên, gmail hoặc số điện thoại"
-              className="border border-gray-300 p-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg transition duration-300 ease-in-out transform hover:scale-105 w-64"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {/* <button className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-2 rounded-r-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center">
-    <FaSearch className="mr-1" />
-  </button> */}
-          </div>
 
           {/* Đường kẻ phân cách */}
           <div className="border-t border-gray-300 mb-6"></div>
@@ -303,7 +216,6 @@ const Users = () => {
               ))}
             </tbody>
           </table>
-
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="bg-white p-6 rounded shadow-md">
               <h2 className="text-lg font-semibold mb-4">Tỉ lệ giới tính</h2>

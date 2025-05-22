@@ -391,11 +391,10 @@ const MovieDetail = () => {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
                     key={star}
-                    className={`text-3xl ${
-                      star <= (movie.average_rating / 2 || 0)
-                        ? "text-yellow-400"
-                        : "text-gray-500"
-                    }`}
+                    className={`text-3xl ${star <= (movie.average_rating / 2 || 0)
+                      ? "text-yellow-400"
+                      : "text-gray-500"
+                      }`}
                   >
                     ★
                   </span>
@@ -483,11 +482,10 @@ const MovieDetail = () => {
                       {[1, 2, 3, 4, 5].map((star) => (
                         <span
                           key={star}
-                          className={`text-xl ${
-                            star <= review.rating
-                              ? "text-yellow-400"
-                              : "text-gray-500"
-                          }`}
+                          className={`text-xl ${star <= review.rating
+                            ? "text-yellow-400"
+                            : "text-gray-500"
+                            }`}
                         >
                           ★
                         </span>
