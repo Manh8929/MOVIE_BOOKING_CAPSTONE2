@@ -153,3 +153,11 @@ export const getSeatsByShowtime = async (showtimeId) => {
     throw error;
   }
 };
+
+// ========== SEAT TYPE ========== //
+
+// Lấy tất cả loại ghế
+export const getSeatTypes = async () => {
+  const res = await axios.get(`${API_URL}/view-price`);
+  return res.data;
+};

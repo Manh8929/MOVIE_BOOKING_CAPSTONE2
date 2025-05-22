@@ -300,6 +300,11 @@ export const getSeatsByShowtime = async (showtimeId) => {
       where: { showtime_id: showtimeId },
       include: [
         {
+          model: db.SeatType,
+          as: 'type',
+          attributes: ['name', 'price'],
+        },
+        {
           model: db.BookingSeat,
           include: [{ model: db.Booking }],
         },
@@ -309,8 +314,8 @@ export const getSeatsByShowtime = async (showtimeId) => {
     return seats.map((seat) => ({
       seat_id: seat.seat_id,
       seat_number: seat.seat_number,
-      seat_type: seat.seat_type,
-      price: seat.price,
+      seat_type: seat.type?.name || null, 
+      price: seat.type?.price || null,
       is_available: seat.is_available,
       is_booked: seat.BookingSeats && seat.BookingSeats.length > 0,
     }));
@@ -320,3 +325,14 @@ export const getSeatsByShowtime = async (showtimeId) => {
   }
 };
 
+// Lấy tất cả loại ghế
+export const getAllSeatTypesService = async () => {
+  const seatTypes = await db.SeatType.findAll({
+    order: [["price", "ASC"]],
+  });
+
+  return {
+    message: "Fetched all seat types successfully",
+    seatTypes,
+  };
+};

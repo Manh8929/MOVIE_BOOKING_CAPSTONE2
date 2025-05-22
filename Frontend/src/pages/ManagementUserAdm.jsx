@@ -85,20 +85,16 @@ const Users = () => {
             </span>
           </div>
         </header>
-{/* Tìm kiếm */}
-<div className="mb-6 flex items-center space-x-2">
-  <input
-    type="text"
-    placeholder="Tìm kiếm..."
-    className="border border-gray-300 p-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg transition duration-300 ease-in-out transform hover:scale-105 w-64"
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-  />
-  {/* <button className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-2 rounded-r-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center">
-    <FaSearch className="mr-1" />
-  </button> */}
-</div>
-
+        {/* Tìm kiếm */}
+        <div className="mb-6 flex items-center space-x-2">
+          <input
+            type="text"
+            placeholder="Tìm kiếm..."
+            className="border border-gray-300 p-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg transition duration-300 ease-in-out transform hover:scale-105 w-64"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
 
         {/* Đường kẻ phân cách */}
         <div className="border-t border-gray-300 mb-6"></div>

@@ -24,6 +24,12 @@ import {
   createSeats,
   getAllSeatsController,
   updateSeatController,
+  deleteSeatController,
+  getUpcomingShowtimes,
+  getAllSeatTypes,
+  createSeatType,
+  updateSeatType,
+  deleteSeatType,
 } from "../controllers/adminController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import { middlewareUpload } from "../middlewares/middleUploadMovie.js";
@@ -53,6 +59,7 @@ route.delete(
   authorize("admin"),
   deleteShowtimeController
 );
+route.get("/upcoming", authenticate, authorize("admin"), getUpcomingShowtimes);
 
 // CRUD News
 route.post("/news", authenticate, authorize("admin"), createNews);
@@ -95,6 +102,14 @@ route.delete("/screens/:id", authenticate, authorize("admin"), deleteScreen);
 route.post('/create-seats',authenticate, authorize("admin"), createSeats);
 route.get('/viewAll-seats',authenticate, authorize("admin"), getAllSeatsController);
 route.put('/seats/:id',authenticate, authorize("admin"), updateSeatController);
+route.delete('/seats/:id',authenticate, authorize("admin"), deleteSeatController);
+
+
+// giá
+route.get("/price",authenticate, authorize("admin"),getAllSeatTypes);
+route.post("/create-price",authenticate, authorize("admin"), createSeatType);
+route.put("/update-price/:id",authenticate, authorize("admin"), updateSeatType);
+route.delete("/delete-price/:id",authenticate, authorize("admin"), deleteSeatType);
 
 
 export default route;

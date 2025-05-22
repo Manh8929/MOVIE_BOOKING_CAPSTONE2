@@ -398,6 +398,9 @@ export const createSeats = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+        if (error.message.includes("Ghế cho phòng chiếu")) {
+      return res.status(409).json({ message: error.message }); // Conflict
+    }
     return res.status(500).json({
       message: error.message || "Internal Server Error",
     });
@@ -423,7 +426,7 @@ export const updateSeatController = async (req, res) => {
     const { id } = req.params;
     const seatData = req.body;
 
-    if (!seatData.seat_number && !seatData.seat_type && !seatData.price) {
+    if (!seatData.seat_number && !seatData.seat_type_id && seatData.is_available === undefined) {
       return res.status(400).json({ message: "At least one field is required to update" });
     }
 
@@ -437,4 +440,83 @@ export const updateSeatController = async (req, res) => {
   }
 };
 
+//xóa ghế
+
+export const deleteSeatController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deleted = await adminService.deleteSeat(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Seat not found" });
+    }
+
+    res.status(200).json({ message: "Seat deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+export const getUpcomingShowtimes = async (req, res) => {
+  try {
+    const data = await adminService.getUpcomingShowtimes();
+    res.status(200).json(data);
+  } catch (err) {
+    console.error("Lỗi khi lấy các suất chiếu sắp tới:", err);
+    res.status(500).json({ message: "Đã xảy ra lỗi khi lấy dữ liệu." });
+  }
+};
+
+
+//crud giá
+// Lấy danh sách loại ghế
+export const getAllSeatTypes = async (req, res) => {
+  try {
+    const result = await adminService.getAllSeatTypesService();
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+// Tạo loại ghế
+export const createSeatType = async (req, res) => {
+  try {
+    const result = await adminService.createSeatTypeService(req.body);
+    res.status(201).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+// Cập nhật loại ghế
+export const updateSeatType = async (req, res) => {
+  try {
+    const result = await adminService.updateSeatTypeService(req.params.id, req.body);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+// Xoá loại ghế
+export const deleteSeatType = async (req, res) => {
+  try {
+    const result = await adminService.deleteSeatTypeService(req.params.id);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
 
