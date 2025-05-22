@@ -1,6 +1,6 @@
 import db from "../models"; 
-import { User, Role, Seat } from "../models";
-
+import { User, Role, Seat,SeatType } from "../models";
+const { Op } = require("sequelize");
 //user 
 export const getAllUsersService = async () => {
   const users = await User.findAll({
@@ -142,9 +142,17 @@ export const deleteScreen = async (id) => {
 };
 
 //---------Ghế--------------/
+//---------Ghế--------------/
 
 // Tạo ghế tự động
 export const createSeatsService = async (screen_id, showtime_id, total_seats) => {
+  const existingSeats = await Seat.findOne({
+    where: { screen_id, showtime_id },
+  });
+
+  if (existingSeats) {
+    throw new Error("Ghế cho phòng chiếu này và suất chiếu này đã được tạo.");
+  }
   const seatsPerRow = 10; // Số ghế mỗi hàng
   const seatsToCreate = [];
 
@@ -155,27 +163,21 @@ export const createSeatsService = async (screen_id, showtime_id, total_seats) =>
 
     const seatNumber = `${rowLetter}${seatIndex}`; // VD: A1, A2, ..., B1, B2,...
 
-    let seatType = 'regular'; // Mặc định là ghế thường
-    let price = 100.00; // Giá ghế thường
+    let seat_type_id = 1; // regular
 
-    // Phân loại ghế
-    if (rowLetter >= 'A' && rowLetter <= 'F') {
-      seatType = 'regular'; // Ghế thường
-      price = 100.00;
-    } else if (rowLetter >= 'G' && rowLetter <= 'K') {
-      seatType = 'vip'; // Ghế VIP
-      price = 200.00; // Giá ghế VIP
+    if (rowLetter >= "A" && rowLetter <= "F") {
+      seat_type_id = 1; // regular
+    } else if (rowLetter >= "G" && rowLetter <= "K") {
+      seat_type_id = 2; // vip
     } else {
-      seatType = 'couple'; // Ghế đôi
-      price = 300.00; // Giá ghế đôi
+      seat_type_id = 3; // couple
     }
 
     seatsToCreate.push({
       seat_number: seatNumber,
       screen_id,
       showtime_id,
-      seat_type: seatType,
-      price: price,
+      seat_type_id,
       is_available: true,
     });
   }
@@ -187,11 +189,19 @@ export const createSeatsService = async (screen_id, showtime_id, total_seats) =>
 
 //getAllSeats
 export const getAllSeats = async () => {
-  return await Seat.findAll();  
+  return await Seat.findAll({
+    include: [
+      {
+        model: db.SeatType,
+        as: 'type', // đúng theo alias bạn đặt trong association
+        attributes: ['seat_type_id', 'name', 'price'], // chọn cột cần thiết
+      },
+    ],
+  });
 };
 
 
-//update
+//update seat
 export const updateSeat = async (id, seatData) => {
   const seat = await Seat.findByPk(id);
   if (!seat) {
@@ -199,12 +209,134 @@ export const updateSeat = async (id, seatData) => {
   }
 
   if (seatData.seat_number) seat.seat_number = seatData.seat_number;
-  if (seatData.seat_type) seat.seat_type = seatData.seat_type;
-  if (seatData.price) seat.price = seatData.price;
+  if (seatData.seat_type_id) seat.seat_type_id = seatData.seat_type_id;
+  if (seatData.is_available !== undefined) seat.is_available = seatData.is_available;
 
-  await seat.save(); 
-  return seat;
+  await seat.save();
+
+  // Optional: trả về kèm thông tin loại ghế
+  const seatWithType = await Seat.findByPk(id, {
+    include: [{
+      model: SeatType,
+      as: 'type',
+      attributes: ['seat_type_id', 'name', 'price'],
+    }]
+  });
+
+  return seatWithType;
 };
+
+// xóa ghế
+
+export const deleteSeat = async (id) => {
+  const seat = await Seat.findByPk(id);
+  if (!seat) return false;
+
+  await seat.destroy();
+  return true;
+};
+
+// get những showtime chưa hết hạn
+export const getUpcomingShowtimes = async () => {
+  try {
+    const now = new Date();
+
+    const showtimes = await db.Showtime.findAll({
+      where: {
+        show_time: {
+          [Op.gt]: now,
+        },
+        status: {
+          [Op.not]: "canceled", // tránh show các suất đã huỷ nếu muốn
+        },
+      },
+      include: [db.Movie, db.Screen],
+      order: [["show_time", "ASC"]],
+    });
+
+    return showtimes;
+  } catch (err) {
+    console.error("Lỗi lấy suất chiếu chưa hết hạn:", err);
+    throw err;
+  }
+};
+
+
+//crud giá
+
+// Lấy tất cả loại ghế
+export const getAllSeatTypesService = async () => {
+  const seatTypes = await SeatType.findAll({
+    order: [["price", "ASC"]],
+  });
+
+  return {
+    message: "Fetched all seat types successfully",
+    seatTypes,
+  };
+};
+
+// Tạo loại ghế mới
+export const createSeatTypeService = async ({ name, price }) => {
+  if (!name || price == null) {
+    const error = new Error("Name and price are required");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const [seatType, created] = await SeatType.findOrCreate({
+    where: { name },
+    defaults: { price },
+  });
+
+  if (!created) {
+    const error = new Error("Seat type already exists");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  return {
+    message: "Created seat type successfully",
+    seatType,
+  };
+};
+
+// Cập nhật loại ghế
+export const updateSeatTypeService = async (id, data) => {
+  const seatType = await SeatType.findByPk(id);
+  if (!seatType) {
+    const error = new Error("Seat type not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  seatType.name = data.name || seatType.name;
+  seatType.price = data.price ?? seatType.price;
+
+  await seatType.save();
+
+  return {
+    message: "Updated seat type successfully",
+    seatType,
+  };
+};
+
+// Xoá loại ghế
+export const deleteSeatTypeService = async (id) => {
+  const seatType = await SeatType.findByPk(id);
+  if (!seatType) {
+    const error = new Error("Seat type not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  await seatType.destroy();
+
+  return {
+    message: "Deleted seat type successfully",
+  };
+};
+
 
 // khuyến mãi
 export const createPromotion = async (data) => {

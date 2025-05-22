@@ -34,6 +34,7 @@ import PromotionManagement from "../pages/PromotionManagement";
 import OAuthSuccess from "../components/CallBackComponent/OAuthSuccess";
 import SeatsManagement from "../pages/SeatsManagement";
 import CommentManagement from "../pages/CommentManagement";
+import SeatTypeManagement from "../pages/SeatTypeManagement";
 
 export const routes = [
   {
@@ -279,6 +280,12 @@ export const routes = [
   {
     path: "/seat-management",
     page: SeatsManagement,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  {
+    path: "/price-management",
+    page: SeatTypeManagement,
     isShowHeader: false,
     isShowFooter: false,
   },

@@ -234,6 +234,17 @@ export const createSeats = async (showtime_id, screen_id, total_seats) => {
   }
 };
 
+//xóa ghế
+export const deleteSeat = async (seatId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/api/admin/seats/${seatId}`, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi xóa ghế:", error);
+    throw error;
+  }
+};
+
 //select Screen
 export const getAllSelectScreens = async (token) => {
   try {
@@ -258,6 +269,42 @@ export const fetchShowtimes = async () => {
     console.error("Lỗi lấy lịch chiếu:", err);
     throw err;
   }
+};
+
+export const getUpcomingShowtimes = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/api/admin/upcoming`,getConfig());
+    return res.data; // Lấy danh sách lịch chiếu
+  } catch (err) {
+    console.error("Lỗi lấy lịch chiếu:", err);
+    throw err;
+  }
+};
+
+// ========== SEAT TYPE ========== //
+
+// Lấy tất cả loại ghế
+export const getSeatTypes = async () => {
+  const res = await axios.get(`${API_URL}/api/admin/price`, getConfig());
+  return res.data;
+};
+
+// Tạo mới loại ghế
+export const createSeatType = async (data) => {
+  const res = await axios.post(`${API_URL}/api/admin/create-price`, data, getConfig());
+  return res.data;
+};
+
+// Cập nhật loại ghế
+export const updateSeatType = async (id, data) => {
+  const res = await axios.put(`${API_URL}/api/admin/update-price/${id}`, data, getConfig());
+  return res.data;
+};
+
+// Xoá loại ghế
+export const deleteSeatType = async (id) => {
+  const res = await axios.delete(`${API_URL}/api/admin/delete-price/${id}`, getConfig());
+  return res.data;
 };
 
 // Lấy danh sách promotion
@@ -310,4 +357,5 @@ export const deletePromotion = async (id) => {
     console.error(`Lỗi khi xóa promotion với id ${id}:`, error);
     throw error;
   }
+
 };

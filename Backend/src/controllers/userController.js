@@ -253,3 +253,15 @@ export const getSeatsByShowtime = async (req, res) => {
     return res.status(500).json({ message: "Server error while fetching seats" });
   }
 };
+// Lấy danh sách loại ghế
+export const getAllSeatTypes = async (req, res) => {
+  try {
+    const result = await userService.getAllSeatTypesService();
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+

@@ -7,7 +7,7 @@ import { useEffect } from "react";
 const SeatComponent = ({ showtime }) => {
   const navigate = useNavigate();
   const [seats, setSeats] = useState([]);
-
+  const [seatTypes, setSeatTypes] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
 
   useEffect(() => {
@@ -16,6 +16,8 @@ const SeatComponent = ({ showtime }) => {
         const seatList = await userService.getSeatsByShowtime(
           showtime?.showtime_id
         );
+        console.log("seatList", seatList);
+
         setSeats(seatList);
       } catch (error) {
         toast.error("Không thể tải danh sách ghế");
@@ -27,6 +29,19 @@ const SeatComponent = ({ showtime }) => {
     }
   }, [showtime]);
 
+  useEffect(() => {
+    const fetchSeatTypes = async () => {
+      try {
+        const data = await userService.getSeatTypes();
+        console.log("dataaaaa", data.seatTypes);
+        setSeatTypes(data.seatTypes); // data là mảng [{ name, price }]
+      } catch (err) {
+        toast.error("Không thể tải giá ghế");
+      }
+    };
+
+    fetchSeatTypes();
+  }, []);
   const toggleSeat = (seatId) => {
     setSelectedSeats((prev) =>
       prev.includes(seatId)
@@ -48,6 +63,8 @@ const SeatComponent = ({ showtime }) => {
   const renderSeat = (seat) => {
     const isSelected = selectedSeats.includes(seat.seat_id);
     const isBooked = seat.is_booked;
+    const isAvailable = seat.is_available;
+    const isDisabled = isBooked || !isAvailable;
 
     // Định nghĩa style theo loại ghế
     let baseClass = "";
@@ -63,7 +80,7 @@ const SeatComponent = ({ showtime }) => {
     }
 
     // Ghi đè màu sắc theo trạng thái
-    const bgColor = isBooked
+    const bgColor = isDisabled
       ? "bg-gray-500 cursor-not-allowed"
       : isSelected
       ? "bg-red-400"
@@ -77,7 +94,7 @@ const SeatComponent = ({ showtime }) => {
       <div
         key={seat.seat_id}
         onClick={() => {
-          if (!isBooked) toggleSeat(seat.seat_id);
+          if (!isDisabled) toggleSeat(seat.seat_id);
         }}
         className={`flex items-center justify-center rounded cursor-pointer font-semibold text-sm ${baseClass} ${bgColor}`}
       >
@@ -95,6 +112,39 @@ const SeatComponent = ({ showtime }) => {
     <div className="flex flex-col items-center gap-6 p-6 bg-gradient-to-r from-black via-black to-[rgb(118,20,39)] text-white min-h-screen">
       <ToastContainer />
       <h2 className="text-3xl font-bold">Chọn Ghế Ngồi</h2>
+      {/* Bảng giá ghế ngồi */}
+      <div className="w-full max-w-2xl grid grid-cols-3 gap-4 mt-4 text-sm text-white">
+        {seatTypes.map((type) => {
+          const color =
+            type.name === "vip"
+              ? "bg-yellow-300"
+              : type.name === "couple"
+              ? "bg-pink-500"
+              : "bg-purple-500";
+
+          const bgWrap =
+            type.name === "vip"
+              ? "bg-yellow-500/30"
+              : type.name === "couple"
+              ? "bg-pink-600/30"
+              : "bg-purple-700/30";
+
+          return (
+            <div
+              key={type.name}
+              className={`flex items-center gap-3 ${bgWrap} px-4 py-2 rounded-xl shadow`}
+            >
+              <div className={`w-4 h-4 rounded ${color}`}></div>
+              <div className="flex flex-col">
+                <span className="font-medium capitalize">Ghế {type.name}</span>
+                <span className="text-xs opacity-80">
+                  {Number(type.price).toLocaleString()}đ
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
       {/* Mô tả ghế */}
       <div className="flex gap-6 text-sm">

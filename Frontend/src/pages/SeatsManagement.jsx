@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Admin/SidebarAdm";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import * as adminService from "../services/adminService";
+import { toast, ToastContainer } from "react-toastify";
 
 const SeatsManagement = () => {
   const [seats, setSeats] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filterShowtime, setFilterShowtime] = useState("");
+  const [screenFilter, setScreenFilter] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedSeat, setSelectedSeat] = useState(null);
@@ -22,7 +24,6 @@ const SeatsManagement = () => {
     const fetchScreens = async () => {
       try {
         const data = await adminService.getAllSelectScreens(token);
-        console.log("scre", data);
         setScreens(data);
       } catch (err) {
         console.error("Không thể tải danh sách phòng chiếu", err);
@@ -48,7 +49,8 @@ const SeatsManagement = () => {
   useEffect(() => {
     const loadShowtimes = async () => {
       try {
-        const data = await adminService.fetchShowtimes(); // gọi API thật
+        const data = await adminService.getUpcomingShowtimes(); // gọi API thật
+        console.log("data,data", data);
         setShowtimes(data);
       } catch (error) {
         console.error("Không thể load lịch chiếu", error);
@@ -83,10 +85,11 @@ const SeatsManagement = () => {
         newSeats.total_seats
       ); // Gọi API để tạo ghế
       console.log("res", res);
-      alert("Tạo ghế thành công.");
+      toast.success("Tạo ghế thành công.");
       setModalOpen(false);
       fetchSeats(); // Tải lại danh sách ghế
     } catch (error) {
+      toast.error("Lỗi khi tạo ghế");
       console.error("Lỗi khi tạo ghế:", error);
     }
   };
@@ -101,9 +104,17 @@ const SeatsManagement = () => {
     fetchSeats();
   }, []);
 
-  const filteredSeats = filterShowtime
-    ? seats.filter((s) => String(s.showtime_id) === filterShowtime.trim())
-    : seats;
+  const filteredSeats = seats.filter((s) => {
+    const matchShowtime = filterShowtime
+      ? String(s.showtime_id) === filterShowtime.trim()
+      : true;
+
+    const matchScreen = screenFilter
+      ? String(s.screen_id) === screenFilter.trim()
+      : true;
+
+    return matchShowtime && matchScreen;
+  });
 
   const openEditModal = (seat) => {
     setSelectedSeat(seat);
@@ -112,10 +123,10 @@ const SeatsManagement = () => {
   const handleUpdateSeat = async () => {
     try {
       await adminService.updateSeat(selectedSeat.seat_id, selectedSeat); // Gọi API để cập nhật ghế
-      alert("Đã cập nhật ghế.");
-      setEditModalOpen(false);
+      toast.success("Đã cập nhật ghế thành công !!!");
       fetchSeats();
     } catch (error) {
+      toast.error("Lỗi khi cập nhật ghế");
       console.error("Lỗi khi cập nhật ghế:", error);
     }
   };
@@ -143,11 +154,26 @@ const SeatsManagement = () => {
             value={filterShowtime}
             onChange={(e) => setFilterShowtime(e.target.value)}
           />
+          <select
+            value={screenFilter}
+            onChange={(e) => setScreenFilter(e.target.value)}
+            className="border px-3 py-2 rounded-md"
+          >
+            <option value="">-- Lọc theo phòng chiếu --</option>
+            {screens.map((screen) => (
+              <option key={screen.screen_id} value={screen.screen_id}>
+                Rạp {screen.Theater.name} - {screen.screen_name}
+              </option>
+            ))}
+          </select>
           <button
-            onClick={() => setFilterShowtime("")}
+            onClick={() => {
+              setFilterShowtime("");
+              setScreenFilter("");
+            }}
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
           >
-            Xóa lọc
+            Xoá lọc
           </button>
         </div>
 
@@ -159,6 +185,7 @@ const SeatsManagement = () => {
             <thead className="bg-gray-200 text-gray-700">
               <tr>
                 <th className="px-4 py-2 text-left">showtime_id</th>
+                <th className="px-4 py-2 text-left">screen_id</th>
                 <th className="px-4 py-2 text-left">Số ghế</th>
                 <th className="px-4 py-2 text-left">Loại</th>
                 <th className="px-4 py-2 text-left">Giá</th>
@@ -170,9 +197,12 @@ const SeatsManagement = () => {
               {filteredSeats.map((seat, idx) => (
                 <tr key={idx} className="border-t">
                   <td className="px-4 py-2">{seat.showtime_id}</td>
+                  <td className="px-4 py-2">{seat.screen_id}</td>
                   <td className="px-4 py-2">{seat.seat_number}</td>
-                  <td className="px-4 py-2 capitalize">{seat.seat_type}</td>
-                  <td className="px-4 py-2">{seat.price.toLocaleString()}₫</td>
+                  <td className="px-4 py-2 capitalize">{seat.type.name}</td>
+                  <td className="px-4 py-2">
+                    {seat.type.price.toLocaleString()}₫
+                  </td>
                   <td className="px-4 py-2">
                     <span
                       className={`px-2 py-1 text-xs rounded-full font-medium ${
@@ -194,10 +224,16 @@ const SeatsManagement = () => {
                     </button>
                     <button
                       title="Xoá"
-                      onClick={() => {
+                      onClick={async () => {
                         if (window.confirm("Bạn có chắc muốn xoá ghế này?")) {
-                          alert("Đã xoá ghế (giả lập)");
-                          fetchSeats();
+                          try {
+                            await adminService.deleteSeat(seat.seat_id);
+                            toast.success("Đã xoá ghế thành công.");
+                            fetchSeats(); // Cập nhật lại danh sách
+                          } catch (err) {
+                            console.error("Lỗi khi xoá ghế:", err);
+                            toast.error("Lỗi khi xóa ghế.");
+                          }
                         }
                       }}
                       className="text-red-600 hover:text-red-800"
@@ -227,7 +263,8 @@ const SeatsManagement = () => {
                   <option value="">-- Chọn phòng chiếu --</option>
                   {screens.map((screen) => (
                     <option key={screen.screen_id} value={screen.screen_id}>
-                      {screen.screen_name} - {screen.screen_type}
+                      Rạp {screen.Theater.name} - {screen.screen_name} -{" "}
+                      {screen.screen_type}
                     </option>
                   ))}
                 </select>
@@ -291,7 +328,7 @@ const SeatsManagement = () => {
                 <label className="block mb-1 font-medium">Loại ghế</label>
                 <select
                   className="w-full border rounded px-3 py-2"
-                  value={selectedSeat.seat_type}
+                  value={selectedSeat.type.seat_type_id}
                   onChange={(e) =>
                     setSelectedSeat({
                       ...selectedSeat,
@@ -299,10 +336,10 @@ const SeatsManagement = () => {
                     })
                   }
                 >
-                  <option value="regular">Regular</option>
-                  <option value="vip">VIP</option>
-                  <option value="couple">Couple</option>
-                  <option value="disabled">Disable</option>
+                  <option value="1">Regular</option>
+                  <option value="2">VIP</option>
+                  <option value="3">Couple</option>
+                  {/* <option value="4">Disable</option> */}
                 </select>
               </div>
 
@@ -311,13 +348,7 @@ const SeatsManagement = () => {
                 <input
                   type="number"
                   className="w-full border rounded px-3 py-2"
-                  value={selectedSeat.price}
-                  onChange={(e) =>
-                    setSelectedSeat({
-                      ...selectedSeat,
-                      price: parseFloat(e.target.value),
-                    })
-                  }
+                  value={selectedSeat.type.price}
                 />
               </div>
 
@@ -357,6 +388,7 @@ const SeatsManagement = () => {
             </div>
           </div>
         )}
+        <ToastContainer position="top-right" autoClose={1000} />
       </div>
     </div>
   );

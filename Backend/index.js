@@ -44,7 +44,6 @@ app.use("/", userRoute);
 app.use("/", movieRouter);
 app.use("/auth", authRoute);
 app.use(authenticate);
-// app.use(authenticate);
 
 
 
