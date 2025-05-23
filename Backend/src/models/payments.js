@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     payment_method: {
-      type: DataTypes.ENUM("credit_card", "debit_card", "paypal", "cash"),
+      type: DataTypes.ENUM("payos", "paypal",),
       allowNull: false,
     },
     payment_status: {
@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
+    
   },{
     timestamps: true,
   });
