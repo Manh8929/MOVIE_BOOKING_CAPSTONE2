@@ -103,6 +103,7 @@ const DateMovieComponent = () => {
     }
 
     toast.success("Đang chuyển hướng...", { position: "top-right" });
+    localStorage.setItem("selectedTime", selectedShowtime.show_time);
 
     setTimeout(() => {
       navigate("/seat-select", {

@@ -1,4 +1,3 @@
-// controllers/paymentController.js
 import { createPaymentLinkService, updatePaymentStatusService } from '../services/paymentService.js';
 
 export const createPaymentLink = async (req, res) => {

@@ -55,6 +55,19 @@ const SeatComponent = ({ showtime }) => {
       toast.error("Vui lòng chọn ghế trước khi tiếp tục!");
       return;
     }
+    const selectedSeatNames = seats
+      .filter((seat) => selectedSeats.includes(seat.seat_id))
+      .map((seat) => seat.seat_number);
+
+    const totalPrice = calculateTotalPrice();
+
+    localStorage.setItem("totalPrice", JSON.stringify(totalPrice));
+    localStorage.setItem("selectedSeats", JSON.stringify(selectedSeats));
+    localStorage.setItem(
+      "selectedSeatsName",
+      JSON.stringify(selectedSeatNames)
+    );
+
     toast.success("Đang chuyển hướng ...");
     setTimeout(() => {
       navigate("/booking-detail", { state: { selectedSeats } });

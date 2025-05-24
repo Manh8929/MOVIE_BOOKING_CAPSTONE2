@@ -36,6 +36,7 @@ const Theater = () => {
 
   const handleSelectTheater = (theater) => {
     localStorage.setItem("selectedTheaterId", theater.theater_id);
+    localStorage.setItem("selectedTheaterName", theater.name);
     localStorage.setItem("selectedMovieId", movie.movie_id); // Lưu cả movie_id
     navigate("/booking-movie", { state: { movie, theater } }); // truyền cả movie & theater
   };
@@ -49,7 +50,7 @@ const Theater = () => {
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-red-900 to-black">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-red-900 to-black">
       <div className="max-w-3xl w-full p-6 bg-opacity-90 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold mb-6 text-center text-yellow-400">
           Chọn Rạp Chiếu
@@ -66,7 +67,9 @@ const Theater = () => {
                   {theater.name}
                 </p>
                 <p className="text-gray-300">{theater.location}</p>
-                <p className="text-gray-400 text-sm">Liên hệ: {theater.contact}</p>
+                <p className="text-gray-400 text-sm">
+                  Liên hệ: {theater.contact}
+                </p>
               </li>
             ))}
           </ul>
