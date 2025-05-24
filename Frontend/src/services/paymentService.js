@@ -13,9 +13,15 @@ const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
  */
 export const createPaymentLink = async (data) => {
   try {
+    const token = localStorage.getItem("token");
     const response = await axios.post(
       `${API_URL}/payment/create-payment-link`,
-      data
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     return response.data;
   } catch (error) {
@@ -33,10 +39,18 @@ export const createPaymentLink = async (data) => {
  */
 export const updatePaymentStatus = async (data) => {
   try {
+    const token = localStorage.getItem("token"); 
+
     const response = await axios.post(
       `${API_URL}/payment/update-payment-status`,
-      data
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      }
     );
+
     return response.data;
   } catch (error) {
     console.error("Lỗi khi cập nhật trạng thái thanh toán:", error);

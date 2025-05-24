@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getMovieDetail } from "../../services/movieService";
+import { createPaymentLink } from "../../services/paymentService";
 
 const BookingDetailTables = () => {
-  const navigate = useNavigate();
   const [movieName, setMovieName] = useState("");
   const [formattedDate, setFormattedDate] = useState("");
   const [formattedTime, setFormattedTime] = useState("");
@@ -104,7 +103,50 @@ const BookingDetailTables = () => {
         </fieldset>
         <button
           type="submit"
-          onClick={() => navigate("/payment")}
+          onClick={async () => {
+            try {
+              const currentUser = JSON.parse(
+                localStorage.getItem("currentUser")
+              );
+              const user_id = currentUser?.user_id;
+              const amount = Number(localStorage.getItem("totalPrice"));
+              const selectedSeats = JSON.parse(
+                localStorage.getItem("selectedSeats") || "[]"
+              );
+              const showtime_id = localStorage.getItem("selectedShowtimeId");
+
+              const movieTitle = movieName || "Tội Đồ";
+              // const seatCode = selectedSeats?.[0] || "XX";
+              const date = new Date()
+                .toLocaleDateString("vi-VN", {
+                  day: "2-digit",
+                  month: "2-digit",
+                })
+                .replace(/\//g, "");
+              const description = `${movieTitle
+                .slice(0, 2)
+                .toUpperCase()}${date}}G${amount}`;
+
+              const payload = {
+                user_id,
+                amount,
+                selectedSeats,
+                showtime_id,
+                description,
+              };
+
+              const res = await createPaymentLink(payload);
+
+              if (res?.checkoutUrl) {
+                window.location.href = res.checkoutUrl; // redirect sang trang thanh toán
+              } else {
+                alert("Không lấy được link thanh toán.");
+              }
+            } catch (err) {
+              console.error("Lỗi tạo đơn thanh toán:", err);
+              alert(err?.message || "Đã xảy ra lỗi khi tạo thanh toán.");
+            }
+          }}
           className="mt-6 bg-red-600 px-8 py-3 rounded-lg text-white font-semibold hover:bg-red-700 transition-transform transform hover:-translate-y-3"
         >
           Tiếp Tục
