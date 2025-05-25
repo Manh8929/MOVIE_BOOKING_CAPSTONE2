@@ -142,6 +142,7 @@ export const deleteScreen = async (id) => {
 };
 
 //---------Ghế--------------/
+//---------Ghế--------------/
 
 // Tạo ghế tự động
 export const createSeatsService = async (screen_id, showtime_id, total_seats) => {
@@ -334,4 +335,26 @@ export const deleteSeatTypeService = async (id) => {
   return {
     message: "Deleted seat type successfully",
   };
+};
+
+
+// khuyến mãi
+export const createPromotion = async (data) => {
+  return await db.Promotion.create(data);
+};
+
+export const updatePromotion = async (id, data) => {
+  const promotion = await db.Promotion.findByPk(id);
+  if (!promotion) return null;
+  await promotion.update(data);
+  return promotion;
+};
+
+export const deletePromotion = async (id) => {
+  const result = await db.Promotion.destroy({ where: { promo_id: id } });
+  return result > 0;
+};
+
+export const getAllPromotions = async () => {
+  return await db.Promotion.findAll();
 };

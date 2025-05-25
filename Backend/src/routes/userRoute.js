@@ -11,7 +11,8 @@ import {
   getAllScreens,
   getReviews,
   createReview,
-  deleteReview, 
+  deleteReview,
+  getAllPromotions,
   getShowtimesByTheaterAndDate,
   getTheatersByMovie,
   getSeatsByShowtime,
@@ -32,6 +33,7 @@ route.get("/news/:id", getNewsById);
 route.get("/theaters", getAllTheaters);
 route.get("/screens", getAllScreens);
 route.get("/review/:movieId", getReviews);
+route.get("/promotion", getAllPromotions);
 route.post("/review", createReview);
 route.delete("/review/:reviewId", authenticate, deleteReview);
 route.get("/theaters-by-movie", getTheatersByMovie);

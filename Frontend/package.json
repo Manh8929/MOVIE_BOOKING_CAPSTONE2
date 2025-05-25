@@ -23,6 +23,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.3.0",
     "react-toastify": "^11.0.5",
+    "recharts": "^2.15.3",
     "redux": "^5.0.1",
     "styled-components": "^6.1.15",
     "swiper": "^11.2.6"

@@ -270,6 +270,7 @@ export const fetchShowtimes = async () => {
     throw err;
   }
 };
+
 export const getUpcomingShowtimes = async () => {
   try {
     const res = await axios.get(`${API_URL}/api/admin/upcoming`,getConfig());
@@ -304,6 +305,59 @@ export const updateSeatType = async (id, data) => {
 export const deleteSeatType = async (id) => {
   const res = await axios.delete(`${API_URL}/api/admin/delete-price/${id}`, getConfig());
   return res.data;
+};
+
+// Lấy danh sách promotion
+export const getAllPromotions = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/admin/promotion`, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách promotion:", error);
+    throw error;
+  }
+};
+
+// Tạo promotion mới 
+export const createPromotion = async (formData) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/api/admin/promotion`,
+      formData,
+      getConfig("multipart/form-data")
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi tạo promotion:", error);
+    throw error;
+  }
+};
+
+// Cập nhật promotion theo id
+export const updatePromotion = async (id, formData) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/api/admin/promotion/${id}`,
+      formData,
+      getConfig("multipart/form-data")
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi cập nhật promotion:", error);
+    throw error;
+  }
+};
+
+// Xoá promotion theo id
+export const deletePromotion = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/api/admin/promotion/${id}`, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error(`Lỗi khi xóa promotion với id ${id}:`, error);
+    throw error;
+  }
+
 };
 
 /// ---- Showtime --- ///

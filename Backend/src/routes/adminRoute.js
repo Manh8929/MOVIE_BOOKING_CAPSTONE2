@@ -19,6 +19,10 @@ import {
   createScreen,
   updateScreen,
   deleteScreen,
+  createPromotion,
+  updatePromotion,
+  deletePromotion,
+  getAllPromotions,
   deleteUser,
   updateUser,
   createSeats,
@@ -34,6 +38,7 @@ import {
 } from "../controllers/adminController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import { middlewareUpload } from "../middlewares/middleUploadMovie.js";
+import { middlewareUploadPromotion } from "../middlewares/middleUploadPromotion.js";
 const route = express.Router();
 
 //api manager User
@@ -66,7 +71,7 @@ route.get("/showtime-all", authenticate, authorize("admin"), getAllShowtime);
 // CRUD News
 route.post("/news", authenticate, authorize("admin"), createNews);
 route.put("/news/:id", authenticate, authorize("admin"), updateNews);
-route.delete("/news/:id", authenticate, authorize("admin"), deleteNews); 
+route.delete("/news/:id", authenticate, authorize("admin"), deleteNews);
 
 // CRUD Movie
 route.get("/movies", authenticate, authorize("admin"), getAllMovies);
@@ -86,6 +91,23 @@ route.put(
 );
 route.delete("/movies/:id", authenticate, authorize("admin"), deleteMovie);
 
+// promotions
+route.post(
+  "/promotion",
+  authenticate,
+  authorize("admin"),
+  middlewareUploadPromotion,
+  createPromotion
+);
+route.put(
+  "/promotion/:id",
+  authenticate,
+  authorize("admin"),
+  middlewareUploadPromotion,
+  updatePromotion
+);
+route.delete("/promotion/:id", authenticate, deletePromotion);
+route.get("/promotion", authenticate, getAllPromotions);
 
 // CRUD Theater (Rạp)
 route.get("/theaters", authenticate, authorize("admin"), getAllTheaters);
@@ -100,7 +122,6 @@ route.put("/screens/:id", authenticate, authorize("admin"), updateScreen);
 route.delete("/screens/:id", authenticate, authorize("admin"), deleteScreen);
 
 // Ghế
-
 route.post('/create-seats',authenticate, authorize("admin"), createSeats);
 route.get('/viewAll-seats',authenticate, authorize("admin"), getAllSeatsController);
 route.put('/seats/:id',authenticate, authorize("admin"), updateSeatController);

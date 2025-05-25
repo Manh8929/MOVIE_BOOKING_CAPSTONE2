@@ -44,18 +44,66 @@ const MovieDetail = () => {
     fetchComments();
   }, [id]);
 
+  const forbiddenWords = [
+    "địt",
+    "đụ",
+    "cặc",
+    "lồn",
+    "buồi",
+    "clgt",
+    "vãi lồn",
+    "fuck",
+    "shit",
+    "bitch",
+    "asshole",
+    "motherfucker",
+    "dmm",
+    "fml",
+    "đĩ",
+    "điếm",
+    "kiếp",
+    "cmm",
+    "dm",
+    "dcm",
+    "dkm",
+    "cđm",
+    "đcm"
+  ];
+
+  const specialCharacterRegex = /[~`!@#$%^&*()+={}\[\];:'"<>/?\\|]/g;
+
+  const containsForbiddenWords = (text) => {
+    return forbiddenWords.some((word) => text.toLowerCase().includes(word));
+  };
+
+  const containsSpecialCharacters = (text) => {
+    return specialCharacterRegex.test(text);
+  };
+
   const handlePostComment = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("Vui lòng đăng nhập để sử dụng chức năng này");
       return;
     }
+
     if (!userComment.trim()) {
       toast.error("Vui lòng nhập nội dung nhận xét");
       return;
     }
+
     if (!userInfo || !userInfo.user_id) {
       toast.error("Không tìm thấy thông tin người dùng");
+      return;
+    }
+
+    if (containsForbiddenWords(userComment)) {
+      toast.error("Nội dung nhận xét chứa từ ngữ không phù hợp");
+      return;
+    }
+
+    if (containsSpecialCharacters(userComment)) {
+      toast.error("Không được sử dụng kí tự đặc biệt trong nhận xét");
       return;
     }
 
@@ -70,10 +118,8 @@ const MovieDetail = () => {
       await postReview(token, reviewData);
       toast.success("Gửi nhận xét thành công!");
 
-      // Cập nhật lại comments
       const updatedComments = await getAvailableComment(id);
       setComments(updatedComments);
-
       setUserComment("");
     } catch (error) {
       toast.error("Gửi nhận xét thất bại, vui lòng thử lại.");
@@ -345,11 +391,10 @@ const MovieDetail = () => {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
                     key={star}
-                    className={`text-3xl ${
-                      star <= (movie.average_rating / 2 || 0)
-                        ? "text-yellow-400"
-                        : "text-gray-500"
-                    }`}
+                    className={`text-3xl ${star <= (movie.average_rating / 2 || 0)
+                      ? "text-yellow-400"
+                      : "text-gray-500"
+                      }`}
                   >
                     ★
                   </span>
@@ -437,11 +482,10 @@ const MovieDetail = () => {
                       {[1, 2, 3, 4, 5].map((star) => (
                         <span
                           key={star}
-                          className={`text-xl ${
-                            star <= review.rating
-                              ? "text-yellow-400"
-                              : "text-gray-500"
-                          }`}
+                          className={`text-xl ${star <= review.rating
+                            ? "text-yellow-400"
+                            : "text-gray-500"
+                            }`}
                         >
                           ★
                         </span>

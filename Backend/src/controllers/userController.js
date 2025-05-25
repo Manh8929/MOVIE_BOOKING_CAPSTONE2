@@ -187,6 +187,18 @@ export const deleteReview = async (req, res) => {
   }
 };
 
+
+// Lấy tất cả promotion
+export const getAllPromotions = async (req, res) => {
+  try {
+    const promotions = await userService.getAllPromotions();
+    res.status(200).json(promotions);
+  } catch (error) {
+    console.error("Error fetching promotions:", error);
+    res.status(500).json({ message: "Lỗi lấy danh sách promotion" });
+  }
+};
+
 //showtimeBydate và theater
 export const getShowtimesByTheaterAndDate = async (req, res) => {
   try {

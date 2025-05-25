@@ -233,6 +233,11 @@ export const deleteReviewByUser = async (reviewId, userId) => {
   }
 };
 
+// khuyến mãi
+export const getAllPromotions = async () => {
+  return await db.Promotion.findAll();
+};
+
 //showtimebydate
 export const getShowtimesByTheaterAndDate = async (theaterId, movieId, date) => {
   try {
