@@ -1,4 +1,4 @@
-import { createShowtime, updateShowtime, deleteShowtime } from "../services/showtimeService.js";
+import { createShowtime, updateShowtime, deleteShowtime, getAllShowtimes } from "../services/showtimeService.js";
 import { badRequest } from "../middlewares/handle_error";
 import { deleteUserService, getAllUsersService, updateUserService } from "../services/adminService.js";
 import * as movieService from "../services/adminService.js";
@@ -50,6 +50,20 @@ export const updateUser = async (req, res) => {
     res.status(err.statusCode || 500).json({
       message: err.message || "Internal Server Error",
     });
+  }
+};
+
+
+// GET Showtime
+export const getAllShowtime = async (req, res, next) => {
+  try {
+    const data = await getAllShowtimes();
+    res.status(200).json({
+      message: "Lấy danh sách lịch chiếu thành công",
+      data,
+    });
+  } catch (error) {
+    next(error);
   }
 };
 

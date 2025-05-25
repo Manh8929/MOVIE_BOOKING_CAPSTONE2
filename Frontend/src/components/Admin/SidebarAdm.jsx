@@ -13,7 +13,8 @@ import {
   FaCaretUp,
   FaNewspaper,
   FaTags,
-  FaPollH
+  FaPollH,
+  FaBusinessTime
 } from 'react-icons/fa';
 
 const Sidebar = () => {
@@ -27,6 +28,7 @@ const Sidebar = () => {
     { name: "Người Dùng", icon: FaUsers, path: "/managementuseradm" },
     { name: "Đơn Hàng", icon: FaBoxOpen, path: "/oderflimadm" },
     { name: "Báo Cáo", icon: FaChartBar, path: "/ReportsAdm" },
+    { name: "Lịch chiếu", icon: FaBusinessTime, path: "/showtimeAdm" },
     {
       name: "Quản Lý",
       icon: FaPollH,

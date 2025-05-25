@@ -4,7 +4,10 @@ const db = require("../models"); // import tất cả models
 export const getAllShowtimes = async () => {
   try {
     const showtimes = await db.Showtime.findAll({
-      include: [db.Movie, db.Screen], // kết nối với Movie và Screen
+      include: [db.Movie, {
+          model: db.Screen, 
+          include: [db.Theater]
+        }],
     });
     return showtimes;
   } catch (err) {
@@ -50,7 +53,7 @@ export const createShowtime = async (body) => {
       screen_id: body.screenId,
       show_time: new Date(body.show_time),
       ticket_price: body.ticket_price,
-      status: body.status,
+      status: body.status|| "scheduled",
     });
 
     return newShowtime;

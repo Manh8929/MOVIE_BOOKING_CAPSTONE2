@@ -30,6 +30,7 @@ import {
   createSeatType,
   updateSeatType,
   deleteSeatType,
+  getAllShowtime,
 } from "../controllers/adminController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import { middlewareUpload } from "../middlewares/middleUploadMovie.js";
@@ -60,6 +61,7 @@ route.delete(
   deleteShowtimeController
 );
 route.get("/upcoming", authenticate, authorize("admin"), getUpcomingShowtimes);
+route.get("/showtime-all", authenticate, authorize("admin"), getAllShowtime);
 
 // CRUD News
 route.post("/news", authenticate, authorize("admin"), createNews);

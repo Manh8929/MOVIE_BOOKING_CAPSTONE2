@@ -305,3 +305,45 @@ export const deleteSeatType = async (id) => {
   const res = await axios.delete(`${API_URL}/api/admin/delete-price/${id}`, getConfig());
   return res.data;
 };
+
+/// ---- Showtime --- ///
+
+export const getAllShowtimes = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/admin/showtime-all`, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách showtimes:", error);
+    throw error;
+  }
+};
+
+export const createShowtime = async (data) => {
+  try {
+    const res = await axios.post(`${API_URL}/api/admin/showtimes`, data, getConfig());
+    return res.data;
+  } catch (err) {
+    console.error("Lỗi createShowtime:", err);
+    throw err;
+  }
+};
+
+export const updateShowtime = async (id, data) => {
+  try {
+    const res = await axios.put(`${API_URL}/api/admin/showtimes/${id}`, data, getConfig());
+    return res.data;
+  } catch (err) {
+    console.error("Lỗi updateShowtime:", err);
+    throw err;
+  }
+};
+
+export const deleteShowtime = async (id) => {
+  try {
+    const res = await axios.delete(`${API_URL}/api/admin/showtimes/${id}`, getConfig());
+    return res.data;
+  } catch (err) {
+    console.error("Lỗi deleteShowtime:", err);
+    throw err;
+  }
+};
