@@ -1,8 +1,4 @@
 import React, { useState } from "react";
-import bach_tuyet_img from "../../src/assets/img/poster_schedule/bach_tuyet.jpg";
-import sathu_img from "../../src/assets/img/poster_schedule/sat_thu_vo_cung_cuc.jpg";
-import anh_khong_dau from "../../src/assets/img/poster_schedule/anh_khong_dau.jpg";
-import quy_nhap_trang from "../../src/assets/img/poster_schedule/quy_nhap_trang.jpg";
 import { useNavigate } from "react-router-dom";
 import * as movieService from "../services/movieService";
 import { useEffect } from "react";
@@ -46,7 +42,7 @@ const MovieSchedule = () => {
   const fetchMovies = async (dateStr) => {
     try {
       const result = await movieService.getMoviesByDate(dateStr);
-      console.log('reeeee',result);
+      console.log("reeeee", result);
       setMovies(result);
     } catch (err) {
       console.error("Lỗi khi lấy danh sách phim theo ngày:", err);
@@ -133,15 +129,24 @@ const MovieSchedule = () => {
                 <div className="flex flex-wrap gap-4 items-center">
                   {movie.showtimes.map((show, idx) => (
                     <div
-                      onClick={() =>
-                        navigate(`/seat-select`, {
+                      onClick={() => {
+                        const selectedDateStr = dates[selectedDate]?.fullDate;
+                        localStorage.setItem(
+                          "selectedTime",
+                          `${selectedDateStr} ${show.time}`
+                        );
+                        localStorage.setItem("selectedMovieId", movie.movie_id);
+                        localStorage.setItem("selectedShowtimeId", show.showtime_id);
+
+                        // Chuyển hướng
+                        navigate("/seat-select", {
                           state: {
                             showtime: show,
-                            movie: movie, // Gửi thông tin phim
-                            theater: { name: show.theater }, // Giả sử bạn có thông tin về rạp
+                            movie: movie,
+                            theater: { name: show.theater },
                           },
-                        })
-                      }
+                        });
+                      }}
                       key={idx}
                       className="border p-3 rounded hover:bg-orange-500 hover:text-white cursor-pointer transition min-w-[140px] text-center"
                     >

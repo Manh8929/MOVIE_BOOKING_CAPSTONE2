@@ -1,13 +1,18 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 import { toJpeg } from "html-to-image";
-
+import { getMovieDetail } from "../services/movieService";
 
 const MyTicketPage = () => {
   const navigate = useNavigate();
+  const [movieName, setMovieName] = useState("");
+  const [formattedDate, setFormattedDate] = useState("");
+  const [formattedTime, setFormattedTime] = useState("");
+  const [selectedSeats, setSelectedSeats] = useState("");
+  const theaterName = localStorage.getItem("selectedTheaterName");
   const [isQRVisible, setIsQRVisible] = useState(false);
-  const ticketCode = "ManhDepTraiVaiLong";
+  const ticketCode = "23568";
   const ticketRef = useRef(null);
 
   const downloadImage = () => {
@@ -22,38 +27,93 @@ const MyTicketPage = () => {
       })
       .catch((error) => console.error("Lỗi khi tạo ảnh:", error));
   };
+  useEffect(() => {
+    const movieId = localStorage.getItem("selectedMovieId");
+    const selectedTime = localStorage.getItem("selectedTime");
+    const seats = localStorage.getItem("selectedSeatsName") || "";
 
+    const fetchInfo = async () => {
+      try {
+        // Lấy thông tin phim
+        if (movieId) {
+          const movie = await getMovieDetail(movieId);
+          setMovieName(movie?.title || "Không rõ tên phim");
+        }
+
+        if (seats) {
+          const seatArray = seats.split(/[, ]+/).filter(Boolean);
+          setSelectedSeats(seatArray.join(", "));
+        } else {
+          setSelectedSeats("");
+        }
+
+        // Chuyển định dạng thời gian
+        if (selectedTime) {
+          const dateVN = new Date(selectedTime);
+
+          // Lấy giờ bắt đầu
+          const startHour = dateVN.toLocaleTimeString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+            timeZone: "Asia/Ho_Chi_Minh",
+          });
+
+          const dateString = dateVN.toLocaleDateString("vi-VN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            timeZone: "Asia/Ho_Chi_Minh",
+          });
+
+          setFormattedDate(dateString);
+          setFormattedTime(`${startHour}`);
+        }
+      } catch (err) {
+        console.error("Lỗi khi lấy thông tin:", err);
+      }
+    };
+
+    fetchInfo();
+  }, []);
 
   return (
     <div
       ref={ticketRef}
-      className="min-h-screen bg-gradient-to-br from-black via-black to-[#4f111e] text-white flex flex-col">
+      className="min-h-screen bg-gradient-to-br from-black via-black to-[#4f111e] text-white flex flex-col"
+    >
       <h1 className="font-bold text-center mt-36 text-3xl md:text-4xl mb-10">
         Thông tin chi tiết
       </h1>
       <div className="w-full flex justify-center">
-        <div
-          className="border border-gray-600 rounded-2xl p-8 w-full max-w-xl bg-black bg-opacity-50 mx-auto shadow-2xl backdrop-blur-md">
+        <div className="border border-gray-600 rounded-2xl p-8 w-full max-w-xl bg-black bg-opacity-50 mx-auto shadow-2xl backdrop-blur-md">
           <div className="space-y-6">
             <div>
               <p className="text-gray-400 text-sm">Ngày</p>
-              <p className="font-semibold text-lg">Mon, 23 Oct 2023</p>
+              <p className="font-semibold text-lg">{formattedDate}</p>
             </div>
 
             <div>
               <p className="text-gray-400 text-sm">Tên Phim</p>
-              <p className="font-semibold text-lg">SPIDERMAN NO WAY HOME</p>
+              <p className="font-semibold text-lg">{movieName}</p>
+            </div>
+
+            <div>
+              <p className="text-gray-400 text-sm">Rạp</p>
+              <p className="font-semibold text-lg">{theaterName}</p>
             </div>
 
             <div className="flex justify-between">
-            <div>
-              <p className="text-gray-400 text-sm">Vé (3)</p>
-              <p className="font-semibold text-lg">C8, C9, C10</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-sm">Thời gian</p>
-              <p className="font-semibold text-lg">14:40</p>
-            </div>
+              <div>
+                <p className="text-gray-400 text-sm">Vé (3)</p>
+                <p className="font-semibold text-lg">
+                  {selectedSeats || "Chưa chọn ghế"}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm">Thời gian</p>
+                <p className="font-semibold text-lg">{formattedTime}</p>
+              </div>
             </div>
 
             <div>
@@ -90,8 +150,9 @@ const MyTicketPage = () => {
 
       {/* Back Button */}
       <button
-        onClick={() => navigate('/')}
-        className="mt-10 mb-[80px] border border-gray-600 rounded-xl px-10 py-4 hover:bg-[#db767e] hover:text-black transition mx-auto text-lg font-medium">
+        onClick={() => navigate("/")}
+        className="mt-10 mb-[80px] border border-gray-600 rounded-xl px-10 py-4 hover:bg-[#db767e] hover:text-black transition mx-auto text-lg font-medium"
+      >
         Về trang chủ
       </button>
       {/* QR Code Modal */}
@@ -110,7 +171,10 @@ const MyTicketPage = () => {
               className="absolute top-1 right-2 text-black text-xl font-bold"
               onClick={() => setIsQRVisible(false)}
             >
-              <IoMdClose size={32} className="text-red-600 hover:text-red-800 transition duration-300" />
+              <IoMdClose
+                size={32}
+                className="text-red-600 hover:text-red-800 transition duration-300"
+              />
             </button>
           </div>
         </div>
