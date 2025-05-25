@@ -118,7 +118,6 @@ const ManagerPayment = () => {
                         <td className="px-4 py-2 border">
                           {Booking?.Showtime?.Screen?.screen_name || "Chưa có"}
                         </td>
-
                         <td className="px-4 py-2 border">{seats}</td>
                         <td className="px-4 py-2 border">{User?.full_name}</td>
                         <td className="px-4 py-2 border">{User?.email}</td>

@@ -185,3 +185,17 @@ export const getSeatTypes = async () => {
   return res.data;
 };
 
+// Hàm lấy danh sách thanh toán của user (chỉ completed)
+export const getUserPayments = async (userId, token) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/user/payment/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.payments; 
+  } catch (error) {
+    console.error("Error fetching user payments:", error);
+    throw error;
+  }
+};
