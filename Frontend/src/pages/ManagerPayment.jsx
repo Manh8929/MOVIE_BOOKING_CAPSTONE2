@@ -60,6 +60,7 @@ const ManagerPayment = () => {
                     <th className="px-4 py-2 border">Số tiền</th>
                     <th className="px-4 py-2 border">QR Code</th>
                     <th className="px-4 py-2 border">Thời gian chiếu</th>
+                    <th className="px-4 py-2 border">Rạp</th>
                     <th className="px-4 py-2 border">Màn hình</th>
                     <th className="px-4 py-2 border">Ghế</th>
                     <th className="px-4 py-2 border">Họ tên</th>
@@ -83,6 +84,8 @@ const ManagerPayment = () => {
                         (bs) => bs.Seat?.seat_number
                       ).join(", ") || "Chưa có";
 
+                    const theaterName =
+                      Booking?.Showtime?.Screen?.Theater?.name || "Chưa có";
                     return (
                       <tr key={payment.payment_id} className="text-center">
                         <td className="px-4 py-2 border">{booking_id}</td>
@@ -111,9 +114,11 @@ const ManagerPayment = () => {
                               ).toLocaleString()
                             : "Chưa có"}
                         </td>
+                        <td className="px-4 py-2 border">{theaterName}</td>
                         <td className="px-4 py-2 border">
                           {Booking?.Showtime?.Screen?.screen_name || "Chưa có"}
                         </td>
+
                         <td className="px-4 py-2 border">{seats}</td>
                         <td className="px-4 py-2 border">{User?.full_name}</td>
                         <td className="px-4 py-2 border">{User?.email}</td>

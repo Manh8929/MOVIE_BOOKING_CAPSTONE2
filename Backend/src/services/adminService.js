@@ -394,6 +394,12 @@ export const getAllPayments = async () => {
               {
                 model: db.Screen,
                 attributes: ["screen_name"],
+                include: [
+                  {
+                    model: db.Theater,
+                    attributes: ["name"], 
+                  },
+                ],
               },
             ],
           },
