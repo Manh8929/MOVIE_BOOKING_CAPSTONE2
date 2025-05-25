@@ -114,9 +114,8 @@ const BookingDetailTables = () => {
                 localStorage.getItem("selectedSeats") || "[]"
               );
               const showtime_id = localStorage.getItem("selectedShowtimeId");
-
-              const movieTitle = movieName || "Tội Đồ";
-              // const seatCode = selectedSeats?.[0] || "XX";
+              
+              const movieTitle = movieName ;
               const date = new Date()
                 .toLocaleDateString("vi-VN", {
                   day: "2-digit",
@@ -125,7 +124,7 @@ const BookingDetailTables = () => {
                 .replace(/\//g, "");
               const description = `${movieTitle
                 .slice(0, 2)
-                .toUpperCase()}${date}}G${amount}`;
+                .toUpperCase()}${date}${theaterName.slice(0, 1)}`;
 
               const payload = {
                 user_id,
