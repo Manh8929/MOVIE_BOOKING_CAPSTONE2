@@ -55,6 +55,19 @@ const SeatComponent = ({ showtime }) => {
       toast.error("Vui lòng chọn ghế trước khi tiếp tục!");
       return;
     }
+    const selectedSeatNames = seats
+      .filter((seat) => selectedSeats.includes(seat.seat_id))
+      .map((seat) => seat.seat_number);
+
+    const totalPrice = calculateTotalPrice();
+
+    localStorage.setItem("totalPrice", JSON.stringify(totalPrice));
+    localStorage.setItem("selectedSeats", JSON.stringify(selectedSeats));
+    localStorage.setItem(
+      "selectedSeatsName",
+      JSON.stringify(selectedSeatNames)
+    );
+
     toast.success("Đang chuyển hướng ...");
     setTimeout(() => {
       navigate("/booking-detail", { state: { selectedSeats } });
@@ -107,6 +120,22 @@ const SeatComponent = ({ showtime }) => {
   const regularSeats = seats.filter((s) => s.seat_type === "regular");
   const vipSeats = seats.filter((s) => s.seat_type === "vip");
   const coupleSeats = seats.filter((s) => s.seat_type === "couple");
+
+  const calculateTotalPrice = () => {
+    const selectedSeatObjects = seats.filter((seat) =>
+      selectedSeats.includes(seat.seat_id)
+    );
+
+    let total = 0;
+    for (const seat of selectedSeatObjects) {
+      const seatType = seatTypes.find((type) => type.name === seat.seat_type);
+      if (seatType) {
+        total += Number(seatType.price);
+      }
+    }
+
+    return total;
+  };
 
   return (
     <div className="flex flex-col items-center gap-6 p-6 bg-gradient-to-r from-black via-black to-[rgb(118,20,39)] text-white min-h-screen">
@@ -206,7 +235,15 @@ const SeatComponent = ({ showtime }) => {
           )}
         </div>
       </div>
-
+      {/* Tổng giá tiền */}
+      {selectedSeats.length > 0 && (
+        <div className="text-xl font-semibold text-white">
+          Tổng tiền:{" "}
+          <span className="text-yellow-300">
+            {calculateTotalPrice().toLocaleString()}đ
+          </span>
+        </div>
+      )}
       {/* Nút đặt vé */}
       <button
         onClick={handleNext}

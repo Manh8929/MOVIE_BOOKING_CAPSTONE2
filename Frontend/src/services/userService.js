@@ -142,6 +142,7 @@ export const getAvailablPromotion = async () => {
   }
 };
 
+
 export const getTheatersByMovie = async (movieId) => {
   try {
     const response = await axios.get(`${API_URL}/theaters-by-movie?movieId=${movieId}`);
