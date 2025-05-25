@@ -35,6 +35,8 @@ import {
   updateSeatType,
   deleteSeatType,
   getAllShowtime,
+  getAllBookings,
+  getAllPayments
 } from "../controllers/adminController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import { middlewareUpload } from "../middlewares/middleUploadMovie.js";
@@ -122,17 +124,40 @@ route.put("/screens/:id", authenticate, authorize("admin"), updateScreen);
 route.delete("/screens/:id", authenticate, authorize("admin"), deleteScreen);
 
 // Ghế
-route.post('/create-seats',authenticate, authorize("admin"), createSeats);
-route.get('/viewAll-seats',authenticate, authorize("admin"), getAllSeatsController);
-route.put('/seats/:id',authenticate, authorize("admin"), updateSeatController);
-route.delete('/seats/:id',authenticate, authorize("admin"), deleteSeatController);
-
+route.post("/create-seats", authenticate, authorize("admin"), createSeats);
+route.get(
+  "/viewAll-seats",
+  authenticate,
+  authorize("admin"),
+  getAllSeatsController
+);
+route.put("/seats/:id", authenticate, authorize("admin"), updateSeatController);
+route.delete(
+  "/seats/:id",
+  authenticate,
+  authorize("admin"),
+  deleteSeatController
+);
 
 // giá
-route.get("/price",authenticate, authorize("admin"),getAllSeatTypes);
-route.post("/create-price",authenticate, authorize("admin"), createSeatType);
-route.put("/update-price/:id",authenticate, authorize("admin"), updateSeatType);
-route.delete("/delete-price/:id",authenticate, authorize("admin"), deleteSeatType);
+route.get("/price", authenticate, authorize("admin"), getAllSeatTypes);
+route.post("/create-price", authenticate, authorize("admin"), createSeatType);
+route.put(
+  "/update-price/:id",
+  authenticate,
+  authorize("admin"),
+  updateSeatType
+);
+route.delete(
+  "/delete-price/:id",
+  authenticate,
+  authorize("admin"),
+  deleteSeatType
+);
+
+// booking và payment
+route.get("/bookings", authenticate, getAllBookings);
+route.get("/payment", authenticate, getAllPayments);
 
 
 export default route;

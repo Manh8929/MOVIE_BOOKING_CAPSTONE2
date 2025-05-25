@@ -265,3 +265,15 @@ export const getAllSeatTypes = async (req, res) => {
   }
 };
 
+// payment
+export const getPaymentsByUserId = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const payments = await userService.getPaymentsByUserId(userId);
+    res.status(200).json({ payments });
+  } catch (err) {
+    console.error("Lỗi khi lấy danh sách thanh toán theo userId:", err);
+    res.status(500).json({ message: "Lỗi server", detail: err.message });
+  }
+};

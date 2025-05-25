@@ -341,3 +341,45 @@ export const getAllSeatTypesService = async () => {
     seatTypes,
   };
 };
+
+// payment
+export const getPaymentsByUserId = async (userId) => {
+  const payments = await db.Payment.findAll({
+    where: { user_id: userId },
+    include: [
+      {
+        model: db.Booking,
+        attributes: ["qr_code", "booking_time"],
+        include: [
+          {
+            model: db.Showtime,
+            attributes: ["show_time"],
+            include: [
+              {
+                model: db.Screen,
+                attributes: ["screen_name"],
+              },
+            ],
+          },
+          {
+            model: db.BookingSeat,
+            include: [
+              {
+                model: db.Seat,
+                attributes: ["seat_number"],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        model: db.User,
+        attributes: ["full_name", "email", "phone_number"],
+      },
+    ],
+    order: [["payment_time", "DESC"]],
+  });
+
+  return payments;
+};
+
