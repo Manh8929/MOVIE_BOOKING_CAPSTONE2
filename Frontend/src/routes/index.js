@@ -36,6 +36,7 @@ import SeatsManagement from "../pages/SeatsManagement";
 import CommentManagement from "../pages/CommentManagement";
 import SeatTypeManagement from "../pages/SeatTypeManagement";
 import ShowtimeManage from "../pages/ShowtimeManage";
+import ManagerPayment from "../pages/ManagerPayment";
 
 export const routes = [
   {
@@ -299,6 +300,12 @@ export const routes = [
   {
     path: "/showtimeAdm",
     page: ShowtimeManage,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+    {
+    path: "/managerPaymentAdm",
+    page: ManagerPayment,
     isShowHeader: false,
     isShowFooter: false,
   },

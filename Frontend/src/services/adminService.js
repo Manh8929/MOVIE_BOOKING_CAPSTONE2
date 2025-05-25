@@ -401,3 +401,14 @@ export const deleteShowtime = async (id) => {
     throw err;
   }
 };
+
+// ---- Payments ---- //
+export const getAllPayments = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/admin/payment`, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách thanh toán:", error);
+    throw error;
+  }
+};
