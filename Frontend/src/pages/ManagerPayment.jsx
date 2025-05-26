@@ -1,16 +1,47 @@
 import React, { useState, useEffect } from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  LabelList
+} from "recharts";
+
 import { getAllPayments } from "../services/adminService";
 import SidebarAdm from "../components/Admin/SidebarAdm";
 
 const ManagerPayment = () => {
   const [activePage, setActivePage] = useState("managerPayment");
   const [payments, setPayments] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [bookingSearch, setBookingSearch] = useState("");
+  const [emailSearch, setEmailSearch] = useState("");
+  const [topUsers, setTopUsers] = useState([]);
 
   useEffect(() => {
     const fetchPayments = async () => {
       try {
         const data = await getAllPayments();
+        const completed =
+          data.payments?.filter((p) => p.payment_status === "completed") || [];
+        // Tính số lượng giao dịch hoàn tất theo user
+        const userCountMap = {};
+        completed.forEach((p) => {
+          const email = p.User?.email;
+          if (email) {
+            userCountMap[email] = (userCountMap[email] || 0) + 1;
+          }
+        });
+
+        // Convert sang mảng và lấy top 5
+        const sortedUsers = Object.entries(userCountMap)
+          .map(([email, count]) => ({ email, count }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 5);
+
+        setTopUsers(sortedUsers);
         setPayments(data.payments || []);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách thanh toán:", error);
@@ -21,10 +52,14 @@ const ManagerPayment = () => {
   }, []);
 
   const filteredPayments = payments.filter((payment) => {
-    const { booking_id, User } = payment;
-    const email = User?.email?.toLowerCase() || "";
-    const search = searchTerm.toLowerCase();
-    return booking_id.toString().includes(search) || email.includes(search);
+    const bookingIdMatch = payment.booking_id
+      .toString()
+      .includes(bookingSearch.trim());
+    const emailMatch = payment.User?.email
+      ?.toLowerCase()
+      .includes(emailSearch.trim().toLowerCase());
+
+    return bookingIdMatch && emailMatch;
   });
 
   return (
@@ -35,15 +70,33 @@ const ManagerPayment = () => {
       {/* Main Content */}
       <div className="flex-1 p-6 bg-gray-50 overflow-auto">
         <div className="bg-white p-4 rounded-lg shadow-md h-full flex flex-col">
-          {/* Thanh tìm kiếm */}
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Tìm theo mã booking hoặc email người dùng"
-              className="w-full p-2 border border-gray-300 rounded-md"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          {/* Thanh tìm kiếm nâng cao */}
+          <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Tìm theo mã Booking
+              </label>
+              <input
+                type="text"
+                placeholder="Nhập mã booking"
+                className="w-full p-2 border border-gray-300 rounded-md"
+                value={bookingSearch}
+                onChange={(e) => setBookingSearch(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Tìm theo email người dùng
+              </label>
+              <input
+                type="text"
+                placeholder="Nhập email người dùng"
+                className="w-full p-2 border border-gray-300 rounded-md"
+                value={emailSearch}
+                onChange={(e) => setEmailSearch(e.target.value)}
+              />
+            </div>
           </div>
 
           {/* Bảng thanh toán */}
@@ -132,6 +185,39 @@ const ManagerPayment = () => {
             )}
           </div>
         </div>
+        {/* Biểu đồ Top 5 người dùng thanh toán nhiều nhất */}
+        {topUsers.length > 0 && (
+          <div className="bg-white p-4 rounded-lg shadow-md my-6">
+            <h2 className="text-lg font-semibold mb-4">
+              Top 5 người dùng mua vé nhiều nhất
+            </h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={topUsers}
+                layout="vertical"
+                margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" allowDecimals={false} />
+                <YAxis dataKey="email" type="category" width={250} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#fff",
+                    borderRadius: "8px",
+                    border: "1px solid #ccc",
+                  }}
+                  formatter={(value, name) => [
+                    `${value} lượt`,
+                    "Số lượt thanh toán",
+                  ]}
+                />
+                <Bar dataKey="count" fill="#6366f1" radius={[0, 10, 10, 0]}>
+                  <LabelList dataKey="count" position="right" fill="#000" />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </div>
     </div>
   );
