@@ -44,7 +44,7 @@ const MoviesSection = () => {
         }
       );
     } else {
-      navigate(`/theaters`);
+      navigate(`/detail-film/${movie.movie_id}`)
     }
   };
 

@@ -1,9 +1,23 @@
-import { createShowtime, updateShowtime, deleteShowtime } from "../services/showtimeService.js";
+import {
+  createShowtime,
+  updateShowtime,
+  deleteShowtime,
+  getAllShowtimes,
+} from "../services/showtimeService.js";
 import { badRequest } from "../middlewares/handle_error";
-import { deleteUserService, getAllUsersService, updateUserService } from "../services/adminService.js";
+import {
+  deleteUserService,
+  getAllUsersService,
+  updateUserService,
+} from "../services/adminService.js";
 import * as movieService from "../services/adminService.js";
 import * as theaterService from "../services/adminService.js";
+import * as userService from "../services/userService.js";
 import * as screenService from "../services/adminService.js";
+import * as promotionService from "../services/adminService.js";
+import * as adminService from "../services/adminService.js";
+import * as bookingService from "../services/adminService.js";
+import * as paymentService from "../services/adminService.js";
 
 //api User
 export const getAllUsers = async (req, res) => {
@@ -51,6 +65,19 @@ export const updateUser = async (req, res) => {
   }
 };
 
+// GET Showtime
+export const getAllShowtime = async (req, res, next) => {
+  try {
+    const data = await getAllShowtimes();
+    res.status(200).json({
+      message: "Lấy danh sách lịch chiếu thành công",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // API Add lịch chiếu
 export const createShowtimeController = async (req, res, next) => {
   try {
@@ -89,21 +116,26 @@ export const deleteShowtimeController = async (req, res, next) => {
   }
 };
 
-//News
-// Add news
 export const createNews = async (req, res) => {
-  const { movie_id, title, content, image_url } = req.body;
+  const { movie_id, title, content, image_url, category } = req.body;
   try {
+    if (!category) {
+      return res.status(400).json({ message: "Category is required" });
+    }
+
+    // Gọi service để tạo tin tức
     const newNews = await userService.createNews({
       movie_id,
       title,
       content,
       image_url,
+      category,
     });
+
     res.status(201).json(newNews);
   } catch (error) {
     console.error("Error creating news:", error);
-    res.status(500).json({ message: "Error creating news" });
+    res.status(500).json({ message: "Error creating news: " + error.message });
   }
 };
 
@@ -314,7 +346,9 @@ export const createScreen = async (req, res) => {
   try {
     const data = req.body;
     const newScreen = await screenService.createScreen(data);
-    res.status(201).json({ message: "Tạo phòng chiếu thành công", data: newScreen });
+    res
+      .status(201)
+      .json({ message: "Tạo phòng chiếu thành công", data: newScreen });
   } catch (err) {
     console.error("Lỗi khi tạo phòng chiếu:", err);
     res.status(500).json({ message: "Lỗi server" });
@@ -324,8 +358,11 @@ export const createScreen = async (req, res) => {
 export const updateScreen = async (req, res) => {
   try {
     const updated = await screenService.updateScreen(req.params.id, req.body);
-    if (!updated) return res.status(404).json({ message: "Không tìm thấy phòng chiếu" });
-    res.status(200).json({ message: "Cập nhật phòng chiếu thành công", data: updated });
+    if (!updated)
+      return res.status(404).json({ message: "Không tìm thấy phòng chiếu" });
+    res
+      .status(200)
+      .json({ message: "Cập nhật phòng chiếu thành công", data: updated });
   } catch (err) {
     console.error("Lỗi khi cập nhật phòng chiếu:", err);
     res.status(500).json({ message: "Lỗi server" });
@@ -335,10 +372,257 @@ export const updateScreen = async (req, res) => {
 export const deleteScreen = async (req, res) => {
   try {
     const deleted = await screenService.deleteScreen(req.params.id);
-    if (!deleted) return res.status(404).json({ message: "Không tìm thấy phòng chiếu" });
+    if (!deleted)
+      return res.status(404).json({ message: "Không tìm thấy phòng chiếu" });
     res.status(200).json({ message: "Xoá phòng chiếu thành công" });
   } catch (err) {
     console.error("Lỗi khi xoá phòng chiếu:", err);
     res.status(500).json({ message: "Lỗi server" });
+  }
+};
+
+//----------------ghế---------//
+//tạo ghế tự động
+export const createSeats = async (req, res) => {
+  const { screen_id, showtime_id, total_seats } = req.body;
+
+  if (!screen_id || !showtime_id || !total_seats) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const createdSeats = await adminService.createSeatsService(
+      screen_id,
+      showtime_id,
+      total_seats
+    );
+
+    return res.status(201).json({
+      message: `${createdSeats.length} seats created successfully`,
+      seats: createdSeats,
+    });
+  } catch (error) {
+    console.error(error);
+    if (error.message.includes("Ghế cho phòng chiếu")) {
+      return res.status(409).json({ message: error.message }); // Conflict
+    }
+    return res.status(500).json({
+      message: error.message || "Internal Server Error",
+    });
+  }
+};
+
+// API lấy tất cả ghế
+export const getAllSeatsController = async (req, res) => {
+  try {
+    const seats = await adminService.getAllSeats();
+    res.status(200).json(seats);
+  } catch (err) {
+    console.error(err);
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+// API cập nhật ghế
+export const updateSeatController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const seatData = req.body;
+
+    if (
+      !seatData.seat_number &&
+      !seatData.seat_type_id &&
+      seatData.is_available === undefined
+    ) {
+      return res
+        .status(400)
+        .json({ message: "At least one field is required to update" });
+    }
+
+    const updatedSeat = await adminService.updateSeat(id, seatData);
+    res.status(200).json(updatedSeat);
+  } catch (err) {
+    console.error(err);
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+//xóa ghế
+
+export const deleteSeatController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deleted = await adminService.deleteSeat(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Seat not found" });
+    }
+
+    res.status(200).json({ message: "Seat deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+export const getUpcomingShowtimes = async (req, res) => {
+  try {
+    const data = await adminService.getUpcomingShowtimes();
+    res.status(200).json(data);
+  } catch (err) {
+    console.error("Lỗi khi lấy các suất chiếu sắp tới:", err);
+    res.status(500).json({ message: "Đã xảy ra lỗi khi lấy dữ liệu." });
+  }
+};
+
+//crud giá
+// Lấy danh sách loại ghế
+export const getAllSeatTypes = async (req, res) => {
+  try {
+    const result = await adminService.getAllSeatTypesService();
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+// Tạo loại ghế
+export const createSeatType = async (req, res) => {
+  try {
+    const result = await adminService.createSeatTypeService(req.body);
+    res.status(201).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+// Cập nhật loại ghế
+export const updateSeatType = async (req, res) => {
+  try {
+    const result = await adminService.updateSeatTypeService(
+      req.params.id,
+      req.body
+    );
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+// Xoá loại ghế
+export const deleteSeatType = async (req, res) => {
+  try {
+    const result = await adminService.deleteSeatTypeService(req.params.id);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+// Tạo promotion mới
+export const createPromotion = async (req, res) => {
+  try {
+    const data = req.body;
+
+    // Nếu có upload ảnh thì xử lý image_url tại đây
+    if (req.file) {
+      data.image_url = `${process.env.SERVER_URL}/uploads/admin/${req.file.filename}`;
+    }
+
+    const newPromo = await promotionService.createPromotion(data);
+    res.status(201).json({
+      message: "Tạo promotion thành công",
+      data: newPromo,
+    });
+  } catch (error) {
+    console.error("Error creating promotion:", error);
+    res.status(500).json({ message: "Lỗi tạo promotion" });
+  }
+};
+
+// khuyến mãi
+// Cập nhật promotion
+export const updatePromotion = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    if (req.file) {
+      updateData.image_url = `${process.env.SERVER_URL}/uploads/admin/${req.file.filename}`;
+    }
+
+    const updatedPromo = await promotionService.updatePromotion(id, updateData);
+    if (!updatedPromo) {
+      return res.status(404).json({ message: "Không tìm thấy promotion" });
+    }
+
+    res.status(200).json({
+      message: "Cập nhật promotion thành công",
+      data: updatedPromo,
+    });
+  } catch (error) {
+    console.error("Error updating promotion:", error);
+    res.status(500).json({ message: "Lỗi cập nhật promotion" });
+  }
+};
+
+// Xoá promotion
+export const deletePromotion = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await promotionService.deletePromotion(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Không tìm thấy promotion" });
+    }
+
+    res.status(200).json({ message: "Xoá promotion thành công" });
+  } catch (error) {
+    console.error("Error deleting promotion:", error);
+    res.status(500).json({ message: "Lỗi xoá promotion" });
+  }
+};
+
+// Lấy tất cả promotion
+export const getAllPromotions = async (req, res) => {
+  try {
+    const promotions = await promotionService.getAllPromotions();
+    res.status(200).json(promotions);
+  } catch (error) {
+    console.error("Error fetching promotions:", error);
+    res.status(500).json({ message: "Lỗi lấy danh sách promotion" });
+  }
+};
+
+export const getAllBookings = async (req, res) => {
+  try {
+    const bookings = await bookingService.getAllBookings();
+    res.status(200).json({ bookings });
+  } catch (err) {
+    console.error("Lỗi khi lấy danh sách booking:", err);
+    res.status(500).json({ message: "Lỗi server", detail: err.message });
+  }
+};
+
+
+export const getAllPayments = async (req, res) => {
+  try {
+    const payments = await paymentService.getAllPayments();
+    res.status(200).json({ payments });
+  } catch (err) {
+    console.error("Lỗi khi lấy danh sách thanh toán:", err);
+    res.status(500).json({ message: "Lỗi server", detail: err.message });
   }
 };

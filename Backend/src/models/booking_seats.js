@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       timestamps: true,
+      tableName: "booking_seats",
     }
   );
 

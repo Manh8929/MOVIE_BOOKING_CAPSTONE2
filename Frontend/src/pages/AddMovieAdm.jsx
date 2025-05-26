@@ -1,5 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { toast } from "react-toastify";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
 
 import SidebarAdm from "../components/Admin/SidebarAdm";
 import MovieDetailModal from "../components/Admin/MovieDetailModal";
@@ -10,10 +24,11 @@ const AddMovieAdm = () => {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [viewingMovie, setViewingMovie] = useState(null);
-
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   // search phim
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   // không phân biệt chữ có dấu hay ko
   const removeVietnameseTones = (str) => {
     return str
@@ -83,19 +98,110 @@ const AddMovieAdm = () => {
     }
   };
 
+  // chart
+  const COLORS = [
+    "#8884d8",
+    "#82ca9d",
+    "#ffc658",
+    "#ff8042",
+    "#00C49F",
+    "#FF69B4",
+    "#8dd1e1",
+    "#a4de6c",
+  ];
+
+  const years = useMemo(() => {
+    const uniqueYears = new Set(
+      movies.map((movie) => new Date(movie.release_date).getFullYear())
+    );
+    return Array.from(uniqueYears).sort();
+  }, [movies]);
+
+  const filteredMovies2 = movies.filter((movie) => {
+    const date = new Date(movie.release_date);
+    return (
+      date.getMonth() + 1 === Number(selectedMonth) &&
+      date.getFullYear() === Number(selectedYear)
+    );
+  });
+
+  const moviesByDate = filteredMovies2.reduce((acc, movie) => {
+    const date = new Date(movie.release_date);
+    const day = date.getDate();
+    acc[day] = (acc[day] || 0) + 1;
+    return acc;
+  }, {});
+
+  const releaseData = Object.entries(moviesByDate).map(([day, count]) => ({
+    day,
+    count,
+  }));
+
+  const genreCounts = movies.reduce((acc, movie) => {
+    const genres = movie.genre.split(",");
+    genres.forEach((g) => {
+      const trimmed = g.trim();
+      acc[trimmed] = (acc[trimmed] || 0) + 1;
+    });
+    return acc;
+  }, {});
+
+  const genreData = Object.entries(genreCounts).map(([genre, value]) => ({
+    name: genre,
+    value,
+  }));
+
   return (
     <div className="flex h-screen">
       <SidebarAdm />
 
       <div className="flex-1 p-6 bg-white overflow-y-auto">
-        <header className="mb-6 flex justify-end items-center">
-          <div className="flex items-center mr-6">
-            <div className="w-10 h-10 bg-[#131c28] text-white flex justify-center items-center rounded-full font-semibold">
-              ảnh
-            </div>
-            <span className="ml-3 text-xl font-semibold">Tên admin</span>
+        <header className="mb-6 flex justify-start items-center">
+          <div className="flex items-center ml-6">
+            <span className="ml-3 text-xl font-semibold">Quản lý phim</span>
           </div>
         </header>
+        {/* chart */}
+        <div className="w-full h-80">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-lg font-semibold">
+              Số phim phát hành theo ngày
+            </h2>
+            <div className="flex gap-2 text-sm">
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="border rounded px-2 py-1"
+              >
+                {[...Array(12)].map((_, i) => (
+                  <option key={i} value={i + 1}>
+                    Tháng {i + 1}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+                className="border rounded px-2 py-1"
+              >
+                {years.map((year) => (
+                  <option key={year} value={year}>
+                    Năm {year}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={releaseData}>
+              <XAxis dataKey="day" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Line type="monotone" dataKey="count" stroke="#8884d8" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
 
         <div className="border-t border-gray-300 mb-6"></div>
 
@@ -214,6 +320,32 @@ const AddMovieAdm = () => {
             ))}
           </div>
         )}
+        {/* Biểu đồ 2: Phân bổ thể loại */}
+        <div className="w-full h-80">
+          <h2 className="text-lg font-semibold mb-2">Phân bổ thể loại phim</h2>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={genreData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={90}
+                label
+              >
+                {genreData.map((_, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
       {isEditModalOpen && (

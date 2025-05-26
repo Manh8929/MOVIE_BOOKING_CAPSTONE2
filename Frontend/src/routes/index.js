@@ -33,6 +33,11 @@ import FAQPage from "../pages/FAQPage";
 import NewsManagement from "../pages/NewsManagement";
 import PromotionManagement from "../pages/PromotionManagement";
 import OAuthSuccess from "../components/CallBackComponent/OAuthSuccess";
+import SeatsManagement from "../pages/SeatsManagement";
+import CommentManagement from "../pages/CommentManagement";
+import SeatTypeManagement from "../pages/SeatTypeManagement";
+import ShowtimeManage from "../pages/ShowtimeManage";
+import ManagerPayment from "../pages/ManagerPayment";
 
 
 export const routes = [
@@ -280,6 +285,36 @@ export const routes = [
   {
     path: "/reportsadm",
     page: ReportsAdm,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  {
+    path: "/seat-management",
+    page: SeatsManagement,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  {
+    path: "/price-management",
+    page: SeatTypeManagement,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  {
+    path: "/comment-management",
+    page: CommentManagement,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+  {
+    path: "/showtimeAdm",
+    page: ShowtimeManage,
+    isShowHeader: false,
+    isShowFooter: false,
+  },
+    {
+    path: "/managerPaymentAdm",
+    page: ManagerPayment,
     isShowHeader: false,
     isShowFooter: false,
   },
