@@ -34,13 +34,15 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      seat_type: {
-        type: Sequelize.ENUM("regular", "vip", "disabled","couple"),
+      seat_type_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      price: {
-        type: Sequelize.DECIMAL(10, 2),
-        allowNull: false,
+        references: {
+          model: "seat_types",
+          key: "seat_type_id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "RESTRICT",
       },
       is_available: {
         type: Sequelize.BOOLEAN,

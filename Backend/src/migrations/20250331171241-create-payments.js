@@ -31,7 +31,7 @@ module.exports = {
         onDelete: "CASCADE",
       },
       payment_method: {
-        type: Sequelize.ENUM("credit_card", "debit_card", "paypal", "cash"),
+        type: Sequelize.ENUM("payos","paypal"),
         allowNull: false,
       },
       payment_status: {

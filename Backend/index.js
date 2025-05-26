@@ -7,8 +7,10 @@ import adminRoute from "./src/routes/adminRoute";
 import userRoute from "./src/routes/userRoute";
 import authRoute from "./src/routes/authRouter";
 import movieRouter from "./src/routes/movieRouter.js";
+import paymentRoute from './src/routes/paymentRoute.js';
 import { authenticate } from "./src/middlewares/authMiddleware";
 import sentimentRoutes from "./src/routes/sentimentRoutes.js";
+import chatbotRoute from "./src/routes/chatbotRoute.js";
 
 require("dotenv").config();
 const passport = require("./src/middlewares/passport_setup");
@@ -35,6 +37,7 @@ app.use(
     saveUninitialized: true,
   })
 );
+app.use("/api", chatbotRoute);
 app.use('/api', sentimentRoutes);
 app.use(passport.initialize());
 app.use(passport.session());
@@ -44,15 +47,15 @@ app.use("/", userRoute);
 app.use("/", movieRouter);
 app.use("/auth", authRoute);
 app.use(authenticate);
-// app.use(authenticate);
 
 
 
 // Các route yêu cầu đăng nhập
 app.use("/api/admin", authenticate, adminRoute);
 app.use("/api/user", authenticate, userRoute);
+app.use("/payment",authenticate, paymentRoute);
 
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
   return res.send("Server on");
 });
 

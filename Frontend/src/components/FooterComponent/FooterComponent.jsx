@@ -1,9 +1,10 @@
 import React from "react";
-import logo from '../../assets/img/logo_movie.png';
+import { Link } from "react-router-dom";
+
+import logo from "../../assets/img/logo_movie.png";
 import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 
 const FooterComponent = () => {
-
   return (
     <footer className="bg-black text-gray-300 py-10 px-8">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -19,36 +20,21 @@ const FooterComponent = () => {
         {/* Menu Điều Hướng */}
         <div className="flex flex-col space-y-2">
           <h3 className="text-lg font-semibold text-white">Danh Mục</h3>
-          <a
-            href="/under-construction"
-            className="hover:text-red-500 transition"
-          >
+          <Link to="/schedule-movie" className="hover:text-red-500 transition">
             Lịch Chiếu
-          </a>
-          <a
-            href="/under-construction"
-            className="hover:text-red-500 transition"
-          >
+          </Link>
+          <Link to="/movies" className="hover:text-red-500 transition">
             Phim
-          </a>
-          <a
-            href="/under-construction"
-            className="hover:text-red-500 transition"
-          >
+          </Link>
+          <Link to="/promotions" className="hover:text-red-500 transition">
             Ưu Đãi
-          </a>
-          <a
-            href="/under-construction"
-            className="hover:text-red-500 transition"
-          >
+          </Link>
+          <Link to="/news" className="hover:text-red-500 transition">
             Tin Tức Phim
-          </a>
-          <a
-            href="/under-construction"
-            className="hover:text-red-500 transition"
-          >
+          </Link>
+          <Link to="/members" className="hover:text-red-500 transition">
             Thành Viên
-          </a>
+          </Link>
         </div>
 
         {/* Mạng Xã Hội */}
@@ -85,11 +71,11 @@ const FooterComponent = () => {
             </p>
             <p>
               <span className="font-medium text-white">Email:</span>{" "}
-              manhdeptrai@mvbcinemas.com
+              mvb@mvbcinemas.com
             </p>
             <p>
-              <span className="font-medium text-white">Địa chỉ:</span> 123 Đường
-              ABC, Quận Thanh Khê, TP.Đà Nẵng
+              <span className="font-medium text-white">Địa chỉ:</span> Phòng Đào
+              Tạo{" "}
             </p>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import db from "../models";
 exports.getUserProfile = async (userId) => {
   try {
@@ -230,4 +231,113 @@ export const deleteReviewByUser = async (reviewId, userId) => {
     console.error("Error deleting review:", err);
     throw err;
   }
+};
+
+// khuyến mãi
+export const getAllPromotions = async () => {
+  return await db.Promotion.findAll();
+};
+
+//showtimebydate
+export const getShowtimesByTheaterAndDate = async (theaterId, movieId, date) => {
+  try {
+    const startOfDay = new Date(`${date}T00:00:00`);
+    const endOfDay = new Date(`${date}T23:59:59`);
+
+    const showtimes = await db.Showtime.findAll({
+      where: {
+        show_time: { [Op.between]: [startOfDay, endOfDay] },
+        movie_id: movieId,
+        status: "scheduled"
+      },
+      include: [
+        {
+          model: db.Screen,
+          where: { theater_id: theaterId },
+          attributes: []
+        },
+        {
+          model: db.Movie,
+          attributes: ["title", "duration"]
+        }
+      ],
+      order: [["show_time", "ASC"]]
+    });
+
+    return showtimes;
+  } catch (error) {
+    console.error("Error in getShowtimesByTheaterAndDate:", error);
+    throw error;
+  }
+};
+
+
+
+//lấy rạp theo movie
+export const getTheatersByMovie = async (movieId) => {
+  try {
+    const theaters = await db.Theater.findAll({
+      include: {
+        model: db.Screen,
+        required: true,
+        include: {
+          model: db.Showtime,
+          required: true,
+          where: {
+            movie_id: movieId,
+            status: "scheduled",
+          },
+        },
+      },
+    });
+
+    return theaters;
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error fetching theaters by movie");
+  }
+};
+
+
+export const getSeatsByShowtime = async (showtimeId) => {
+  try {
+    const seats = await db.Seat.findAll({
+      where: { showtime_id: showtimeId },
+      include: [
+        {
+          model: db.SeatType,
+          as: 'type',
+          attributes: ['name', 'price'],
+        },
+        {
+          model: db.BookingSeat,
+          include: [{ model: db.Booking }],
+        },
+      ],
+    });
+
+    return seats.map((seat) => ({
+      seat_id: seat.seat_id,
+      seat_number: seat.seat_number,
+      seat_type: seat.type?.name || null, 
+      price: seat.type?.price || null,
+      is_available: seat.is_available,
+      is_booked: seat.BookingSeats && seat.BookingSeats.length > 0,
+    }));
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error fetching seats");
+  }
+};
+
+// Lấy tất cả loại ghế
+export const getAllSeatTypesService = async () => {
+  const seatTypes = await db.SeatType.findAll({
+    order: [["price", "ASC"]],
+  });
+
+  return {
+    message: "Fetched all seat types successfully",
+    seatTypes,
+  };
 };

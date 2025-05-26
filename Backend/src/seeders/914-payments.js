@@ -6,7 +6,7 @@ module.exports = {
       {
         booking_id: 1,
         user_id: 1,
-        payment_method: 'credit_card',
+        payment_method: 'payos',
         payment_status: 'completed',
         amount: 15.99,
         payment_time: new Date(),
@@ -26,7 +26,7 @@ module.exports = {
       {
         booking_id: 3,
         user_id: 3,
-        payment_method: 'debit_card',
+        payment_method: 'payos',
         payment_status: 'pending',
         amount: 10.00,
         payment_time: new Date(),
@@ -36,7 +36,7 @@ module.exports = {
       {
         booking_id: 4,
         user_id: 1,
-        payment_method: 'cash',
+        payment_method: 'payos',
         payment_status: 'failed',
         amount: 20.00,
         payment_time: new Date(),

@@ -234,6 +234,17 @@ export const createSeats = async (showtime_id, screen_id, total_seats) => {
   }
 };
 
+//xóa ghế
+export const deleteSeat = async (seatId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/api/admin/seats/${seatId}`, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi xóa ghế:", error);
+    throw error;
+  }
+};
+
 //select Screen
 export const getAllSelectScreens = async (token) => {
   try {
@@ -256,6 +267,137 @@ export const fetchShowtimes = async () => {
     return res.data.data; // Lấy danh sách lịch chiếu
   } catch (err) {
     console.error("Lỗi lấy lịch chiếu:", err);
+    throw err;
+  }
+};
+
+export const getUpcomingShowtimes = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/api/admin/upcoming`,getConfig());
+    return res.data; // Lấy danh sách lịch chiếu
+  } catch (err) {
+    console.error("Lỗi lấy lịch chiếu:", err);
+    throw err;
+  }
+};
+
+// ========== SEAT TYPE ========== //
+
+// Lấy tất cả loại ghế
+export const getSeatTypes = async () => {
+  const res = await axios.get(`${API_URL}/api/admin/price`, getConfig());
+  return res.data;
+};
+
+// Tạo mới loại ghế
+export const createSeatType = async (data) => {
+  const res = await axios.post(`${API_URL}/api/admin/create-price`, data, getConfig());
+  return res.data;
+};
+
+// Cập nhật loại ghế
+export const updateSeatType = async (id, data) => {
+  const res = await axios.put(`${API_URL}/api/admin/update-price/${id}`, data, getConfig());
+  return res.data;
+};
+
+// Xoá loại ghế
+export const deleteSeatType = async (id) => {
+  const res = await axios.delete(`${API_URL}/api/admin/delete-price/${id}`, getConfig());
+  return res.data;
+};
+
+// Lấy danh sách promotion
+export const getAllPromotions = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/admin/promotion`, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách promotion:", error);
+    throw error;
+  }
+};
+
+// Tạo promotion mới 
+export const createPromotion = async (formData) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/api/admin/promotion`,
+      formData,
+      getConfig("multipart/form-data")
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi tạo promotion:", error);
+    throw error;
+  }
+};
+
+// Cập nhật promotion theo id
+export const updatePromotion = async (id, formData) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/api/admin/promotion/${id}`,
+      formData,
+      getConfig("multipart/form-data")
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi cập nhật promotion:", error);
+    throw error;
+  }
+};
+
+// Xoá promotion theo id
+export const deletePromotion = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/api/admin/promotion/${id}`, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error(`Lỗi khi xóa promotion với id ${id}:`, error);
+    throw error;
+  }
+
+};
+
+/// ---- Showtime --- ///
+
+export const getAllShowtimes = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/admin/showtime-all`, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách showtimes:", error);
+    throw error;
+  }
+};
+
+export const createShowtime = async (data) => {
+  try {
+    const res = await axios.post(`${API_URL}/api/admin/showtimes`, data, getConfig());
+    return res.data;
+  } catch (err) {
+    console.error("Lỗi createShowtime:", err);
+    throw err;
+  }
+};
+
+export const updateShowtime = async (id, data) => {
+  try {
+    const res = await axios.put(`${API_URL}/api/admin/showtimes/${id}`, data, getConfig());
+    return res.data;
+  } catch (err) {
+    console.error("Lỗi updateShowtime:", err);
+    throw err;
+  }
+};
+
+export const deleteShowtime = async (id) => {
+  try {
+    const res = await axios.delete(`${API_URL}/api/admin/showtimes/${id}`, getConfig());
+    return res.data;
+  } catch (err) {
+    console.error("Lỗi deleteShowtime:", err);
     throw err;
   }
 };

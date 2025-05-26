@@ -33,7 +33,7 @@ const MovieDetail = () => {
         const data = await getMovieDetail(id);
         setMovie(data);
       } catch (err) {
-        console.error("Error fetching movie details:", err);
+        console.error("Lỗi khi lấy thông tin phim:", err);
       }
     };
 
@@ -42,7 +42,7 @@ const MovieDetail = () => {
         const response = await getAvailableComment(id);
         setComments(response);
       } catch (error) {
-        console.error("Error fetching comments:", error);
+        console.error("Lỗi khi lấy nhận xét:", error);
       }
     };
 
@@ -50,23 +50,50 @@ const MovieDetail = () => {
     fetchComments();
   }, [id]);
 
+  const forbiddenWords = [
+    "địt", "đụ", "cặc", "lồn", "buồi", "clgt", "vãi lồn", "fuck", "shit", "bitch",
+    "asshole", "motherfucker", "dmm", "fml", "đĩ", "điếm", "kiếp", "cmm", "dm",
+    "dcm", "dkm", "cđm", "đcm",
+  ];
+
+  const specialCharacterRegex = /[~`!@#$%^&*()+={}\[\];:'"<>/?\\|]/g;
+
+  const containsForbiddenWords = (text) => {
+    return forbiddenWords.some((word) => text.toLowerCase().includes(word));
+  };
+
+  const containsSpecialCharacters = (text) => {
+    return specialCharacterRegex.test(text);
+  };
+
   const handlePostComment = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("Vui lòng đăng nhập để sử dụng chức năng này");
       return;
     }
+
     if (!userComment.trim()) {
       toast.error("Vui lòng nhập nội dung nhận xét");
       return;
     }
+
     if (!userInfo || !userInfo.user_id) {
       toast.error("Không tìm thấy thông tin người dùng");
       return;
     }
 
+    if (containsForbiddenWords(userComment)) {
+      toast.error("Nội dung nhận xét chứa từ ngữ không phù hợp");
+      return;
+    }
+
+    if (containsSpecialCharacters(userComment)) {
+      toast.error("Không được sử dụng kí tự đặc biệt trong nhận xét");
+      return;
+    }
+
     try {
-      // Gọi API phân tích sentiment
       const sentimentResult = await analyzeSentiment(userComment);
       const score = sentimentResult.score;
 
@@ -74,7 +101,6 @@ const MovieDetail = () => {
       if (score >= 0.25) sentimentLabel = "positive";
       else if (score <= -0.25) sentimentLabel = "negative";
 
-      // Gửi comment kèm sentiment lên backend
       const reviewData = {
         movie_id: parseInt(id, 10),
         comment: userComment,
@@ -85,14 +111,12 @@ const MovieDetail = () => {
       await postReview(token, reviewData);
       toast.success("Gửi nhận xét thành công!");
 
-      // Cập nhật lại comment
       const updatedComments = await getAvailableComment(id);
       setComments(updatedComments);
-
       setUserComment("");
     } catch (error) {
       toast.error("Gửi nhận xét thất bại, vui lòng thử lại.");
-      console.error("Error posting comment:", error);
+      console.error("Lỗi khi gửi nhận xét:", error);
     }
   };
 
@@ -103,27 +127,23 @@ const MovieDetail = () => {
       return;
     }
 
-    const confirmDelete = window.confirm(
-      "Bạn có chắc chắn muốn xoá nhận xét này không?"
-    );
+    const confirmDelete = window.confirm("Bạn có chắc chắn muốn xoá nhận xét này không?");
     if (!confirmDelete) return;
 
     try {
       await deleteReview(token, reviewId);
       toast.success("Xoá nhận xét thành công!");
 
-      // Cập nhật lại danh sách comment
       const updatedComments = await getAvailableComment(id);
       setComments(updatedComments);
     } catch (error) {
       toast.error("Không thể xoá nhận xét. Vui lòng thử lại.");
-      console.error("Error deleting comment:", error);
+      console.error("Lỗi khi xoá nhận xét:", error);
     }
   };
 
-  if (!movie) return <div>Loading...</div>;
+  if (!movie) return <div>Đang tải...</div>;
 
-  // Tính tổng hợp sentiment
   const positiveReviews = comments.filter((c) => c.sentiment === "positive").length;
   const negativeReviews = comments.filter((c) => c.sentiment === "negative").length;
   const totalReviews = comments.length;
@@ -137,14 +157,12 @@ const MovieDetail = () => {
         <h1 className="text-3xl font-bold mb-6">{movie.title}</h1>
 
         <div className="flex gap-6">
-          {/* Movie Poster */}
           <img
             src={movie.poster_url || FilmImg}
-            alt="Movie Poster"
+            alt="Poster phim"
             className="w-48 h-72 rounded-lg shadow-lg"
           />
 
-          {/* Movie Info */}
           <div className="flex-1 space-y-2">
             <h2 className="text-2xl font-bold text-white">{movie.title}</h2>
             <p className="text-sm italic text-gray-300">{movie.description}</p>
@@ -159,16 +177,13 @@ const MovieDetail = () => {
               <div><span className="font-semibold">Ngôn ngữ:</span> {movie.language}</div>
             </div>
 
-            {/* Rating System */}
             <div className="mt-4">
               <h3 className="text-lg font-semibold">Đánh giá trung bình</h3>
               <div className="flex items-center">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
                     key={star}
-                    className={`text-3xl ${
-                      star <= (movie.average_rating / 2 || 0) ? "text-yellow-400" : "text-gray-500"
-                    }`}
+                    className={`text-3xl ${star <= (movie.average_rating / 2 || 0) ? "text-yellow-400" : "text-gray-500"}`}
                   >
                     ★
                   </span>
@@ -179,20 +194,14 @@ const MovieDetail = () => {
               </div>
             </div>
 
-            {/* Reviews Summary */}
             <div className="mt-4">
               <h3 className="text-lg font-semibold">Tổng hợp đánh giá</h3>
-              <p className="text-green-400">
-                Tích cực: {positivePercentage}% ({positiveReviews} lượt)
-              </p>
-              <p className="text-red-400">
-                Tiêu cực: {negativePercentage}% ({negativeReviews} lượt)
-              </p>
+              <p className="text-green-400">Tích cực: {positivePercentage}% ({positiveReviews} lượt)</p>
+              <p className="text-red-400">Tiêu cực: {negativePercentage}% ({negativeReviews} lượt)</p>
             </div>
           </div>
         </div>
 
-        {/* Trailer */}
         {movie.trailer_url && (
           <div className="mt-10">
             <h3 className="text-xl font-semibold mb-4">Trailer</h3>
@@ -209,11 +218,10 @@ const MovieDetail = () => {
           </div>
         )}
 
-        {/* Proceed Button */}
         {movie.status !== "upcoming" && (
           <div className="mt-6">
             <button
-              onClick={() => navigate(`/theaters`)}
+              onClick={() => navigate("/theaters", { state: { movie } })}
               className="px-6 py-3 bg-[#E63946] text-white rounded-lg text-lg font-semibold hover:bg-transparent hover:border-gray-400 hover:border"
             >
               Đặt vé
@@ -221,7 +229,6 @@ const MovieDetail = () => {
           </div>
         )}
 
-        {/* User Reviews */}
         <div className="mt-8">
           <h3 className="text-lg font-semibold">Đánh Giá của người xem</h3>
           <div className="mt-4 space-y-4">
@@ -232,7 +239,7 @@ const MovieDetail = () => {
                 <div key={index} className="bg-gray-800 p-4 rounded-lg">
                   <div className="flex items-center gap-3">
                     <img
-                      src={`${review.User?.avatar || "default-avatar.png"}`}
+                      src={review.User?.avatar || "default-avatar.png"}
                       alt="Avatar"
                       className="w-10 h-10 rounded-full"
                     />
@@ -242,7 +249,7 @@ const MovieDetail = () => {
                   </div>
                   <div className="flex justify-between mt-2 items-center">
                     <p className="text-gray-300">{review.comment}</p>
-                    {/* <span
+                    <span
                       className={`ml-4 px-2 py-1 rounded text-sm font-semibold ${
                         review.sentiment === "positive"
                           ? "bg-green-600 text-green-100"
@@ -252,7 +259,7 @@ const MovieDetail = () => {
                       }`}
                     >
                       {sentimentDisplayMap[review.sentiment] || review.sentiment}
-                    </span> */}
+                    </span>
                     {userInfo?.user_id === review.user_id && (
                       <button
                         onClick={() => handleDeleteComment(review.review_id)}
@@ -283,7 +290,6 @@ const MovieDetail = () => {
           </div>
         </div>
 
-        {/* Form gửi nhận xét */}
         <div className="mt-6">
           <h3 className="text-lg font-semibold mb-2">Thêm nhận xét của bạn</h3>
           <textarea

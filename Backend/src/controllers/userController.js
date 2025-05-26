@@ -186,3 +186,82 @@ export const deleteReview = async (req, res) => {
     return res.status(500).json({ message: "Lỗi server", error: error.message });
   }
 };
+
+
+// Lấy tất cả promotion
+export const getAllPromotions = async (req, res) => {
+  try {
+    const promotions = await userService.getAllPromotions();
+    res.status(200).json(promotions);
+  } catch (error) {
+    console.error("Error fetching promotions:", error);
+    res.status(500).json({ message: "Lỗi lấy danh sách promotion" });
+  }
+};
+
+//showtimeBydate và theater
+export const getShowtimesByTheaterAndDate = async (req, res) => {
+  try {
+    const { theaterId, movieId, date } = req.query;
+
+    if (!theaterId || !movieId || !date) {
+      return res.status(400).json({ message: "Missing theater_id, movie_id or date" });
+    }
+
+    const showtimes = await userService.getShowtimesByTheaterAndDate(theaterId, movieId, date);
+
+    return res.json({ showtimes });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Error fetching showtimes" });
+  }
+};
+
+
+//lấy rạp theo movie
+
+// GET /api/theaters-by-movie?movieId=1
+export const getTheatersByMovie = async (req, res) => {
+  try {
+    const { movieId } = req.query;
+
+    if (!movieId) {
+      return res.status(400).json({ message: "Missing movieId in query params" });
+    }
+
+    const theaters = await userService.getTheatersByMovie(movieId);
+
+    return res.json({ theaters });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Server error while fetching theaters by movie",
+    });
+  }
+};
+
+// GET /api/seats/:showtimeId
+export const getSeatsByShowtime = async (req, res) => {
+  try {
+    const { showtimeId } = req.params;
+
+    const seats = await userService.getSeatsByShowtime(showtimeId);
+
+    return res.json({ seats });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error while fetching seats" });
+  }
+};
+// Lấy danh sách loại ghế
+export const getAllSeatTypes = async (req, res) => {
+  try {
+    const result = await userService.getAllSeatTypesService();
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+

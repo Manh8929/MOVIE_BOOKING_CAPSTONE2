@@ -43,6 +43,16 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        user_id: 3,
+        showtime_id: 13,
+        qr_code: 'QR123459',
+        total_price: 220.00,
+        status: 'confirmed',
+        booking_time: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
   },
 
