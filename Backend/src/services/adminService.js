@@ -392,12 +392,16 @@ export const getAllPayments = async () => {
             attributes: ["show_time"],
             include: [
               {
+                model: db.Movie,
+                attributes: ["title"],
+              },
+              {
                 model: db.Screen,
                 attributes: ["screen_name"],
                 include: [
                   {
                     model: db.Theater,
-                    attributes: ["name"], 
+                    attributes: ["name"],
                   },
                 ],
               },
