@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 import { toJpeg } from "html-to-image";
 import { getMovieDetail } from "../services/movieService";
+import { getUserPayments } from "../services/userService";
 
 const MyTicketPage = () => {
   const navigate = useNavigate();
@@ -10,9 +11,9 @@ const MyTicketPage = () => {
   const [formattedDate, setFormattedDate] = useState("");
   const [formattedTime, setFormattedTime] = useState("");
   const [selectedSeats, setSelectedSeats] = useState("");
+  const [ticketCode, setTicketCode] = useState("");
   const theaterName = localStorage.getItem("selectedTheaterName");
   const [isQRVisible, setIsQRVisible] = useState(false);
-  const ticketCode = "23568";
   const ticketRef = useRef(null);
 
   const downloadImage = () => {
@@ -31,15 +32,26 @@ const MyTicketPage = () => {
     const movieId = localStorage.getItem("selectedMovieId");
     const selectedTime = localStorage.getItem("selectedTime");
     const seats = localStorage.getItem("selectedSeatsName") || "";
+    const currentUserStr = localStorage.getItem("currentUser");
+    const currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
+    const userId = currentUser?.user_id;
 
+    const token = localStorage.getItem("token");
     const fetchInfo = async () => {
       try {
+        if (userId && token) {
+          const payments = await getUserPayments(userId, token);
+          if (payments.length > 0) {
+            const latestPayment = payments[0];
+            console.log("Latest payment:", latestPayment);
+            setTicketCode(latestPayment.booking_id?.toString() || "N/A");
+          }
+        }
         // Lấy thông tin phim
         if (movieId) {
           const movie = await getMovieDetail(movieId);
           setMovieName(movie?.title || "Không rõ tên phim");
         }
-
         if (seats) {
           const seatArray = seats.split(/[, ]+/).filter(Boolean);
           setSelectedSeats(seatArray.join(", "));

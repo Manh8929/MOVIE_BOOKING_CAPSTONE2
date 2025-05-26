@@ -38,3 +38,6 @@ const TicketUpHisPage = () => {
 };
 
 export default TicketUpHisPage;
+
+
+
