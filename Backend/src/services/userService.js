@@ -346,7 +346,7 @@ export const getPaymentsByUserId = async (userId) => {
   const payments = await db.Payment.findAll({
     where: {
       user_id: userId,
-      payment_status: "completed", 
+      payment_status: "completed",
     },
     include: [
       {
@@ -357,6 +357,10 @@ export const getPaymentsByUserId = async (userId) => {
             model: db.Showtime,
             attributes: ["show_time"],
             include: [
+              {
+                model: db.Movie, 
+                attributes: ["title"],
+              },
               {
                 model: db.Screen,
                 attributes: ["screen_name"],
