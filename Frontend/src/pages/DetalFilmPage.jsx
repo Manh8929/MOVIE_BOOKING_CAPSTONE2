@@ -25,6 +25,8 @@ const MovieDetail = () => {
   const navigate = useNavigate();
   const [comments, setComments] = useState([]);
   const [userComment, setUserComment] = useState("");
+  const [userRating, setUserRating] = useState(null);
+  const [showRatingConfirm, setShowRatingConfirm] = useState(false);
   const userInfo = JSON.parse(localStorage.getItem("currentUser"));
 
   useEffect(() => {
@@ -66,33 +68,8 @@ const MovieDetail = () => {
     return specialCharacterRegex.test(text);
   };
 
-  const handlePostComment = async () => {
+  const submitReview = async () => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("Vui lòng đăng nhập để sử dụng chức năng này");
-      return;
-    }
-
-    if (!userComment.trim()) {
-      toast.error("Vui lòng nhập nội dung nhận xét");
-      return;
-    }
-
-    if (!userInfo || !userInfo.user_id) {
-      toast.error("Không tìm thấy thông tin người dùng");
-      return;
-    }
-
-    if (containsForbiddenWords(userComment)) {
-      toast.error("Nội dung nhận xét chứa từ ngữ không phù hợp");
-      return;
-    }
-
-    if (containsSpecialCharacters(userComment)) {
-      toast.error("Không được sử dụng kí tự đặc biệt trong nhận xét");
-      return;
-    }
-
     try {
       const sentimentResult = await analyzeSentiment(userComment);
       const score = sentimentResult.score;
@@ -106,6 +83,7 @@ const MovieDetail = () => {
         comment: userComment,
         user_id: userInfo.user_id,
         sentiment: sentimentLabel,
+        rating: userRating,
       };
 
       await postReview(token, reviewData);
@@ -114,9 +92,39 @@ const MovieDetail = () => {
       const updatedComments = await getAvailableComment(id);
       setComments(updatedComments);
       setUserComment("");
+      setUserRating(null);
     } catch (error) {
       toast.error("Gửi nhận xét thất bại, vui lòng thử lại.");
       console.error("Lỗi khi gửi nhận xét:", error);
+    }
+  };
+
+  const handlePostComment = () => {
+    if (!localStorage.getItem("token")) {
+      toast.error("Vui lòng đăng nhập để sử dụng chức năng này");
+      return;
+    }
+    if (!userComment.trim()) {
+      toast.error("Vui lòng nhập nội dung nhận xét");
+      return;
+    }
+    if (!userInfo || !userInfo.user_id) {
+      toast.error("Không tìm thấy thông tin người dùng");
+      return;
+    }
+    if (containsForbiddenWords(userComment)) {
+      toast.error("Nội dung nhận xét chứa từ ngữ không phù hợp");
+      return;
+    }
+    if (containsSpecialCharacters(userComment)) {
+      toast.error("Không được sử dụng kí tự đặc biệt trong nhận xét");
+      return;
+    }
+
+    if (userRating === null) {
+      setShowRatingConfirm(true);
+    } else {
+      submitReview();
     }
   };
 
@@ -142,11 +150,47 @@ const MovieDetail = () => {
     }
   };
 
+  const RatingConfirmModal = () => (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      onClick={() => setShowRatingConfirm(false)}
+    >
+      <div
+        className="bg-white rounded-lg p-6 max-w-sm w-full"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h3 className="text-lg font-semibold mb-4 text-black">Bạn chưa đánh giá số sao</h3>
+        <p className="mb-6 text-black">
+          Bạn có muốn tiếp tục gửi nhận xét mà không đánh giá sao không?
+        </p>
+        <div className="flex justify-end space-x-4">
+          <button
+            className="px-4 py-2 border rounded hover:bg-gray-100 text-black"
+            onClick={() => setShowRatingConfirm(false)}
+            type="button"
+          >
+            Quay lại đánh giá
+          </button>
+          <button
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            onClick={() => {
+              setShowRatingConfirm(false);
+              submitReview();
+            }}
+            type="button"
+          >
+            Tiếp tục bỏ qua
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   if (!movie) return <div>Đang tải...</div>;
 
   const positiveReviews = comments.filter((c) => c.sentiment === "positive").length;
   const negativeReviews = comments.filter((c) => c.sentiment === "negative").length;
-  const totalReviews = comments.length;
+  const totalReviews = positiveReviews + negativeReviews; // chỉ tính positive + negative
 
   const positivePercentage = totalReviews ? ((positiveReviews / totalReviews) * 100).toFixed(1) : 0;
   const negativePercentage = totalReviews ? ((negativeReviews / totalReviews) * 100).toFixed(1) : 0;
@@ -250,13 +294,12 @@ const MovieDetail = () => {
                   <div className="flex justify-between mt-2 items-center">
                     <p className="text-gray-300">{review.comment}</p>
                     <span
-                      className={`ml-4 px-2 py-1 rounded text-sm font-semibold ${
-                        review.sentiment === "positive"
+                      className={`ml-4 px-2 py-1 rounded text-sm font-semibold ${review.sentiment === "positive"
                           ? "bg-green-600 text-green-100"
                           : review.sentiment === "negative"
-                          ? "bg-red-600 text-red-100"
-                          : "bg-gray-600 text-gray-100"
-                      }`}
+                            ? "bg-red-600 text-red-100"
+                            : "bg-gray-600 text-gray-100"
+                        }`}
                     >
                       {sentimentDisplayMap[review.sentiment] || review.sentiment}
                     </span>
@@ -275,9 +318,8 @@ const MovieDetail = () => {
                       {[1, 2, 3, 4, 5].map((star) => (
                         <span
                           key={star}
-                          className={`text-xl ${
-                            star <= review.rating ? "text-yellow-400" : "text-gray-500"
-                          }`}
+                          className={`text-xl ${star <= review.rating ? "text-yellow-400" : "text-gray-500"
+                            }`}
                         >
                           ★
                         </span>
@@ -292,6 +334,26 @@ const MovieDetail = () => {
 
         <div className="mt-6">
           <h3 className="text-lg font-semibold mb-2">Thêm nhận xét của bạn</h3>
+
+          <div className="flex items-center space-x-1 mb-2 cursor-pointer select-none">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <span
+                key={star}
+                onClick={() => setUserRating(star)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") setUserRating(star);
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={`${star} sao`}
+                className={`text-3xl ${star <= userRating ? "text-yellow-400" : "text-gray-600"
+                  } hover:text-yellow-500`}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+
           <textarea
             placeholder="Viết nhận xét..."
             className="w-full p-3 rounded-lg bg-gray-700 text-white resize-none focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -307,6 +369,42 @@ const MovieDetail = () => {
           </button>
         </div>
       </div>
+
+      {showRatingConfirm && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setShowRatingConfirm(false)}
+        >
+          <div
+            className="bg-white rounded-lg p-6 max-w-sm w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-4 text-black">Bạn chưa đánh giá số sao</h3>
+            <p className="mb-6 text-black">
+              Bạn có muốn tiếp tục gửi nhận xét mà không đánh giá sao không?
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                className="px-4 py-2 border rounded hover:bg-gray-100 text-black"
+                onClick={() => setShowRatingConfirm(false)}
+                type="button"
+              >
+                Quay lại đánh giá
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                onClick={() => {
+                  setShowRatingConfirm(false);
+                  submitReview();
+                }}
+                type="button"
+              >
+                Tiếp tục bỏ qua
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

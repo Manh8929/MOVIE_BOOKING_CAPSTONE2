@@ -35,6 +35,8 @@ import {
   updateSeatType,
   deleteSeatType,
   getAllShowtime,
+  deleteReviewController,
+  getAllReviewsByAdmController,
 } from "../controllers/adminController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import { middlewareUpload } from "../middlewares/middleUploadMovie.js";
@@ -134,4 +136,20 @@ route.post("/create-price",authenticate, authorize("admin"), createSeatType);
 route.put("/update-price/:id",authenticate, authorize("admin"), updateSeatType);
 route.delete("/delete-price/:id",authenticate, authorize("admin"), deleteSeatType);
 
+// detele reviews
+route.delete(
+  "/reviews/:id",
+  authenticate,
+  authorize("admin"),
+  deleteReviewController
+);
+
 export default route;
+
+// Get all reviews by admin
+route.get(
+  "/reviews-by-admin",
+  authenticate,
+  authorize("admin"),
+  getAllReviewsByAdmController
+);

@@ -1,6 +1,6 @@
 import { createShowtime, updateShowtime, deleteShowtime, getAllShowtimes } from "../services/showtimeService.js";
 import { badRequest } from "../middlewares/handle_error";
-import { deleteUserService, getAllUsersService, updateUserService} from "../services/adminService.js";
+import { deleteUserService, getAllUsersService, updateUserService, deleteReview, getAllReviewsByAdm } from "../services/adminService.js";
 import * as movieService from "../services/adminService.js";
 import * as theaterService from "../services/adminService.js";
 import * as userService from "../services/userService.js";
@@ -575,5 +575,32 @@ export const getAllPromotions = async (req, res) => {
   } catch (error) {
     console.error("Error fetching promotions:", error);
     res.status(500).json({ message: "Lỗi lấy danh sách promotion" });
+  }
+};
+
+// Xoá review by admin
+export const deleteReviewController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await deleteReview(id);
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
+// Lấy tất cả review by admin
+export const getAllReviewsByAdmController = async (req, res) => {
+  try {
+    const result = await getAllReviewsByAdm();
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
   }
 };
