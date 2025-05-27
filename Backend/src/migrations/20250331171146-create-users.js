@@ -62,6 +62,14 @@ module.exports = {
         allowNull: false,
         defaultValue: "local", // ✅ new field
       },
+      reset_password_token: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      reset_password_expires: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
       createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,

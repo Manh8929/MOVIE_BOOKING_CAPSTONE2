@@ -14,12 +14,14 @@ const SeatsManagement = () => {
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [screens, setScreens] = useState([]);
   const [showtimes, setShowtimes] = useState([]);
+  const [selectedSeats, setSelectedSeats] = useState([]);
   const [newSeats, setNewSeats] = useState({
     screen_id: "",
     showtime_id: "",
     total_seats: "",
   });
   const token = localStorage.getItem("token");
+
   useEffect(() => {
     const fetchScreens = async () => {
       try {
@@ -89,8 +91,8 @@ const SeatsManagement = () => {
       setModalOpen(false);
       fetchSeats(); // Tải lại danh sách ghế
     } catch (error) {
-      toast.error("Lỗi khi tạo ghế");
-      console.error("Lỗi khi tạo ghế:", error);
+      const message = error.response?.data?.message || "Lỗi khi tạo ghế!";
+      toast.error(message);
     }
   };
 
@@ -130,7 +132,49 @@ const SeatsManagement = () => {
       console.error("Lỗi khi cập nhật ghế:", error);
     }
   };
+  
+    const handleDeleteSeat = async (seat_id) => {
+    if (!window.confirm("Bạn có chắc muốn xoá ghế này?")) return;
+    try {
+      await adminService.deleteSeat(seat_id);
+      toast.success("Đã xoá ghế thành công.");
+      fetchSeats();
+    } catch (err) {
+      console.error(err);
+      toast.error("Lỗi khi xóa ghế.");
+    }
+  };
 
+const handleBulkDelete = async () => {
+  if (
+    selectedSeats.length > 0 &&
+    window.confirm(`Bạn có chắc muốn xoá ${selectedSeats.length} ghế?`)
+  ) {
+    try {
+      await adminService.deleteSeatsBulk(selectedSeats); // sửa tên hàm ở đây
+      toast.success("Xoá hàng loạt thành công.");
+      setSelectedSeats([]);
+      fetchSeats();
+    } catch (err) {
+      console.error(err);
+      toast.error("Lỗi khi xoá hàng loạt.");
+    }
+  }
+};
+
+  const toggleSelectSeat = (seatId) => {
+    setSelectedSeats((prev) =>
+      prev.includes(seatId)
+        ? prev.filter((id) => id !== seatId)
+        : [...prev, seatId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    const allIds = filteredSeats.map((s) => s.seat_id);
+    const allSelected = allIds.every((id) => selectedSeats.includes(id));
+    setSelectedSeats(allSelected ? [] : allIds);
+  };
   return (
     <div className="flex h-screen">
       <Sidebar />
@@ -176,7 +220,17 @@ const SeatsManagement = () => {
             Xoá lọc
           </button>
         </div>
-
+        {/* Bulk delete */}
+        {selectedSeats.length > 0 && (
+          <div className="mb-4">
+            <button
+              onClick={handleBulkDelete}
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded"
+            >
+              🗑️ Xoá {selectedSeats.length} ghế
+            </button>
+          </div>
+        )}
         {/* Bảng ghế */}
         {loading ? (
           <p>Đang tải...</p>
@@ -184,6 +238,18 @@ const SeatsManagement = () => {
           <table className="w-full bg-white shadow rounded-lg overflow-hidden text-sm">
             <thead className="bg-gray-200 text-gray-700">
               <tr>
+                <th className="px-4 py-2 text-left">
+                  <input
+                    type="checkbox"
+                    checked={
+                      filteredSeats.length > 0 &&
+                      filteredSeats.every((s) =>
+                        selectedSeats.includes(s.seat_id)
+                      )
+                    }
+                    onChange={toggleSelectAll}
+                  />
+                </th>
                 <th className="px-4 py-2 text-left">showtime_id</th>
                 <th className="px-4 py-2 text-left">screen_id</th>
                 <th className="px-4 py-2 text-left">Số ghế</th>
@@ -196,6 +262,13 @@ const SeatsManagement = () => {
             <tbody>
               {filteredSeats.map((seat, idx) => (
                 <tr key={idx} className="border-t">
+                  <td className="px-4 py-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedSeats.includes(seat.seat_id)}
+                      onChange={() => toggleSelectSeat(seat.seat_id)}
+                    />
+                  </td>
                   <td className="px-4 py-2">{seat.showtime_id}</td>
                   <td className="px-4 py-2">{seat.screen_id}</td>
                   <td className="px-4 py-2">{seat.seat_number}</td>
@@ -224,18 +297,7 @@ const SeatsManagement = () => {
                     </button>
                     <button
                       title="Xoá"
-                      onClick={async () => {
-                        if (window.confirm("Bạn có chắc muốn xoá ghế này?")) {
-                          try {
-                            await adminService.deleteSeat(seat.seat_id);
-                            toast.success("Đã xoá ghế thành công.");
-                            fetchSeats(); // Cập nhật lại danh sách
-                          } catch (err) {
-                            console.error("Lỗi khi xoá ghế:", err);
-                            toast.error("Lỗi khi xóa ghế.");
-                          }
-                        }
-                      }}
+                       onClick={() => handleDeleteSeat(seat.seat_id)}
                       className="text-red-600 hover:text-red-800"
                     >
                       <FaTrash size={18} />
@@ -280,12 +342,16 @@ const SeatsManagement = () => {
                   }
                 >
                   <option value="">Chọn suất chiếu</option>
-                  {showtimes.map((s) => (
-                    <option key={s.showtime_id} value={s.showtime_id}>
-                      {s.Movie?.title} -{" "}
-                      {new Date(s.show_time).toLocaleString("vi-VN")}
-                    </option>
-                  ))}
+                  {showtimes
+                    .filter(
+                      (s) => String(s.screen_id) === String(newSeats.screen_id)
+                    )
+                    .map((s) => (
+                      <option key={s.showtime_id} value={s.showtime_id}>
+                        {s.Movie?.title} -{" "}
+                        {new Date(s.show_time).toLocaleString("vi-VN")}
+                      </option>
+                    ))}
                 </select>
               </div>
 

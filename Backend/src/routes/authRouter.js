@@ -1,5 +1,5 @@
 import express from "express";
-import { registerUser, loginUser } from "../controllers/authController";
+import { registerUser, loginUser, forgotPassword, resetPassword } from "../controllers/authController";
 import passport from "passport";
 const {
   authenticate,
@@ -11,7 +11,8 @@ const route = express.Router();
 
 route.post("/register", registerUser);
 route.post("/login", loginUser);
-
+route.post("/forgot-password", forgotPassword);
+route.post("/reset-password", resetPassword);
 route.get(
   "/google",
   passport.authenticate("google", {

@@ -1,4 +1,4 @@
-import { createShowtime, updateShowtime, deleteShowtime, getAllShowtimes } from "../services/showtimeService.js";
+import { createShowtime, updateShowtime, deleteShowtime, getAllShowtimes, deleteSelectedShowtimes,} from "../services/showtimeService.js";
 import { badRequest } from "../middlewares/handle_error";
 import { deleteUserService, getAllUsersService, updateUserService } from "../services/adminService.js";
 import * as movieService from "../services/adminService.js";
@@ -77,9 +77,11 @@ export const createShowtimeController = async (req, res, next) => {
       data: result,
     });
   } catch (error) {
-    next(error);
+    res.status(400).json({ message: error.message });
   }
 };
+
+
 
 // API Update lịch chiếu
 export const updateShowtimeController = async (req, res, next) => {
@@ -90,7 +92,7 @@ export const updateShowtimeController = async (req, res, next) => {
       data: result,
     });
   } catch (error) {
-    next(error);
+     res.status(400).json({ message: error.message });
   }
 };
 
@@ -105,6 +107,26 @@ export const deleteShowtimeController = async (req, res, next) => {
     next(error);
   }
 };
+
+// xóa All lịch chiếu
+export const deleteSelectedShowtimesController = async (req, res, next) => {
+  try {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: "Danh sách ID không hợp lệ." });
+    }
+
+    const result = await deleteSelectedShowtimes(ids);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Lỗi xoá các suất chiếu đã chọn:", error);
+    res
+      .status(500)
+      .json({ message: "Xoá các suất chiếu đã chọn thất bại", error: error.message });
+  }
+};
+
 
 export const createNews = async (req, res) => {
   const { movie_id, title, content, image_url, category } = req.body;
@@ -443,6 +465,22 @@ export const deleteSeatController = async (req, res) => {
     });
   }
 };
+// xóa nhiều ghế
+export const deleteSeatsBulkController = async (req, res) => {
+  try {
+    const { seatIds } = req.body;
+
+    const result = await adminService.deleteSeatsBulk(seatIds);
+
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+};
+
 
 export const getUpcomingShowtimes = async (req, res) => {
   try {

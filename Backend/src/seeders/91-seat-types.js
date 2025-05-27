@@ -6,7 +6,7 @@
         { name: "regular", price: 100.00 },
         { name: "vip", price: 200.00 },
         { name: "couple", price: 300.00 },
-        { name: "disabled", price: 80.00 },
+        // { name: "disabled", price: 80.00 },
       ]);
     },
 

@@ -15,7 +15,7 @@ const passport = require("./src/middlewares/passport_setup");
 require("./connection_DB");
 
 const app = express();
-
+console.log(process.env.EMAIL_USER)
 app.use(
   cors({
     origin: process.env.CLIENT_URL,

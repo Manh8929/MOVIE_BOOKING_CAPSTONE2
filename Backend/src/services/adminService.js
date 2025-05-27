@@ -142,7 +142,6 @@ export const deleteScreen = async (id) => {
 };
 
 //---------Ghế--------------/
-//---------Ghế--------------/
 
 // Tạo ghế tự động
 export const createSeatsService = async (screen_id, showtime_id, total_seats) => {
@@ -235,6 +234,34 @@ export const deleteSeat = async (id) => {
   await seat.destroy();
   return true;
 };
+
+//xóa nhiều ghế
+export const deleteSeatsBulk = async (seatIds) => {
+  if (!Array.isArray(seatIds) || seatIds.length === 0) {
+    const error = new Error("Danh sách ghế không hợp lệ");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Xoá ghế theo danh sách ID
+  const deletedCount = await Seat.destroy({
+    where: {
+      seat_id: seatIds,
+    },
+  });
+
+  if (deletedCount === 0) {
+    const error = new Error("Không có ghế nào được xoá");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return {
+    message: "Đã xoá các ghế thành công",
+    deletedCount,
+  };
+};
+
 
 // get những showtime chưa hết hạn
 export const getUpcomingShowtimes = async () => {

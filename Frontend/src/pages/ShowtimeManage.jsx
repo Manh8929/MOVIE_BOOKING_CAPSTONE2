@@ -13,6 +13,7 @@ const ShowtimeManage = () => {
   const [movies, setMovies] = useState([]);
   const [screens, setScreens] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedShowtimeIds, setSelectedShowtimeIds] = useState([]);
   const [newShowtime, setNewShowtime] = useState({
     movie: "",
     room: "",
@@ -37,7 +38,9 @@ const ShowtimeManage = () => {
           res.data.map((s) => ({
             id: s.showtime_id,
             movie: s.Movie?.title || "N/A",
-            room: `${s.Screen?.screen_name || "N/A"} - ${s.Screen?.Theater?.name || "N/A"}`,
+            room: `${s.Screen?.screen_name || "N/A"} - ${
+              s.Screen?.Theater?.name || "N/A"
+            }`,
             time: s.show_time,
             price: s.ticket_price,
             status: s.status,
@@ -99,7 +102,10 @@ const ShowtimeManage = () => {
       toast.success("Thêm suất chiếu thành công!");
     } catch (err) {
       console.error(err);
-      toast.error("Thêm suất chiếu thất bại!");
+      console.error("Lỗi:", err.response);
+      const message =
+        err.response?.data?.message || "Thêm suất chiếu thất bại!";
+      toast.error(message);
     }
   };
 
@@ -170,10 +176,32 @@ const ShowtimeManage = () => {
       });
     } catch (err) {
       console.error(err);
-      toast.error("Cập nhật suất chiếu thất bại!");
+      const message =
+        err.response?.data?.message || "Cập nhật suất chiếu thất bại!";
+      toast.error(message);
     }
   };
+  const handleDeleteAll = async () => {
+    if (selectedShowtimeIds.length === 0) {
+      toast.warning("Vui lòng chọn suất chiếu để xoá.");
+      return;
+    }
 
+    if (!window.confirm("Bạn có chắc chắn muốn xoá các suất chiếu đã chọn?"))
+      return;
+
+    try {
+      await adminService.deleteMultipleShowtimes(selectedShowtimeIds); // hàm mới trong service
+      setShowtimes((prev) =>
+        prev.filter((item) => !selectedShowtimeIds.includes(item.id))
+      );
+      setSelectedShowtimeIds([]);
+      toast.success("Đã xoá các suất chiếu đã chọn!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Xoá suất chiếu thất bại!");
+    }
+  };
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar />
@@ -182,28 +210,56 @@ const ShowtimeManage = () => {
           <h1 className="text-3xl font-bold text-orange-500">
             Quản lý suất chiếu
           </h1>
-          <button
-            className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 flex items-center gap-2"
-            onClick={() => {
-              setIsEditing(false); // đang thêm
-              setNewShowtime({
-                movie: "",
-                room: "",
-                time: "",
-                price: "",
-                status: "scheduled",
-              });
-              setModalOpen(true);
-            }}
-          >
-            <FaPlus /> Thêm suất chiếu
-          </button>
+          <div className="flex gap-2">
+            <button
+              className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 flex items-center gap-2"
+              onClick={() => {
+                setIsEditing(false);
+                setNewShowtime({
+                  movie: "",
+                  room: "",
+                  time: "",
+                  price: "",
+                  status: "scheduled",
+                });
+                setModalOpen(true);
+              }}
+            >
+              <FaPlus /> Thêm suất chiếu
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
+          {selectedShowtimeIds.length > 0 && (
+            <div className="mb-2">
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 flex items-center gap-2"
+                onClick={handleDeleteAll}
+              >
+                <FaTrash /> Xoá đã chọn ({selectedShowtimeIds.length})
+              </button>
+            </div>
+          )}
           <table className="w-full bg-white rounded shadow text-sm">
             <thead className="bg-gray-200 text-gray-700">
               <tr>
+                <th className="p-3 text-left">
+                  <input
+                    type="checkbox"
+                    checked={
+                      showtimes.length > 0 &&
+                      selectedShowtimeIds.length === showtimes.length
+                    }
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedShowtimeIds(showtimes.map((s) => s.id));
+                      } else {
+                        setSelectedShowtimeIds([]);
+                      }
+                    }}
+                  />
+                </th>
                 <th className="p-3 text-left">Tên phim</th>
                 <th className="p-3 text-left">Phòng</th>
                 <th className="p-3 text-left">Thời gian</th>
@@ -215,6 +271,21 @@ const ShowtimeManage = () => {
             <tbody>
               {showtimes.map((s) => (
                 <tr key={s.id} className="border-t">
+                  <td className="p-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedShowtimeIds.includes(s.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedShowtimeIds((prev) => [...prev, s.id]);
+                        } else {
+                          setSelectedShowtimeIds((prev) =>
+                            prev.filter((id) => id !== s.id)
+                          );
+                        }
+                      }}
+                    />
+                  </td>
                   <td className="p-3 font-medium">{s.movie}</td>
                   <td className="p-3">{s.room}</td>
                   <td className="p-3">{new Date(s.time).toLocaleString()}</td>

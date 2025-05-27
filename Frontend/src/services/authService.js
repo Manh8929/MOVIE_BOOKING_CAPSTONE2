@@ -22,3 +22,27 @@ export const loginUser = async (data) => {
     throw error;
   }
 };
+
+
+// Gửi yêu cầu reset password (quên mật khẩu)
+export const forgotPassword = async (email) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/forgot-password`, { email });
+    return response.data;
+  } catch (error) {
+    console.error("Error during forgot password:", error);
+    throw error;
+  }
+};
+
+// Đặt lại mật khẩu với token
+export const resetPassword = async (data) => {
+  // data: { token, newPassword, confirmPassword }
+  try {
+    const response = await axios.post(`${API_URL}/auth/reset-password`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error during password reset:", error);
+    throw error;
+  }
+};

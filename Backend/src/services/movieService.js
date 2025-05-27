@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import db from "../models";
-
+const moment = require("moment-timezone");
 export const getAvailableMovies = async () => {
   return await db.Movie.findAll({
     where: {
@@ -19,15 +19,19 @@ export const getMovieDetail = async (movieId) => {
 };
 
 // Lấy danh sách phim có suất chiếu trong ngày
+
+
 export const getMoviesByDate = async (date) => {
-  const startDate = new Date(date);
-  const endDate = new Date(date);
-  endDate.setHours(23, 59, 59, 999);
+  const startDate = moment.tz(date, "YYYY-MM-DD", "Asia/Ho_Chi_Minh").startOf("day").toDate();
+  const endDate = moment.tz(date, "YYYY-MM-DD", "Asia/Ho_Chi_Minh").endOf("day").toDate();
+  const now = moment().tz("Asia/Ho_Chi_Minh");
+
+  const start = now.isSame(moment.tz(date, "YYYY-MM-DD", "Asia/Ho_Chi_Minh"), "day") ? now.toDate() : startDate;
 
   const showtimes = await db.Showtime.findAll({
     where: {
       show_time: {
-        [Op.between]: [startDate, endDate],
+        [Op.between]: [start, endDate],
       },
     },
     include: [
@@ -40,8 +44,8 @@ export const getMoviesByDate = async (date) => {
         attributes: ["screen_name"],
         include: [
           {
-            model: db.Theater, // Bao gồm thông tin về theater
-            attributes: ["name"], // Thay đổi theo tên thuộc tính của bạn
+            model: db.Theater,
+            attributes: ["name"],
           },
         ],
       },
@@ -62,15 +66,17 @@ export const getMoviesByDate = async (date) => {
       };
     }
     grouped[movieId].showtimes.push({
-      time: item.show_time.toTimeString().slice(0, 5),
+      showtime_id: item.showtime_id,
+      show_time: item.show_time, // giữ nguyên để FE format
+      timeStr: item.show_time.toTimeString().slice(0, 5), // thêm nếu cần
       room: item.Screen?.screen_name,
       theater: item.Screen?.Theater?.name || "Rạp không xác định",
-      showtime_id: item.showtime_id,
     });
   });
 
   return Object.values(grouped);
 };
+
 
 // Lấy chi tiết suất chiếu
 export const getShowtimeDetail = async (showtimeId) => {

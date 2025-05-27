@@ -16,7 +16,10 @@ const getConfig = (contentType = "application/json") => ({
 /// ---- User --- ///
 export const getAllUsers = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/admin/getAllUsers`, getConfig());
+    const response = await axios.get(
+      `${API_URL}/api/admin/getAllUsers`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy danh sách user:", error);
@@ -26,7 +29,10 @@ export const getAllUsers = async () => {
 
 export const deleteUser = async (userId) => {
   try {
-    const response = await axios.delete(`${API_URL}/api/admin/deleteUsers/${userId}`, getConfig());
+    const response = await axios.delete(
+      `${API_URL}/api/admin/deleteUsers/${userId}`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi xóa user:", error);
@@ -51,7 +57,10 @@ export const updateUser = async (userId, userData) => {
 /// ---- Movie --- ///
 export const getAdminMovies = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/admin/movies`, getConfig());
+    const response = await axios.get(
+      `${API_URL}/api/admin/movies`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy phim:", error);
@@ -89,7 +98,10 @@ export const updateAdminMovie = async (id, movieData) => {
 
 export const deleteAdminMovie = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/api/admin/movies/${id}`, getConfig());
+    const response = await axios.delete(
+      `${API_URL}/api/admin/movies/${id}`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error(`Lỗi khi xóa phim với id ${id}:`, error);
@@ -100,7 +112,10 @@ export const deleteAdminMovie = async (id) => {
 /// ---- Theaters --- ///
 export const getAllTheaters = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/admin/theaters`, getConfig());
+    const response = await axios.get(
+      `${API_URL}/api/admin/theaters`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy danh sách rạp:", error);
@@ -110,7 +125,11 @@ export const getAllTheaters = async () => {
 
 export const createTheater = async (theaterData) => {
   try {
-    const response = await axios.post(`${API_URL}/api/admin/theaters`, theaterData, getConfig());
+    const response = await axios.post(
+      `${API_URL}/api/admin/theaters`,
+      theaterData,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi tạo rạp:", error);
@@ -120,7 +139,11 @@ export const createTheater = async (theaterData) => {
 
 export const updateTheater = async (id, theaterData) => {
   try {
-    const response = await axios.put(`${API_URL}/api/admin/theaters/${id}`, theaterData, getConfig());
+    const response = await axios.put(
+      `${API_URL}/api/admin/theaters/${id}`,
+      theaterData,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error(`Lỗi khi cập nhật rạp với id ${id}:`, error);
@@ -130,7 +153,10 @@ export const updateTheater = async (id, theaterData) => {
 
 export const deleteTheater = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/api/admin/theaters/${id}`, getConfig());
+    const response = await axios.delete(
+      `${API_URL}/api/admin/theaters/${id}`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error(`Lỗi khi xóa rạp với id ${id}:`, error);
@@ -141,7 +167,10 @@ export const deleteTheater = async (id) => {
 /// ---- Screens --- ///
 export const getAllScreens = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/admin/screens`, getConfig());
+    const response = await axios.get(
+      `${API_URL}/api/admin/screens`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy danh sách phòng chiếu:", error);
@@ -151,7 +180,11 @@ export const getAllScreens = async () => {
 
 export const createScreen = async (screenData) => {
   try {
-    const response = await axios.post(`${API_URL}/api/admin/screens`, screenData, getConfig());
+    const response = await axios.post(
+      `${API_URL}/api/admin/screens`,
+      screenData,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi tạo phòng chiếu:", error);
@@ -161,7 +194,11 @@ export const createScreen = async (screenData) => {
 
 export const updateScreen = async (id, screenData) => {
   try {
-    const response = await axios.put(`${API_URL}/api/admin/screens/${id}`, screenData, getConfig());
+    const response = await axios.put(
+      `${API_URL}/api/admin/screens/${id}`,
+      screenData,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error(`Lỗi khi cập nhật phòng chiếu với id ${id}:`, error);
@@ -171,7 +208,10 @@ export const updateScreen = async (id, screenData) => {
 
 export const deleteScreen = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/api/admin/screens/${id}`, getConfig());
+    const response = await axios.delete(
+      `${API_URL}/api/admin/screens/${id}`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error(`Lỗi khi xóa phòng chiếu với id ${id}:`, error);
@@ -182,7 +222,11 @@ export const deleteScreen = async (id) => {
 /// ---- News --- ///
 export const addNews = async (data) => {
   try {
-    const response = await axios.post(`${API_URL}/api/admin/news`, data, getConfig());
+    const response = await axios.post(
+      `${API_URL}/api/admin/news`,
+      data,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi thêm tin tức:", error);
@@ -192,7 +236,10 @@ export const addNews = async (data) => {
 
 export const deleteNews = async (newsId) => {
   try {
-    const response = await axios.delete(`${API_URL}/api/admin/news/${newsId}`, getConfig());
+    const response = await axios.delete(
+      `${API_URL}/api/admin/news/${newsId}`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi xóa tin tức:", error);
@@ -204,8 +251,11 @@ export const deleteNews = async (newsId) => {
 // Lấy tất cả ghế
 export const getAllSeats = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/admin/viewAll-seats`, getConfig());
-    return response.data; 
+    const response = await axios.get(
+      `${API_URL}/api/admin/viewAll-seats`,
+      getConfig()
+    );
+    return response.data;
   } catch (error) {
     console.error("Error fetching all seats:", error);
     throw error; // Ném lỗi để xử lý ở nơi gọi
@@ -215,7 +265,11 @@ export const getAllSeats = async () => {
 // Cập nhật ghế
 export const updateSeat = async (id, seatData) => {
   try {
-    const response = await axios.put(`${API_URL}/api/admin/seats/${id}`, seatData, getConfig());
+    const response = await axios.put(
+      `${API_URL}/api/admin/seats/${id}`,
+      seatData,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Error updating seat:", error);
@@ -226,7 +280,11 @@ export const updateSeat = async (id, seatData) => {
 // Tạo ghế tự động
 export const createSeats = async (showtime_id, screen_id, total_seats) => {
   try {
-    const response = await axios.post(`${API_URL}/api/admin/create-seats`, { showtime_id, screen_id,total_seats }, getConfig());
+    const response = await axios.post(
+      `${API_URL}/api/admin/create-seats`,
+      { showtime_id, screen_id, total_seats },
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Error creating seats:", error);
@@ -237,10 +295,27 @@ export const createSeats = async (showtime_id, screen_id, total_seats) => {
 //xóa ghế
 export const deleteSeat = async (seatId) => {
   try {
-    const response = await axios.delete(`${API_URL}/api/admin/seats/${seatId}`, getConfig());
+    const response = await axios.delete(
+      `${API_URL}/api/admin/seats/${seatId}`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi xóa ghế:", error);
+    throw error;
+  }
+};
+
+// Xoá nhiều ghế
+export const deleteSeatsBulk = async (seatIds) => {
+  try {
+    const response = await axios.delete(`${API_URL}/api/admin/delete-many`, {
+      data: { seatIds },
+      ...getConfig(),
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi xóa nhiều ghế:", error);
     throw error;
   }
 };
@@ -273,7 +348,7 @@ export const fetchShowtimes = async () => {
 
 export const getUpcomingShowtimes = async () => {
   try {
-    const res = await axios.get(`${API_URL}/api/admin/upcoming`,getConfig());
+    const res = await axios.get(`${API_URL}/api/admin/upcoming`, getConfig());
     return res.data; // Lấy danh sách lịch chiếu
   } catch (err) {
     console.error("Lỗi lấy lịch chiếu:", err);
@@ -291,26 +366,48 @@ export const getSeatTypes = async () => {
 
 // Tạo mới loại ghế
 export const createSeatType = async (data) => {
-  const res = await axios.post(`${API_URL}/api/admin/create-price`, data, getConfig());
+  const res = await axios.post(
+    `${API_URL}/api/admin/create-price`,
+    data,
+    getConfig()
+  );
   return res.data;
 };
 
 // Cập nhật loại ghế
 export const updateSeatType = async (id, data) => {
-  const res = await axios.put(`${API_URL}/api/admin/update-price/${id}`, data, getConfig());
+  const res = await axios.put(
+    `${API_URL}/api/admin/update-price/${id}`,
+    data,
+    getConfig()
+  );
   return res.data;
 };
 
 // Xoá loại ghế
 export const deleteSeatType = async (id) => {
-  const res = await axios.delete(`${API_URL}/api/admin/delete-price/${id}`, getConfig());
+  const res = await axios.delete(
+    `${API_URL}/api/admin/delete-price/${id}`,
+    getConfig()
+  );
+  return res.data;
+};
+// Xoá nhiều loại ghế
+export const deleteSeatTypesBulk = async (seatTypeIds) => {
+  const res = await axios.delete("/api/admin/seat-types/delete-many", {
+    data: { seatTypeIds }, // body truyền vào đây
+    ...getConfig(), // headers (ví dụ auth token)
+  });
   return res.data;
 };
 
 // Lấy danh sách promotion
 export const getAllPromotions = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/admin/promotion`, getConfig());
+    const response = await axios.get(
+      `${API_URL}/api/admin/promotion`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy danh sách promotion:", error);
@@ -318,7 +415,7 @@ export const getAllPromotions = async () => {
   }
 };
 
-// Tạo promotion mới 
+// Tạo promotion mới
 export const createPromotion = async (formData) => {
   try {
     const response = await axios.post(
@@ -351,20 +448,25 @@ export const updatePromotion = async (id, formData) => {
 // Xoá promotion theo id
 export const deletePromotion = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/api/admin/promotion/${id}`, getConfig());
+    const response = await axios.delete(
+      `${API_URL}/api/admin/promotion/${id}`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error(`Lỗi khi xóa promotion với id ${id}:`, error);
     throw error;
   }
-
 };
 
 /// ---- Showtime --- ///
 
 export const getAllShowtimes = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/admin/showtime-all`, getConfig());
+    const response = await axios.get(
+      `${API_URL}/api/admin/showtime-all`,
+      getConfig()
+    );
     return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy danh sách showtimes:", error);
@@ -374,7 +476,11 @@ export const getAllShowtimes = async () => {
 
 export const createShowtime = async (data) => {
   try {
-    const res = await axios.post(`${API_URL}/api/admin/showtimes`, data, getConfig());
+    const res = await axios.post(
+      `${API_URL}/api/admin/showtimes`,
+      data,
+      getConfig()
+    );
     return res.data;
   } catch (err) {
     console.error("Lỗi createShowtime:", err);
@@ -384,7 +490,11 @@ export const createShowtime = async (data) => {
 
 export const updateShowtime = async (id, data) => {
   try {
-    const res = await axios.put(`${API_URL}/api/admin/showtimes/${id}`, data, getConfig());
+    const res = await axios.put(
+      `${API_URL}/api/admin/showtimes/${id}`,
+      data,
+      getConfig()
+    );
     return res.data;
   } catch (err) {
     console.error("Lỗi updateShowtime:", err);
@@ -394,10 +504,27 @@ export const updateShowtime = async (id, data) => {
 
 export const deleteShowtime = async (id) => {
   try {
-    const res = await axios.delete(`${API_URL}/api/admin/showtimes/${id}`, getConfig());
+    const res = await axios.delete(
+      `${API_URL}/api/admin/showtimes/${id}`,
+      getConfig()
+    );
     return res.data;
   } catch (err) {
     console.error("Lỗi deleteShowtime:", err);
     throw err;
+  }
+};
+
+export const deleteMultipleShowtimes = async (ids) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/api/admin/delete-multiple`,
+      { ids },
+      getConfig()
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi xóa các suất chiếu đã chọn:", error);
+    throw error;
   }
 };

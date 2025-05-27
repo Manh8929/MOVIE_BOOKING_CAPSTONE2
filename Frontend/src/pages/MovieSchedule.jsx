@@ -145,7 +145,7 @@ const MovieSchedule = () => {
                       key={idx}
                       className="border p-3 rounded hover:bg-orange-500 hover:text-white cursor-pointer transition min-w-[140px] text-center"
                     >
-                      <p className="font-medium">{show.time}</p>
+                      <p className="font-medium">{show.timeStr}</p>
                       <p className="text-sm mt-1">Rạp {show.theater}</p>
                     </div>
                   ))}
