@@ -359,7 +359,7 @@ export const getPaymentsByUserId = async (userId) => {
             include: [
               {
                 model: db.Movie, 
-                attributes: ["title"],
+                attributes: ["title","genre"],
               },
               {
                 model: db.Screen,
