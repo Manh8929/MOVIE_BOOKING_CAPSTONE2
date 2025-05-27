@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getMovieDetail } from "../../services/movieService";
 import { createPaymentLink } from "../../services/paymentService";
+import { getSeatsByShowtime } from "../../services/userService";
 
 const BookingDetailTables = () => {
   const [movieName, setMovieName] = useState("");
@@ -114,14 +115,38 @@ const BookingDetailTables = () => {
                 localStorage.getItem("selectedSeats") || "[]"
               );
               const showtime_id = localStorage.getItem("selectedShowtimeId");
-              
-              const movieTitle = movieName ;
+              const movieTitle = movieName;
+              const theaterName = localStorage.getItem("selectedTheaterName");
+
+              const seats = await getSeatsByShowtime(showtime_id);
+              console.log("Seats from API:", seats);
+              console.log("Selected seats from localStorage:", selectedSeats);
+
+              //Kiểm tra từng ghế xem có còn khả dụng không
+              const unavailableSeats = selectedSeats.filter((seatId) => {
+                const seat = seats.find(
+                  (s) => Number(s.seat_id) === Number(seatId)
+                );
+                return !seat || seat.is_booked;
+              });
+
+              if (unavailableSeats.length > 0) {
+                alert(
+                  "Rất tiếc, đã có người nhanh tay hơn đặt trước một hoặc nhiều ghế bạn chọn. Vui lòng chọn lại."
+                );
+                return;
+              }
+
+              console.log("Tất cả ghế còn khả dụng.");
+
+              // Nếu tất cả ghế vẫn khả dụng -> tạo đơn thanh toán
               const date = new Date()
                 .toLocaleDateString("vi-VN", {
                   day: "2-digit",
                   month: "2-digit",
                 })
                 .replace(/\//g, "");
+
               const description = `${movieTitle
                 .slice(0, 2)
                 .toUpperCase()}${date}${theaterName.slice(0, 1)}`;
@@ -137,7 +162,7 @@ const BookingDetailTables = () => {
               const res = await createPaymentLink(payload);
 
               if (res?.checkoutUrl) {
-                window.location.href = res.checkoutUrl; // redirect sang trang thanh toán
+                window.location.href = res.checkoutUrl;
               } else {
                 alert("Không lấy được link thanh toán.");
               }
