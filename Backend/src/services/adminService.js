@@ -1,7 +1,7 @@
-import db from "../models"; 
-import { User, Role, Seat,SeatType } from "../models";
+import db from "../models";
+import { User, Role, Seat, SeatType } from "../models";
 const { Op } = require("sequelize");
-//user 
+//user
 export const getAllUsersService = async () => {
   const users = await User.findAll({
     include: {
@@ -52,7 +52,6 @@ export const updateUserService = async (id, newData) => {
     user,
   };
 };
-
 
 export const getAllMovies = async () => {
   return await db.Movie.findAll();
@@ -144,7 +143,11 @@ export const deleteScreen = async (id) => {
 //---------Ghế--------------/
 
 // Tạo ghế tự động
-export const createSeatsService = async (screen_id, showtime_id, total_seats) => {
+export const createSeatsService = async (
+  screen_id,
+  showtime_id,
+  total_seats
+) => {
   const existingSeats = await Seat.findOne({
     where: { screen_id, showtime_id },
   });
@@ -185,20 +188,18 @@ export const createSeatsService = async (screen_id, showtime_id, total_seats) =>
   return createdSeats;
 };
 
-
 //getAllSeats
 export const getAllSeats = async () => {
   return await Seat.findAll({
     include: [
       {
         model: db.SeatType,
-        as: 'type', // đúng theo alias bạn đặt trong association
-        attributes: ['seat_type_id', 'name', 'price'], // chọn cột cần thiết
+        as: "type", // đúng theo alias bạn đặt trong association
+        attributes: ["seat_type_id", "name", "price"], // chọn cột cần thiết
       },
     ],
   });
 };
-
 
 //update seat
 export const updateSeat = async (id, seatData) => {
@@ -209,17 +210,20 @@ export const updateSeat = async (id, seatData) => {
 
   if (seatData.seat_number) seat.seat_number = seatData.seat_number;
   if (seatData.seat_type_id) seat.seat_type_id = seatData.seat_type_id;
-  if (seatData.is_available !== undefined) seat.is_available = seatData.is_available;
+  if (seatData.is_available !== undefined)
+    seat.is_available = seatData.is_available;
 
   await seat.save();
 
   // Optional: trả về kèm thông tin loại ghế
   const seatWithType = await Seat.findByPk(id, {
-    include: [{
-      model: SeatType,
-      as: 'type',
-      attributes: ['seat_type_id', 'name', 'price'],
-    }]
+    include: [
+      {
+        model: SeatType,
+        as: "type",
+        attributes: ["seat_type_id", "name", "price"],
+      },
+    ],
   });
 
   return seatWithType;
@@ -287,7 +291,6 @@ export const getUpcomingShowtimes = async () => {
     throw err;
   }
 };
-
 
 //crud giá
 
@@ -364,7 +367,6 @@ export const deleteSeatTypeService = async (id) => {
   };
 };
 
-
 // khuyến mãi
 export const createPromotion = async (data) => {
   return await db.Promotion.create(data);
@@ -384,4 +386,72 @@ export const deletePromotion = async (id) => {
 
 export const getAllPromotions = async () => {
   return await db.Promotion.findAll();
+};
+
+// Booking
+export const getAllBookings = async () => {
+  const bookings = await db.Booking.findAll({
+    include: [
+      {
+        model: db.User,
+        attributes: ["user_id", "full_name", "email"],
+      },
+      {
+        model: db.Showtime,
+      },
+    ],
+    order: [["booking_time", "DESC"]],
+  });
+
+  return bookings;
+};
+
+// payment
+export const getAllPayments = async () => {
+  const payments = await db.Payment.findAll({
+    include: [
+      {
+        model: db.Booking,
+        attributes: ["qr_code", "booking_time"],
+        include: [
+          {
+            model: db.Showtime,
+            attributes: ["show_time"],
+            include: [
+              {
+                model: db.Movie,
+                attributes: ["title"],
+              },
+              {
+                model: db.Screen,
+                attributes: ["screen_name"],
+                include: [
+                  {
+                    model: db.Theater,
+                    attributes: ["name"],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: db.BookingSeat,
+            include: [
+              {
+                model: db.Seat,
+                attributes: ["seat_number"],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        model: db.User,
+        attributes: ["full_name", "email", "phone_number"],
+      },
+    ],
+    order: [["payment_time", "DESC"]],
+  });
+
+  return payments;
 };

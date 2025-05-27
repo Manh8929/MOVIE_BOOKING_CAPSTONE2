@@ -6,10 +6,14 @@ import {
   FaMapMarkerAlt,
   FaTicketAlt,
 } from "react-icons/fa";
+import { getUserPayments } from "../services/userService";
 import EditProfileForm from "../components/ProfileComponent/EditProfileForm";
 
 const MyProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [payments, setPayments] = useState([]);
+  const [totalTickets, setTotalTickets] = useState(0);
+  const [memberSince, setMemberSince] = useState("");
   const [profile, setProfile] = useState({
     full_name: "",
     email: "",
@@ -19,10 +23,10 @@ const MyProfilePage = () => {
   });
 
   const [formData, setFormData] = useState(profile);
-console.log("formData",formData)
+  console.log("formData", formData);
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    console.log("user",user);
+    console.log("user", user);
     if (user) {
       setProfile(user);
       setFormData(user);
@@ -33,7 +37,7 @@ console.log("formData",formData)
     if (user) {
       setProfile(user);
     }
-  }, [formData]); 
+  }, [formData]);
 
   const handleEditClick = () => {
     setFormData(profile);
@@ -46,9 +50,34 @@ console.log("formData",formData)
 
   const handleSave = () => {
     setProfile(formData);
-    localStorage.setItem("currentUser", JSON.stringify(formData));  // Save the updated data into localStorage
+    localStorage.setItem("currentUser", JSON.stringify(formData)); // Save the updated data into localStorage
     setIsEditing(false);
   };
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    const token = localStorage.getItem("token");
+    if (user) {
+      const userId = user.user_id;
+
+      const memberYear = new Date(user.updatedAt).getFullYear();
+      setMemberSince(memberYear);
+
+      getUserPayments(userId, token)
+        .then((data) => {
+          setPayments(data);
+
+          // Tính tổng vé
+          const total = data.reduce((sum, payment) => {
+            return sum + (payment.Booking ? 1 : 0);
+          }, 0);
+          setTotalTickets(total);
+        })
+        .catch((error) => {
+          console.error("Lỗi khi lấy lịch sử thanh toán:", error);
+        });
+    }
+  }, []);
 
   return (
     <div className="mt-[80px] min-h-screen bg-gradient-to-br from-black via-gray-900 to-[#4f111e] text-white p-8">
@@ -61,7 +90,10 @@ console.log("formData",formData)
         <div className="flex flex-col items-center text-center md:col-span-1">
           <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-[#dc143c] shadow-lg">
             <img
-              src={profile.avatar || "https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg"}
+              src={
+                profile.avatar ||
+                "https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg"
+              }
               alt="Avatar"
               className="w-full h-full object-cover"
             />
@@ -104,10 +136,11 @@ console.log("formData",formData)
               <div className="space-y-4">
                 <p className="flex items-center gap-3">
                   <FaTicketAlt /> Tổng vé đã đặt:{" "}
-                  <span className="ml-2 font-semibold">15 vé</span>
+                  <span className="ml-2 font-semibold">{totalTickets} vé</span>
                 </p>
                 <p>
-                  Thành viên từ: <span className="font-semibold">2022</span>
+                  Thành viên từ:{" "}
+                  <span className="font-semibold">{memberSince}</span>
                 </p>
               </div>
             </div>
@@ -129,24 +162,42 @@ console.log("formData",formData)
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-t border-gray-600 hover:bg-gray-600">
-                    <td className="p-3">Dune: Part Two</td>
-                    <td className="p-3">20:00 - 15/03/2025</td>
-                    <td className="p-3">A5, A6</td>
-                    <td className="p-3">12/03/2025</td>
-                  </tr>
-                  <tr className="border-t border-gray-600 hover:bg-gray-600">
-                    <td className="p-3">Kungfu Panda 4</td>
-                    <td className="p-3">18:30 - 10/03/2025</td>
-                    <td className="p-3">B7, B8</td>
-                    <td className="p-3">08/03/2025</td>
-                  </tr>
-                  <tr className="border-t border-gray-600 hover:bg-gray-600">
-                    <td className="p-3">Godzilla x Kong</td>
-                    <td className="p-3">21:00 - 05/03/2025</td>
-                    <td className="p-3">C3, C4</td>
-                    <td className="p-3">03/03/2025</td>
-                  </tr>
+                  {payments.map((payment) => {
+                    const { payment_id, payment_time, Booking } = payment;
+                    const movieTitle =
+                      Booking?.Showtime?.Movie?.title || "Không rõ";
+                    const showTime = Booking?.Showtime?.show_time;
+                    const seats = Booking?.BookingSeats.map(
+                      (bs) => bs.Seat?.seat_number
+                    ).join(", ");
+
+                    const formattedShowtime = new Date(showTime).toLocaleString(
+                      "vi-VN",
+                      {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      }
+                    );
+
+                    const formattedBookingTime = new Date(
+                      payment_time
+                    ).toLocaleDateString("vi-VN");
+
+                    return (
+                      <tr
+                        key={payment_id}
+                        className="border-t border-gray-600 hover:bg-gray-600"
+                      >
+                        <td className="p-3">{movieTitle}</td>
+                        <td className="p-3">{formattedShowtime}</td>
+                        <td className="p-3">{seats}</td>
+                        <td className="p-3">{formattedBookingTime}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

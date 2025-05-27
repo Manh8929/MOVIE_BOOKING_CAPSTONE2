@@ -15,7 +15,7 @@ const TicketUpHisPage = () => {
               : "border border-white"
           }`}
         >
-          Upcoming
+         Vé sắp chiếu
         </button>
         <button
           onClick={() => setActiveTab("history")}
@@ -25,7 +25,7 @@ const TicketUpHisPage = () => {
               : "border border-white"
           }`}
         >
-          History
+          Lịch sử đặt vé
         </button>
       </div>
       {activeTab === "upcoming" ? (
@@ -38,3 +38,6 @@ const TicketUpHisPage = () => {
 };
 
 export default TicketUpHisPage;
+
+
+

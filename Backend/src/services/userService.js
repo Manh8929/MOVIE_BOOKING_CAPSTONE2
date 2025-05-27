@@ -32,7 +32,6 @@ exports.getUserProfile = async (userId) => {
   }
 };
 
-
 exports.updateUserProfile = async (userId, updateData) => {
   try {
     const user = await db.User.findByPk(userId);
@@ -72,21 +71,21 @@ exports.updateUserProfile = async (userId, updateData) => {
 // Các phương thức cho News
 exports.getAllNews = async () => {
   try {
-    const news = await db.News.findAll();  // Truy vấn tất cả tin tức
+    const news = await db.News.findAll(); // Truy vấn tất cả tin tức
     return news;
   } catch (error) {
-    console.error('Error fetching news:', error);
-    throw new Error('Error fetching news');
+    console.error("Error fetching news:", error);
+    throw new Error("Error fetching news");
   }
 };
 
 exports.getNewsById = async (id) => {
   try {
-    const newsItem = await db.News.findByPk(id);  // Truy vấn tin tức theo ID
+    const newsItem = await db.News.findByPk(id); // Truy vấn tin tức theo ID
     return newsItem;
   } catch (error) {
-    console.error('Error fetching news by ID:', error);
-    throw new Error('Error fetching news by ID');
+    console.error("Error fetching news by ID:", error);
+    throw new Error("Error fetching news by ID");
   }
 };
 
@@ -110,8 +109,8 @@ exports.createNews = async (newsData) => {
     const newNews = await db.News.create(newsData);
     return newNews;
   } catch (error) {
-    console.error('Error creating news:', error);
-    throw new Error('Error creating news: ' + error.message); // In lỗi chi tiết
+    console.error("Error creating news:", error);
+    throw new Error("Error creating news: " + error.message); // In lỗi chi tiết
   }
 };
 
@@ -128,8 +127,8 @@ exports.updateNews = async (id, updateData) => {
     await newsItem.save();
     return newsItem;
   } catch (error) {
-    console.error('Error updating news:', error);
-    throw new Error('Error updating news');
+    console.error("Error updating news:", error);
+    throw new Error("Error updating news");
   }
 };
 
@@ -139,14 +138,13 @@ exports.deleteNews = async (id) => {
     if (!newsItem) {
       return null;
     }
-    await newsItem.destroy();  // Xóa tin tức
+    await newsItem.destroy(); // Xóa tin tức
     return newsItem;
   } catch (error) {
-    console.error('Error deleting news:', error);
-    throw new Error('Error deleting news');
+    console.error("Error deleting news:", error);
+    throw new Error("Error deleting news");
   }
 };
-
 
 // threaters
 export const getAllTheaters = async () => {
@@ -239,7 +237,11 @@ export const getAllPromotions = async () => {
 };
 
 //showtimebydate
-export const getShowtimesByTheaterAndDate = async (theaterId, movieId, date) => {
+export const getShowtimesByTheaterAndDate = async (
+  theaterId,
+  movieId,
+  date
+) => {
   try {
     const startOfDay = new Date(`${date}T00:00:00`);
     const endOfDay = new Date(`${date}T23:59:59`);
@@ -248,20 +250,20 @@ export const getShowtimesByTheaterAndDate = async (theaterId, movieId, date) => 
       where: {
         show_time: { [Op.between]: [startOfDay, endOfDay] },
         movie_id: movieId,
-        status: "scheduled"
+        status: "scheduled",
       },
       include: [
         {
           model: db.Screen,
           where: { theater_id: theaterId },
-          attributes: []
+          attributes: [],
         },
         {
           model: db.Movie,
-          attributes: ["title", "duration"]
-        }
+          attributes: ["title", "duration"],
+        },
       ],
-      order: [["show_time", "ASC"]]
+      order: [["show_time", "ASC"]],
     });
 
     return showtimes;
@@ -270,8 +272,6 @@ export const getShowtimesByTheaterAndDate = async (theaterId, movieId, date) => 
     throw error;
   }
 };
-
-
 
 //lấy rạp theo movie
 export const getTheatersByMovie = async (movieId) => {
@@ -298,7 +298,6 @@ export const getTheatersByMovie = async (movieId) => {
   }
 };
 
-
 export const getSeatsByShowtime = async (showtimeId) => {
   try {
     const seats = await db.Seat.findAll({
@@ -306,8 +305,8 @@ export const getSeatsByShowtime = async (showtimeId) => {
       include: [
         {
           model: db.SeatType,
-          as: 'type',
-          attributes: ['name', 'price'],
+          as: "type",
+          attributes: ["name", "price"],
         },
         {
           model: db.BookingSeat,
@@ -319,7 +318,7 @@ export const getSeatsByShowtime = async (showtimeId) => {
     return seats.map((seat) => ({
       seat_id: seat.seat_id,
       seat_number: seat.seat_number,
-      seat_type: seat.type?.name || null, 
+      seat_type: seat.type?.name || null,
       price: seat.type?.price || null,
       is_available: seat.is_available,
       is_booked: seat.BookingSeats && seat.BookingSeats.length > 0,
@@ -340,4 +339,58 @@ export const getAllSeatTypesService = async () => {
     message: "Fetched all seat types successfully",
     seatTypes,
   };
+};
+
+// payment
+export const getPaymentsByUserId = async (userId) => {
+  const payments = await db.Payment.findAll({
+    where: {
+      user_id: userId,
+      payment_status: "completed",
+    },
+    include: [
+      {
+        model: db.Booking,
+        attributes: ["qr_code", "booking_time"],
+        include: [
+          {
+            model: db.Showtime,
+            attributes: ["show_time"],
+            include: [
+              {
+                model: db.Movie, 
+                attributes: ["title"],
+              },
+              {
+                model: db.Screen,
+                attributes: ["screen_name"],
+                include: [
+                  {
+                    model: db.Theater,
+                    attributes: ["name"],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: db.BookingSeat,
+            include: [
+              {
+                model: db.Seat,
+                attributes: ["seat_number"],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        model: db.User,
+        attributes: ["full_name", "email", "phone_number"],
+      },
+    ],
+    order: [["payment_time", "DESC"]],
+  });
+
+  return payments;
 };

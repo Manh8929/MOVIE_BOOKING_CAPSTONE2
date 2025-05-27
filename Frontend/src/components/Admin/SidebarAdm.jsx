@@ -14,7 +14,8 @@ import {
   FaNewspaper,
   FaTags,
   FaPollH,
-  FaBusinessTime
+  FaBusinessTime,
+  FaCreditCard
 } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/userSlice";
@@ -31,7 +32,7 @@ const Sidebar = () => {
     { name: "Phim", icon: FaFilm, path: "/AddMovieAdm" },
     { name: "Rạp Chiếu", icon: FaTheaterMasks, path: "/theatersadm" },
     { name: "Người Dùng", icon: FaUsers, path: "/managementuseradm" },
-    { name: "Đơn Hàng", icon: FaBoxOpen, path: "/oderflimadm" },
+    { name: "Đơn Hàng", icon: FaBoxOpen, path: "/managerPaymentAdm" },
     { name: "Báo Cáo", icon: FaChartBar, path: "/ReportsAdm" },
     { name: "Lịch chiếu", icon: FaBusinessTime, path: "/showtimeAdm" },
     {

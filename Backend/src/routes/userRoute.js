@@ -16,7 +16,8 @@ import {
   getShowtimesByTheaterAndDate,
   getTheatersByMovie,
   getSeatsByShowtime,
-  getAllSeatTypes
+  getAllSeatTypes,
+  getPaymentsByUserId,
 } from "../controllers/userController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware";
 import { middlewareUpload } from "../middlewares/middleUploadUser";
@@ -25,6 +26,7 @@ const route = express.Router();
 
 route.get("/profile", authenticate, getUserProfile);
 route.put("/profile/update", authenticate, middlewareUpload, updateUserProfile);
+route.get("/payment/:userId",authenticate, getPaymentsByUserId);
 route.get("/showtimes", getAllShowtime);
 route.get("/showtimes-by-date", getShowtimeByDate);
 route.get("/showtimes-by-date-and-theater", getShowtimesByTheaterAndDate);
