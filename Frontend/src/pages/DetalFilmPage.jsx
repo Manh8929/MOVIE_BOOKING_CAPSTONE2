@@ -740,7 +740,7 @@ const MovieDetail = () => {
                   </div>
                   <div className="flex justify-between mt-2 items-center">
                     <p className="text-gray-300">{review.comment}</p>
-                    <span
+                    {/* <span
                       className={`ml-4 px-2 py-1 rounded text-sm font-semibold ${
                         review.sentiment === "positive"
                           ? "bg-green-600 text-green-100"
@@ -750,7 +750,7 @@ const MovieDetail = () => {
                       }`}
                     >
                       {sentimentDisplayMap[review.sentiment] || review.sentiment}
-                    </span>
+                    </span> */}
                     {userInfo?.user_id === review.user_id && (
                       <button
                         onClick={() => handleDeleteComment(review.review_id)}
