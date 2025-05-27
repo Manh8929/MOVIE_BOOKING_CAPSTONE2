@@ -525,9 +525,19 @@ export const deleteMultipleShowtimes = async (ids) => {
     return response.data;
   } catch (error) {
     console.error("Lỗi khi xóa các suất chiếu đã chọn:", error);
+  }
+}
+// get all reviews by admin
+export const getAllReviewsByAdm = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/admin/reviews-by-admin`, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách review:", error);
     throw error;
   }
 };
+
 
 // ---- Payments ---- //
 export const getAllPayments = async () => {
@@ -536,6 +546,16 @@ export const getAllPayments = async () => {
     return response.data;
   } catch (error) {
     console.error("Lỗi khi lấy danh sách thanh toán:", error);
+  }
+};
+
+// delete review by admin
+export const deleteReviewByAdm = async (reviewId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/api/admin/reviews/${reviewId}`, getConfig());
+    return response.data;
+  } catch (error) {
+    console.error(`Lỗi khi xóa review với id ${reviewId}:`, error);
     throw error;
   }
 };

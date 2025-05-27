@@ -9,6 +9,8 @@ import authRoute from "./src/routes/authRouter";
 import movieRouter from "./src/routes/movieRouter.js";
 import paymentRoute from './src/routes/paymentRoute.js';
 import { authenticate } from "./src/middlewares/authMiddleware";
+import sentimentRoutes from "./src/routes/sentimentRoutes.js";
+import chatbotRoute from "./src/routes/chatbotRoute.js";
 
 require("dotenv").config();
 const passport = require("./src/middlewares/passport_setup");
@@ -35,7 +37,8 @@ app.use(
     saveUninitialized: true,
   })
 );
-
+app.use("/api", chatbotRoute);
+app.use('/api', sentimentRoutes);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use("/showtime", userRoute);
