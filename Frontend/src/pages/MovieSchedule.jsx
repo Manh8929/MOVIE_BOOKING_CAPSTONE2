@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as movieService from "../services/movieService";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const MovieSchedule = () => {
   const [selectedDate, setSelectedDate] = useState(0);
   const [movies, setMovies] = useState([]);
@@ -98,10 +101,11 @@ const MovieSchedule = () => {
             {dates.map((date, index) => (
               <div
                 key={index}
-                className={`min-w-[100px] text-center cursor-pointer transition-all duration-300 border border-orange-300 rounded-lg px-5 py-4 shadow-sm hover:scale-105 ${selectedDate === index
-                  ? "bg-orange-500 text-white font-semibold"
-                  : "bg-white text-black"
-                  }`}
+                className={`min-w-[100px] text-center cursor-pointer transition-all duration-300 border border-orange-300 rounded-lg px-5 py-4 shadow-sm hover:scale-105 ${
+                  selectedDate === index
+                    ? "bg-orange-500 text-white font-semibold"
+                    : "bg-white text-black"
+                }`}
                 onClick={() => setSelectedDate(index)}
               >
                 <p className="text-sm">{date.day}</p>
@@ -129,14 +133,26 @@ const MovieSchedule = () => {
                   {movie.showtimes.map((show, idx) => (
                     <div
                       onClick={() => {
+                        const token = localStorage.getItem("token");
+                        if (!token) {
+                          toast.error("Vui lòng đăng nhập để đặt vé");
+                          return;
+                        }
+
                         const selectedDateStr = dates[selectedDate]?.fullDate;
                         localStorage.setItem(
                           "selectedTime",
                           `${selectedDateStr} ${show.time}`
                         );
                         localStorage.setItem("selectedMovieId", movie.movie_id);
-                        localStorage.setItem("selectedShowtimeId", show.showtime_id);
-                        localStorage.setItem("selectedTheaterName", show.theater);
+                        localStorage.setItem(
+                          "selectedShowtimeId",
+                          show.showtime_id
+                        );
+                        localStorage.setItem(
+                          "selectedTheaterName",
+                          show.theater
+                        );
                         // Chuyển hướng
                         navigate("/seat-select", {
                           state: {

@@ -67,7 +67,7 @@ const MovieDetail = () => {
     "dcm",
     "dkm",
     "cđm",
-    "đcm"
+    "đcm",
   ];
 
   const specialCharacterRegex = /[~`!@#$%^&*()+={}\[\];:'"<>/?\\|]/g;
@@ -391,10 +391,11 @@ const MovieDetail = () => {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
                     key={star}
-                    className={`text-3xl ${star <= (movie.average_rating / 2 || 0)
-                      ? "text-yellow-400"
-                      : "text-gray-500"
-                      }`}
+                    className={`text-3xl ${
+                      star <= (movie.average_rating / 2 || 0)
+                        ? "text-yellow-400"
+                        : "text-gray-500"
+                    }`}
                   >
                     ★
                   </span>
@@ -438,7 +439,14 @@ const MovieDetail = () => {
         {movie.status !== "upcoming" && (
           <div className="mt-6">
             <button
-              onClick={() => navigate("/theaters",{ state: { movie } })}
+              onClick={() => {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                  toast.error("Vui lòng đăng nhập để đặt vé");
+                  return;
+                }
+                navigate("/theaters", { state: { movie } });
+              }}
               className="px-6 py-3 bg-[#E63946] text-white rounded-lg text-lg font-semibold hover:bg-transparent hover:border-gray-400 hover:border"
             >
               Đặt vé
@@ -482,10 +490,11 @@ const MovieDetail = () => {
                       {[1, 2, 3, 4, 5].map((star) => (
                         <span
                           key={star}
-                          className={`text-xl ${star <= review.rating
-                            ? "text-yellow-400"
-                            : "text-gray-500"
-                            }`}
+                          className={`text-xl ${
+                            star <= review.rating
+                              ? "text-yellow-400"
+                              : "text-gray-500"
+                          }`}
                         >
                           ★
                         </span>
