@@ -455,3 +455,32 @@ export const getAllPayments = async () => {
 
   return payments;
 };
+
+//detele review by admin
+export const deleteReview = async (id) => {
+  const review = await db.Review.findByPk(id);
+  if (!review) {
+    throw { message: "Review not found", statusCode: 404 };
+  }
+  await review.destroy();
+  return {
+    message: "Review deleted successfully",
+    review_id: id,
+  };
+};
+
+// get all reviews
+export const getAllReviewsByAdm = async () => {
+  const reviews = await db.Review.findAll({
+    include: [
+      { model: db.User, attributes: ["user_id", "full_name", "email"] },
+      { model: db.Movie, attributes: ["movie_id", "title"] },
+    ],
+    order: [["review_time", "DESC"]],
+  });
+
+  return {
+    message: "Fetched all reviews successfully",
+    reviews,
+  };
+};
