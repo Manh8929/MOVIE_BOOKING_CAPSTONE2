@@ -131,6 +131,17 @@ export const deleteReview = async (token, reviewId) => {
   }
 };
 
+
+// Hàm gọi API phân tích sentiment
+export const analyzeSentiment = async (text) => {
+  try {
+    const response = await axios.post(`${API_URL}/api/sentiment`, { text });
+    return response.data; // { score: ..., magnitude: ... }
+  } catch (error) {
+    console.error("Error analyzing sentiment:", error);
+    throw error;
+  }
+};
 // promotion
 export const getAvailablPromotion = async () => {
   try {

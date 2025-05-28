@@ -117,7 +117,6 @@ export const generatePaymentLink = async ({
 export const updatePaymentStatusService = async ({ payment_id, status }) => {
   const normalizedStatus = normalizeStatus(status);
 
-  console.log("payment_id:", payment_id, typeof payment_id);
   const payment = await db.Payment.findByPk(payment_id);
 
   if (!payment) {

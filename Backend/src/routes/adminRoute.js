@@ -38,7 +38,9 @@ import {
   deleteSeatsBulkController,
   deleteSelectedShowtimesController,
   getAllBookings,
-  getAllPayments
+  getAllPayments,
+  deleteReviewController,
+  getAllReviewsByAdmController,
 } from "../controllers/adminController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware.js";
 import { middlewareUpload } from "../middlewares/middleUploadMovie.js";
@@ -154,5 +156,20 @@ route.delete(
 route.get("/bookings", authenticate, getAllBookings);
 route.get("/payment", authenticate, getAllPayments);
 
+// detele reviews
+route.delete(
+  "/reviews/:id",
+  authenticate,
+  authorize("admin"),
+  deleteReviewController
+);
 
 export default route;
+
+// Get all reviews by admin
+route.get(
+  "/reviews-by-admin",
+  authenticate,
+  authorize("admin"),
+  getAllReviewsByAdmController
+);
