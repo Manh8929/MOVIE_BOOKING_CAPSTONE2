@@ -24,8 +24,19 @@ const AddMovieAdm = () => {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [viewingMovie, setViewingMovie] = useState(null);
+  const [selectedGenre, setSelectedGenre] = useState("Tất cả");
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
+  // lọc phim
+  const allGenres = useMemo(() => {
+    const genreSet = new Set();
+    movies.forEach((movie) => {
+      movie.genre?.split(",").forEach((g) => genreSet.add(g.trim()));
+    });
+    return ["Tất cả", ...Array.from(genreSet)];
+  }, [movies]);
+
   // search phim
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -37,11 +48,20 @@ const AddMovieAdm = () => {
       .toLowerCase();
   };
 
-  const filteredMovies = movies.filter((movie) =>
-    removeVietnameseTones(movie.title).includes(
+  const filteredMovies = movies.filter((movie) => {
+    const matchTitle = removeVietnameseTones(movie.title).includes(
       removeVietnameseTones(searchTerm)
-    )
-  );
+    );
+
+    const matchGenre =
+      selectedGenre === "Tất cả" ||
+      movie.genre
+        ?.split(",")
+        .map((g) => g.trim())
+        .includes(selectedGenre);
+
+    return matchTitle && matchGenre;
+  });
 
   // phân trang
   const [currentPage, setCurrentPage] = useState(1);
@@ -206,16 +226,36 @@ const AddMovieAdm = () => {
         <div className="border-t border-gray-300 mb-6"></div>
 
         <div className="flex justify-between items-center mb-6">
-          <input
-            type="text"
-            placeholder="Tìm phim theo tên..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="border border-gray-300 rounded-full px-4 py-2 w-1/3"
-          />
+          <div className="mt-6 flex justify-between items-center mb-6">
+            <input
+              type="text"
+              placeholder="Tìm phim theo tên..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="border border-gray-300 rounded-full px-4 py-2 w-[400px] mr-6"
+            />
+
+            <>
+              <label className="font-medium">Thể loại:</label>
+              <select
+                value={selectedGenre}
+                onChange={(e) => {
+                  setSelectedGenre(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="border border-gray-300 rounded-full px-4 py-2"
+              >
+                {allGenres.map((genre, idx) => (
+                  <option key={idx} value={genre}>
+                    {genre}
+                  </option>
+                ))}
+              </select>
+            </>
+          </div>
 
           <button
             className="bg-[#131c28] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#1a2636]"
