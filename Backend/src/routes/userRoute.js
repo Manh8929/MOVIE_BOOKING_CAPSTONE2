@@ -18,6 +18,7 @@ import {
   getSeatsByShowtime,
   getAllSeatTypes,
   getPaymentsByUserId,
+  getBookingsByUserId
 } from "../controllers/userController.js";
 import { authenticate, authorize } from "../middlewares/authMiddleware";
 import { middlewareUpload } from "../middlewares/middleUploadUser";
@@ -41,4 +42,5 @@ route.delete("/review/:reviewId", authenticate, deleteReview);
 route.get("/theaters-by-movie", getTheatersByMovie);
 route.get("/seats/:showtimeId", getSeatsByShowtime);
 route.get("/view-price", getAllSeatTypes);
+route.get("/booking/:userId", authenticate, getBookingsByUserId);
 export default route;

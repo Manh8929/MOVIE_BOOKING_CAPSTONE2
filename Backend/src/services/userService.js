@@ -394,3 +394,45 @@ export const getPaymentsByUserId = async (userId) => {
 
   return payments;
 };
+// booking
+export const getBookingsByUserId = async (userId) => {
+  const bookings = await db.Booking.findAll({
+    where: {
+      user_id: userId,
+    },
+    include: [
+      {
+        model: db.Showtime,
+        attributes: ["show_time"],
+        include: [
+          {
+            model: db.Movie,
+            attributes: ["movie_id","title", "genre"],
+          },
+          {
+            model: db.Screen,
+            attributes: ["screen_name"],
+            include: [
+              {
+                model: db.Theater,
+                attributes: ["name"],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        model: db.BookingSeat,
+        include: [
+          {
+            model: db.Seat,
+            attributes: ["seat_number"],
+          },
+        ],
+      },
+    ],
+    order: [["booking_time", "DESC"]],
+  });
+
+  return bookings;
+};

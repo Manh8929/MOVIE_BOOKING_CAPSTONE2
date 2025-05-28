@@ -277,3 +277,16 @@ export const getPaymentsByUserId = async (req, res) => {
     res.status(500).json({ message: "Lỗi server", detail: err.message });
   }
 };
+
+// booking
+export const getBookingsByUserId = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const bookings = await userService.getBookingsByUserId(userId);
+    res.status(200).json({ bookings });
+  } catch (err) {
+    console.error("Lỗi khi lấy danh sách booking theo userId:", err);
+    res.status(500).json({ message: "Lỗi server", detail: err.message });
+  }
+};

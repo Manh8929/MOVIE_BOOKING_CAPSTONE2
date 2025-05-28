@@ -210,3 +210,19 @@ export const getUserPayments = async (userId, token) => {
     throw error;
   }
 };
+
+
+// booking 
+export const getUserBooking = async (userId, token) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/user/booking/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.bookings; 
+  } catch (error) {
+    console.error("Error fetching user bookings:", error);
+    throw error;
+  }
+};
